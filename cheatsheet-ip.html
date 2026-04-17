@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IP Addressing &amp; Subnetting Cheatsheet — Kenneth Nweke</title>
-  <meta name="description" content="A quick reference guide for understanding IP addressing, subnetting, and network calculations — by Kenneth Nweke." />
+  <meta name="description"
+    content="A quick reference guide for understanding IP addressing, subnetting, and network calculations — by Kenneth Nweke." />
   <link rel="stylesheet" href="css/style.css" />
   <style>
     /* ── Cheatsheet-specific extras (mirrored from cheatsheet-pandas.html) ── */
     .cs-section {
       margin-bottom: 2.5rem;
     }
+
     .cs-section h2 {
       margin-bottom: 1rem;
     }
@@ -25,6 +28,7 @@
       position: relative;
       margin: 0.75rem 0 1rem;
     }
+
     .code-block pre {
       margin: 0;
       font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
@@ -33,12 +37,31 @@
       color: #e6edf3;
       white-space: pre;
     }
-    .code-block .kw  { color: #ff7b72; }
-    .code-block .fn  { color: #d2a8ff; }
-    .code-block .st  { color: #a5d6ff; }
-    .code-block .cm  { color: #8b949e; font-style: italic; }
-    .code-block .nb  { color: #79c0ff; }
-    .code-block .nm  { color: #ffa657; }
+
+    .code-block .kw {
+      color: #ff7b72;
+    }
+
+    .code-block .fn {
+      color: #d2a8ff;
+    }
+
+    .code-block .st {
+      color: #a5d6ff;
+    }
+
+    .code-block .cm {
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    .code-block .nb {
+      color: #79c0ff;
+    }
+
+    .code-block .nm {
+      color: #ffa657;
+    }
 
     /* copy button */
     .copy-btn {
@@ -55,24 +78,34 @@
       transition: background 0.2s, color 0.2s;
       font-family: inherit;
     }
-    .copy-btn:hover { background: #30363d; color: #e6edf3; }
-    .copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+
+    .copy-btn:hover {
+      background: #30363d;
+      color: #e6edf3;
+    }
+
+    .copy-btn.copied {
+      color: #3fb950;
+      border-color: #3fb950;
+    }
 
     /* inline code tag */
     .ic {
-      background: rgba(110,118,129,0.15);
-      border: 1px solid rgba(110,118,129,0.25);
+      background: rgba(110, 118, 129, 0.15);
+      border: 1px solid rgba(110, 118, 129, 0.25);
       border-radius: 4px;
       padding: 1px 6px;
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
       font-size: 0.82em;
       color: #e6edf3;
     }
+
     [data-theme="light"] .ic {
-      background: rgba(0,0,0,0.06);
-      border-color: rgba(0,0,0,0.12);
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.12);
       color: #24292f;
     }
+
     [data-theme="light"] .code-block {
       background: #161b22;
     }
@@ -84,10 +117,11 @@
       font-size: 0.82rem;
       margin: 0.75rem 0;
     }
+
     .ref-table th {
       text-align: left;
       padding: 8px 12px;
-      background: rgba(110,118,129,0.1);
+      background: rgba(110, 118, 129, 0.1);
       color: var(--text-secondary);
       font-weight: 600;
       font-size: 0.75rem;
@@ -95,20 +129,28 @@
       letter-spacing: 0.05em;
       border-bottom: 1px solid var(--border);
     }
+
     .ref-table td {
       padding: 8px 12px;
       border-bottom: 1px solid var(--border);
       color: var(--text-secondary);
       vertical-align: top;
     }
+
     .ref-table td:first-child {
       font-family: 'JetBrains Mono', monospace;
       color: #d2a8ff;
       white-space: nowrap;
       font-size: 0.8rem;
     }
-    .ref-table tr:last-child td { border-bottom: none; }
-    .ref-table tr:hover td { background: rgba(110,118,129,0.05); }
+
+    .ref-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ref-table tr:hover td {
+      background: rgba(110, 118, 129, 0.05);
+    }
 
     /* Reading card */
     .reading-link {
@@ -125,10 +167,26 @@
       transition: border-color 0.2s, transform 0.2s;
       margin-bottom: 0.5rem;
     }
-    .reading-link:hover { border-color: var(--accent); transform: translateX(4px); }
-    .reading-link .rl-icon { font-size: 1.1rem; flex-shrink: 0; }
-    .reading-link .rl-title { font-weight: 600; color: var(--text-primary); }
-    .reading-link .rl-sub { font-size: 0.75rem; color: var(--text-secondary); }
+
+    .reading-link:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .reading-link .rl-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .reading-link .rl-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .reading-link .rl-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
 
     /* ── Subnet Calculator ── */
     .calc-card {
@@ -138,15 +196,20 @@
       padding: 1.5rem;
       margin: 0.75rem 0 1rem;
     }
+
     .calc-inputs {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
       margin-bottom: 1rem;
     }
+
     @media (max-width: 600px) {
-      .calc-inputs { grid-template-columns: 1fr; }
+      .calc-inputs {
+        grid-template-columns: 1fr;
+      }
     }
+
     .calc-field label {
       display: block;
       font-size: 0.75rem;
@@ -156,6 +219,7 @@
       color: var(--text-secondary);
       margin-bottom: 6px;
     }
+
     .calc-field input {
       width: 100%;
       box-sizing: border-box;
@@ -169,14 +233,22 @@
       transition: border-color 0.2s;
       outline: none;
     }
-    .calc-field input:focus { border-color: var(--accent); }
-    .calc-field input.error { border-color: #f85149; }
+
+    .calc-field input:focus {
+      border-color: var(--accent);
+    }
+
+    .calc-field input.error {
+      border-color: #f85149;
+    }
+
     .calc-error-msg {
       font-size: 0.72rem;
       color: #f85149;
       margin-top: 4px;
       min-height: 1em;
     }
+
     .calc-btn {
       display: inline-flex;
       align-items: center;
@@ -192,24 +264,45 @@
       transition: opacity 0.2s, transform 0.15s;
       font-family: inherit;
     }
-    .calc-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .calc-btn:active { transform: translateY(0); }
+
+    .calc-btn:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    .calc-btn:active {
+      transform: translateY(0);
+    }
+
     .calc-results {
       margin-top: 1.25rem;
       display: none;
       animation: fadeUp 0.25s ease;
     }
-    .calc-results.visible { display: block; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+
+    .calc-results.visible {
+      display: block;
     }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .calc-results-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 0.75rem;
       margin-top: 0.75rem;
     }
+
     .calc-result-item {
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -217,6 +310,7 @@
       background: var(--bg);
       position: relative;
     }
+
     .calc-result-item .cri-label {
       font-size: 0.7rem;
       font-weight: 700;
@@ -225,6 +319,7 @@
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
+
     .calc-result-item .cri-value {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
@@ -232,6 +327,7 @@
       font-weight: 600;
       word-break: break-all;
     }
+
     .cri-copy {
       position: absolute;
       top: 8px;
@@ -246,8 +342,16 @@
       font-family: inherit;
       transition: border-color 0.2s, color 0.2s;
     }
-    .cri-copy:hover { border-color: var(--accent); color: var(--accent); }
-    .cri-copy.copied { color: #3fb950; border-color: #3fb950; }
+
+    .cri-copy:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .cri-copy.copied {
+      color: #3fb950;
+      border-color: #3fb950;
+    }
 
     /* Two-column code grid */
     .code-grid {
@@ -255,8 +359,11 @@
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
+
     @media (max-width: 700px) {
-      .code-grid { grid-template-columns: 1fr; }
+      .code-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Step-by-step example */
@@ -270,6 +377,7 @@
       margin-bottom: 0.6rem;
       align-items: flex-start;
     }
+
     .step-num {
       background: var(--accent);
       color: #fff;
@@ -284,17 +392,40 @@
       flex-shrink: 0;
       margin-top: 1px;
     }
-    .step-body { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6; }
-    .step-body strong { color: var(--text-primary); }
+
+    .step-body {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .step-body strong {
+      color: var(--text-primary);
+    }
 
     /* IP class row colour hints */
-    .cls-a { color: #79c0ff; }
-    .cls-b { color: #3fb950; }
-    .cls-c { color: #d2a8ff; }
-    .cls-d { color: #ffa657; }
-    .cls-e { color: #f85149; }
+    .cls-a {
+      color: #79c0ff;
+    }
+
+    .cls-b {
+      color: #3fb950;
+    }
+
+    .cls-c {
+      color: #d2a8ff;
+    }
+
+    .cls-d {
+      color: #ffa657;
+    }
+
+    .cls-e {
+      color: #f85149;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- ══════════════════ NAVIGATION ══════════════════ -->
@@ -307,25 +438,30 @@
       <li><a href="more.html">More</a></li>
       <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
           </svg>
         </a></li>
-      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener"
+          class="ext-link">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
           </svg>
         </a></li>
       <li>
         <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/>
+            <path
+              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z" />
           </svg>
         </a>
       </li>
       <li>
         <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            <path
+              d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
           </svg>
         </a>
       </li>
@@ -369,7 +505,8 @@
         <div class="card-tag" style="margin-bottom: 0.75rem;">Networking · TCP/IP · Subnetting</div>
         <h1 class="project-title">IP Addressing &amp;<br>Subnetting Cheatsheet</h1>
         <p style="color: var(--text-secondary); max-width: 620px; font-size: 1.05rem; line-height: 1.8;">
-          A quick reference guide for understanding <strong>IP addressing</strong>, subnetting, and network calculations —
+          A quick reference guide for understanding <strong>IP addressing</strong>, subnetting, and network calculations
+          —
           including an interactive subnet calculator.
         </p>
 
@@ -391,8 +528,12 @@
           <!-- ─── 1. IPv4 BASICS ─── -->
           <div class="cs-section">
             <h2 class="fade-in">🌐 1. IPv4 Basics</h2>
-            <p class="fade-in">An IPv4 address is a <strong>32-bit</strong> number written as four decimal octets separated by dots, for example <code class="ic">192.168.1.1</code>. Each octet is 8 bits, giving values from 0 to 255.</p>
-            <p class="fade-in" style="margin-top: 0.5rem;">Every IP address has two logical parts — the <strong>network portion</strong> (identifies the network) and the <strong>host portion</strong> (identifies the device on that network). The <strong>subnet mask</strong> determines where the boundary falls.</p>
+            <p class="fade-in">An IPv4 address is a <strong>32-bit</strong> number written as four decimal octets
+              separated by dots, for example <code class="ic">192.168.1.1</code>. Each octet is 8 bits, giving values
+              from 0 to 255.</p>
+            <p class="fade-in" style="margin-top: 0.5rem;">Every IP address has two logical parts — the <strong>network
+                portion</strong> (identifies the network) and the <strong>host portion</strong> (identifies the device
+              on that network). The <strong>subnet mask</strong> determines where the boundary falls.</p>
             <div class="code-block fade-in">
               <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               <pre><span class="cm"># Example: 192.168.1.100 / 255.255.255.0</span>
@@ -414,7 +555,8 @@ Usable IPs : <span class="st">192.168.1.1</span> → <span class="st">192.168.1.
           <!-- ─── 2. IP CLASSES ─── -->
           <div class="cs-section">
             <h2 class="fade-in">📋 2. IP Classes (A – E)</h2>
-            <p class="fade-in">Classful addressing divides IPv4 space into five classes based on the leading bits of the first octet.</p>
+            <p class="fade-in">Classful addressing divides IPv4 space into five classes based on the leading bits of the
+              first octet.</p>
             <div class="fade-in" style="overflow-x:auto;">
               <table class="ref-table">
                 <thead>
@@ -477,13 +619,17 @@ Usable IPs : <span class="st">192.168.1.1</span> → <span class="st">192.168.1.
                 </tbody>
               </table>
             </div>
-            <p class="fade-in" style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.5rem;">⚠️ <strong>127.x.x.x</strong> is reserved for loopback (<code class="ic">127.0.0.1</code>). Classful addressing is largely superseded by CIDR but remains essential knowledge.</p>
+            <p class="fade-in" style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.5rem;">⚠️
+              <strong>127.x.x.x</strong> is reserved for loopback (<code class="ic">127.0.0.1</code>). Classful
+              addressing is largely superseded by CIDR but remains essential knowledge.</p>
           </div>
 
           <!-- ─── 3. PUBLIC vs PRIVATE ─── -->
           <div class="cs-section">
             <h2 class="fade-in">🔒 3. Public vs Private IP Addresses</h2>
-            <p class="fade-in">Private IP ranges are defined in <strong>RFC 1918</strong> and are <em>not routable</em> on the public internet. They allow organisations to reuse address space internally, with <strong>NAT</strong> (Network Address Translation) mapping them to a public IP at the gateway.</p>
+            <p class="fade-in">Private IP ranges are defined in <strong>RFC 1918</strong> and are <em>not routable</em>
+              on the public internet. They allow organisations to reuse address space internally, with
+              <strong>NAT</strong> (Network Address Translation) mapping them to a public IP at the gateway.</p>
             <div class="code-block fade-in">
               <button class="copy-btn" onclick="copyCode(this)">Copy</button>
               <pre><span class="cm"># RFC 1918 — Private address ranges</span>
@@ -498,14 +644,17 @@ Usable IPs : <span class="st">192.168.1.1</span> → <span class="st">192.168.1.
 <span class="nb">0.0.0.0/8</span>      <span class="cm"># "This" network (source only)</span></pre>
             </div>
             <p class="fade-in" style="font-size:0.84rem;color:var(--text-secondary);">
-              <strong>NAT in brief:</strong> a router replaces the private source IP with its own public IP before forwarding packets to the internet, then reverses the translation for return traffic. This conserves public address space and adds a layer of obscurity.
+              <strong>NAT in brief:</strong> a router replaces the private source IP with its own public IP before
+              forwarding packets to the internet, then reverses the translation for return traffic. This conserves
+              public address space and adds a layer of obscurity.
             </p>
           </div>
 
           <!-- ─── 4. SUBNETTING BASICS ─── -->
           <div class="cs-section">
             <h2 class="fade-in">✂️ 4. Subnetting Basics</h2>
-            <p class="fade-in">Subnetting divides a larger network into smaller, logically separated segments. Two equivalent notations exist:</p>
+            <p class="fade-in">Subnetting divides a larger network into smaller, logically separated segments. Two
+              equivalent notations exist:</p>
             <div class="code-grid fade-in">
               <div>
                 <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Dotted-decimal notation</p>
@@ -531,7 +680,9 @@ Mask : <span class="nb">255.255.255.0</span>
               </div>
             </div>
             <p class="fade-in" style="font-size:0.84rem;color:var(--text-secondary);">
-              The <strong>/prefix</strong> (CIDR prefix length) tells you how many of the 32 bits are used for the <em>network</em> portion. Subtracting from 32 gives the number of <em>host</em> bits. Usable hosts = 2<sup>host bits</sup> − 2 (subtract 1 for the network address and 1 for broadcast).
+              The <strong>/prefix</strong> (CIDR prefix length) tells you how many of the 32 bits are used for the
+              <em>network</em> portion. Subtracting from 32 gives the number of <em>host</em> bits. Usable hosts =
+              2<sup>host bits</sup> − 2 (subtract 1 for the network address and 1 for broadcast).
             </p>
           </div>
 
@@ -552,18 +703,102 @@ Mask : <span class="nb">255.255.255.0</span>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>/8</td> <td style="color:var(--text-secondary)">255.0.0.0</td>      <td style="color:var(--text-secondary)">0.255.255.255</td>   <td style="color:var(--text-secondary)">24</td><td style="color:var(--text-secondary)">16,777,214</td><td style="color:var(--text-secondary)">16,777,216</td></tr>
-                  <tr><td>/16</td><td style="color:var(--text-secondary)">255.255.0.0</td>    <td style="color:var(--text-secondary)">0.0.255.255</td>     <td style="color:var(--text-secondary)">16</td><td style="color:var(--text-secondary)">65,534</td>    <td style="color:var(--text-secondary)">65,536</td></tr>
-                  <tr><td>/20</td><td style="color:var(--text-secondary)">255.255.240.0</td>  <td style="color:var(--text-secondary)">0.0.15.255</td>      <td style="color:var(--text-secondary)">12</td><td style="color:var(--text-secondary)">4,094</td>     <td style="color:var(--text-secondary)">4,096</td></tr>
-                  <tr><td>/22</td><td style="color:var(--text-secondary)">255.255.252.0</td>  <td style="color:var(--text-secondary)">0.0.3.255</td>       <td style="color:var(--text-secondary)">10</td><td style="color:var(--text-secondary)">1,022</td>     <td style="color:var(--text-secondary)">1,024</td></tr>
-                  <tr><td>/23</td><td style="color:var(--text-secondary)">255.255.254.0</td>  <td style="color:var(--text-secondary)">0.0.1.255</td>       <td style="color:var(--text-secondary)">9</td> <td style="color:var(--text-secondary)">510</td>       <td style="color:var(--text-secondary)">512</td></tr>
-                  <tr><td>/24</td><td style="color:var(--text-secondary)">255.255.255.0</td>  <td style="color:var(--text-secondary)">0.0.0.255</td>       <td style="color:var(--text-secondary)">8</td> <td style="color:var(--text-secondary)">254</td>       <td style="color:var(--text-secondary)">256</td></tr>
-                  <tr><td>/25</td><td style="color:var(--text-secondary)">255.255.255.128</td><td style="color:var(--text-secondary)">0.0.0.127</td>       <td style="color:var(--text-secondary)">7</td> <td style="color:var(--text-secondary)">126</td>       <td style="color:var(--text-secondary)">128</td></tr>
-                  <tr><td>/26</td><td style="color:var(--text-secondary)">255.255.255.192</td><td style="color:var(--text-secondary)">0.0.0.63</td>        <td style="color:var(--text-secondary)">6</td> <td style="color:var(--text-secondary)">62</td>        <td style="color:var(--text-secondary)">64</td></tr>
-                  <tr><td>/27</td><td style="color:var(--text-secondary)">255.255.255.224</td><td style="color:var(--text-secondary)">0.0.0.31</td>        <td style="color:var(--text-secondary)">5</td> <td style="color:var(--text-secondary)">30</td>        <td style="color:var(--text-secondary)">32</td></tr>
-                  <tr><td>/28</td><td style="color:var(--text-secondary)">255.255.255.240</td><td style="color:var(--text-secondary)">0.0.0.15</td>        <td style="color:var(--text-secondary)">4</td> <td style="color:var(--text-secondary)">14</td>        <td style="color:var(--text-secondary)">16</td></tr>
-                  <tr><td>/29</td><td style="color:var(--text-secondary)">255.255.255.248</td><td style="color:var(--text-secondary)">0.0.0.7</td>         <td style="color:var(--text-secondary)">3</td> <td style="color:var(--text-secondary)">6</td>         <td style="color:var(--text-secondary)">8</td></tr>
-                  <tr><td>/30</td><td style="color:var(--text-secondary)">255.255.255.252</td><td style="color:var(--text-secondary)">0.0.0.3</td>         <td style="color:var(--text-secondary)">2</td> <td style="color:var(--text-secondary)">2</td>         <td style="color:var(--text-secondary)">4</td></tr>
+                  <tr>
+                    <td>/8</td>
+                    <td style="color:var(--text-secondary)">255.0.0.0</td>
+                    <td style="color:var(--text-secondary)">0.255.255.255</td>
+                    <td style="color:var(--text-secondary)">24</td>
+                    <td style="color:var(--text-secondary)">16,777,214</td>
+                    <td style="color:var(--text-secondary)">16,777,216</td>
+                  </tr>
+                  <tr>
+                    <td>/16</td>
+                    <td style="color:var(--text-secondary)">255.255.0.0</td>
+                    <td style="color:var(--text-secondary)">0.0.255.255</td>
+                    <td style="color:var(--text-secondary)">16</td>
+                    <td style="color:var(--text-secondary)">65,534</td>
+                    <td style="color:var(--text-secondary)">65,536</td>
+                  </tr>
+                  <tr>
+                    <td>/20</td>
+                    <td style="color:var(--text-secondary)">255.255.240.0</td>
+                    <td style="color:var(--text-secondary)">0.0.15.255</td>
+                    <td style="color:var(--text-secondary)">12</td>
+                    <td style="color:var(--text-secondary)">4,094</td>
+                    <td style="color:var(--text-secondary)">4,096</td>
+                  </tr>
+                  <tr>
+                    <td>/22</td>
+                    <td style="color:var(--text-secondary)">255.255.252.0</td>
+                    <td style="color:var(--text-secondary)">0.0.3.255</td>
+                    <td style="color:var(--text-secondary)">10</td>
+                    <td style="color:var(--text-secondary)">1,022</td>
+                    <td style="color:var(--text-secondary)">1,024</td>
+                  </tr>
+                  <tr>
+                    <td>/23</td>
+                    <td style="color:var(--text-secondary)">255.255.254.0</td>
+                    <td style="color:var(--text-secondary)">0.0.1.255</td>
+                    <td style="color:var(--text-secondary)">9</td>
+                    <td style="color:var(--text-secondary)">510</td>
+                    <td style="color:var(--text-secondary)">512</td>
+                  </tr>
+                  <tr>
+                    <td>/24</td>
+                    <td style="color:var(--text-secondary)">255.255.255.0</td>
+                    <td style="color:var(--text-secondary)">0.0.0.255</td>
+                    <td style="color:var(--text-secondary)">8</td>
+                    <td style="color:var(--text-secondary)">254</td>
+                    <td style="color:var(--text-secondary)">256</td>
+                  </tr>
+                  <tr>
+                    <td>/25</td>
+                    <td style="color:var(--text-secondary)">255.255.255.128</td>
+                    <td style="color:var(--text-secondary)">0.0.0.127</td>
+                    <td style="color:var(--text-secondary)">7</td>
+                    <td style="color:var(--text-secondary)">126</td>
+                    <td style="color:var(--text-secondary)">128</td>
+                  </tr>
+                  <tr>
+                    <td>/26</td>
+                    <td style="color:var(--text-secondary)">255.255.255.192</td>
+                    <td style="color:var(--text-secondary)">0.0.0.63</td>
+                    <td style="color:var(--text-secondary)">6</td>
+                    <td style="color:var(--text-secondary)">62</td>
+                    <td style="color:var(--text-secondary)">64</td>
+                  </tr>
+                  <tr>
+                    <td>/27</td>
+                    <td style="color:var(--text-secondary)">255.255.255.224</td>
+                    <td style="color:var(--text-secondary)">0.0.0.31</td>
+                    <td style="color:var(--text-secondary)">5</td>
+                    <td style="color:var(--text-secondary)">30</td>
+                    <td style="color:var(--text-secondary)">32</td>
+                  </tr>
+                  <tr>
+                    <td>/28</td>
+                    <td style="color:var(--text-secondary)">255.255.255.240</td>
+                    <td style="color:var(--text-secondary)">0.0.0.15</td>
+                    <td style="color:var(--text-secondary)">4</td>
+                    <td style="color:var(--text-secondary)">14</td>
+                    <td style="color:var(--text-secondary)">16</td>
+                  </tr>
+                  <tr>
+                    <td>/29</td>
+                    <td style="color:var(--text-secondary)">255.255.255.248</td>
+                    <td style="color:var(--text-secondary)">0.0.0.7</td>
+                    <td style="color:var(--text-secondary)">3</td>
+                    <td style="color:var(--text-secondary)">6</td>
+                    <td style="color:var(--text-secondary)">8</td>
+                  </tr>
+                  <tr>
+                    <td>/30</td>
+                    <td style="color:var(--text-secondary)">255.255.255.252</td>
+                    <td style="color:var(--text-secondary)">0.0.0.3</td>
+                    <td style="color:var(--text-secondary)">2</td>
+                    <td style="color:var(--text-secondary)">2</td>
+                    <td style="color:var(--text-secondary)">4</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -572,28 +807,36 @@ Mask : <span class="nb">255.255.255.0</span>
           <!-- ─── 6. SUBNETTING EXAMPLE ─── -->
           <div class="cs-section">
             <h2 class="fade-in">🧮 6. Subnetting — Step-by-Step Example</h2>
-            <p class="fade-in">Given: <code class="ic">192.168.10.55 /26</code> — find the network, broadcast, and usable host range.</p>
+            <p class="fade-in">Given: <code class="ic">192.168.10.55 /26</code> — find the network, broadcast, and
+              usable host range.</p>
 
             <div class="fade-in">
               <div class="step-block">
                 <div class="step-num">1</div>
-                <div class="step-body"><strong>Identify the subnet mask.</strong> /26 → 26 network bits, 6 host bits → mask = <code class="ic">255.255.255.192</code> (last octet: 11000000 = 192)</div>
+                <div class="step-body"><strong>Identify the subnet mask.</strong> /26 → 26 network bits, 6 host bits →
+                  mask = <code class="ic">255.255.255.192</code> (last octet: 11000000 = 192)</div>
               </div>
               <div class="step-block">
                 <div class="step-num">2</div>
-                <div class="step-body"><strong>Find the block size.</strong> 256 − 192 = <strong>64</strong>. Subnets fall on multiples of 64: 0, 64, 128, 192.</div>
+                <div class="step-body"><strong>Find the block size.</strong> 256 − 192 = <strong>64</strong>. Subnets
+                  fall on multiples of 64: 0, 64, 128, 192.</div>
               </div>
               <div class="step-block">
                 <div class="step-num">3</div>
-                <div class="step-body"><strong>Locate the subnet.</strong> The host IP .55 falls in the block starting at .64? No — it falls between 0 and 63. So the <strong>network address</strong> is <code class="ic">192.168.10.0</code>.</div>
+                <div class="step-body"><strong>Locate the subnet.</strong> The host IP .55 falls in the block starting
+                  at .64? No — it falls between 0 and 63. So the <strong>network address</strong> is <code
+                    class="ic">192.168.10.0</code>.</div>
               </div>
               <div class="step-block">
                 <div class="step-num">4</div>
-                <div class="step-body"><strong>Find the broadcast address.</strong> Next subnet starts at .64, so broadcast = .64 − 1 = <code class="ic">192.168.10.63</code>.</div>
+                <div class="step-body"><strong>Find the broadcast address.</strong> Next subnet starts at .64, so
+                  broadcast = .64 − 1 = <code class="ic">192.168.10.63</code>.</div>
               </div>
               <div class="step-block">
                 <div class="step-num">5</div>
-                <div class="step-body"><strong>Usable host range.</strong> First = network + 1 = <code class="ic">192.168.10.1</code> &nbsp;|&nbsp; Last = broadcast − 1 = <code class="ic">192.168.10.62</code>. Total usable = 2<sup>6</sup> − 2 = <strong>62 hosts</strong>.</div>
+                <div class="step-body"><strong>Usable host range.</strong> First = network + 1 = <code
+                    class="ic">192.168.10.1</code> &nbsp;|&nbsp; Last = broadcast − 1 = <code
+                    class="ic">192.168.10.62</code>. Total usable = 2<sup>6</sup> − 2 = <strong>62 hosts</strong>.</div>
               </div>
             </div>
 
@@ -614,38 +857,81 @@ Usable Hosts    : <span class="nm">62</span></pre>
           <!-- ─── INTERACTIVE SUBNET CALCULATOR ─── -->
           <div class="cs-section">
             <h2 class="fade-in">⚡ Interactive Subnet Calculator</h2>
-            <p class="fade-in">Enter an IP address and a subnet mask (dotted-decimal or CIDR prefix) to instantly calculate all network values.</p>
+            <p class="fade-in">Enter an IP address and a subnet mask (dotted-decimal or CIDR prefix) to instantly
+              calculate all network values.</p>
 
             <div class="calc-card fade-in">
               <div class="calc-inputs">
                 <div class="calc-field">
                   <label for="calcIP">IP Address</label>
-                  <input type="text" id="calcIP" placeholder="e.g. 192.168.1.100" autocomplete="off" spellcheck="false" />
+                  <input type="text" id="calcIP" placeholder="e.g. 192.168.1.100" autocomplete="off"
+                    spellcheck="false" />
                   <div class="calc-error-msg" id="calcIPErr"></div>
                 </div>
                 <div class="calc-field">
                   <label for="calcMask">Subnet Mask or CIDR</label>
-                  <input type="text" id="calcMask" placeholder="e.g. 255.255.255.0  or  /24" autocomplete="off" spellcheck="false" />
+                  <input type="text" id="calcMask" placeholder="e.g. 255.255.255.0  or  /24" autocomplete="off"
+                    spellcheck="false" />
                   <div class="calc-error-msg" id="calcMaskErr"></div>
                 </div>
               </div>
               <button class="calc-btn" onclick="runCalc()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path
+                    d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18" />
+                </svg>
                 Calculate
               </button>
 
               <div class="calc-results" id="calcResults">
-                <p style="font-size:0.75rem;color:var(--text-secondary);margin:0 0 0.5rem;">Click the copy icon on any result to copy to clipboard.</p>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin:0 0 0.5rem;">Click the copy icon on any
+                  result to copy to clipboard.</p>
                 <div class="calc-results-grid">
-                  <div class="calc-result-item"><div class="cri-label">Network Address</div><div class="cri-value" id="resNetwork">—</div><button class="cri-copy" onclick="copyResult(this,'resNetwork')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Subnet Mask</div><div class="cri-value" id="resMask">—</div><button class="cri-copy" onclick="copyResult(this,'resMask')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">CIDR Prefix</div><div class="cri-value" id="resCidr">—</div><button class="cri-copy" onclick="copyResult(this,'resCidr')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Broadcast Address</div><div class="cri-value" id="resBroadcast">—</div><button class="cri-copy" onclick="copyResult(this,'resBroadcast')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">First Usable IP</div><div class="cri-value" id="resFirst">—</div><button class="cri-copy" onclick="copyResult(this,'resFirst')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Last Usable IP</div><div class="cri-value" id="resLast">—</div><button class="cri-copy" onclick="copyResult(this,'resLast')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Wildcard Mask</div><div class="cri-value" id="resWild">—</div><button class="cri-copy" onclick="copyResult(this,'resWild')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Total Addresses</div><div class="cri-value" id="resTotal">—</div><button class="cri-copy" onclick="copyResult(this,'resTotal')">Copy</button></div>
-                  <div class="calc-result-item"><div class="cri-label">Usable Hosts</div><div class="cri-value" id="resUsable">—</div><button class="cri-copy" onclick="copyResult(this,'resUsable')">Copy</button></div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Network Address</div>
+                    <div class="cri-value" id="resNetwork">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resNetwork')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Subnet Mask</div>
+                    <div class="cri-value" id="resMask">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resMask')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">CIDR Prefix</div>
+                    <div class="cri-value" id="resCidr">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resCidr')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Broadcast Address</div>
+                    <div class="cri-value" id="resBroadcast">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resBroadcast')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">First Usable IP</div>
+                    <div class="cri-value" id="resFirst">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resFirst')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Last Usable IP</div>
+                    <div class="cri-value" id="resLast">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resLast')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Wildcard Mask</div>
+                    <div class="cri-value" id="resWild">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resWild')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Total Addresses</div>
+                    <div class="cri-value" id="resTotal">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resTotal')">Copy</button>
+                  </div>
+                  <div class="calc-result-item">
+                    <div class="cri-label">Usable Hosts</div>
+                    <div class="cri-value" id="resUsable">—</div><button class="cri-copy"
+                      onclick="copyResult(this,'resUsable')">Copy</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -656,14 +942,15 @@ Usable Hosts    : <span class="nm">62</span></pre>
           <!-- ─── FURTHER LEARNING ─── -->
           <h2 class="fade-in">📚 Further Learning</h2>
           <div class="fade-in">
-            <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html" target="_blank" rel="noopener" class="reading-link">
+            <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html"
+              target="_blank" rel="noopener" class="reading-link">
               <span class="rl-icon">🔵</span>
               <div>
                 <div class="rl-title">Cisco — IP Addressing and Subnetting</div>
                 <div class="rl-sub">cisco.com — official Cisco support article on subnetting for new users</div>
               </div>
             </a>
-           
+
             <a href="https://www.rfc-editor.org/rfc/rfc1918" target="_blank" rel="noopener" class="reading-link">
               <span class="rl-icon">📄</span>
               <div>
@@ -682,14 +969,30 @@ Usable Hosts    : <span class="nm">62</span></pre>
           <div class="sidebar-card">
             <h3>Topics Covered</h3>
             <ul style="list-style:none;padding:0;">
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> IPv4 Basics &amp; Structure</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> IP Classes A – E</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Public vs Private (RFC 1918)</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> NAT Concept</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Subnet Masks &amp; CIDR</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Subnet Cheat Table (/8–/30)</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Step-by-Step Example</li>
-              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Interactive Subnet Calculator</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> IPv4 Basics &amp; Structure</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> IP Classes A – E</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> Public vs Private (RFC 1918)</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> NAT Concept</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> Subnet Masks &amp; CIDR</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> Subnet Cheat Table (/8–/30)</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> Step-by-Step Example</li>
+              <li
+                style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:0.82rem;color:var(--text-secondary);">
+                <span style="color:var(--accent);flex-shrink:0;">✓</span> Interactive Subnet Calculator</li>
             </ul>
           </div>
 
@@ -729,19 +1032,20 @@ subnet octet
           <div class="sidebar-card">
             <h3>Links</h3>
             <div style="display:flex;flex-direction:column;gap:0.6rem;">
-              <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content:center;font-size:0.82rem;">
+              <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html"
+                target="_blank" rel="noopener" class="btn btn-outline"
+                style="justify-content:center;font-size:0.82rem;">
                 🔵 Cisco Subnetting Guide
               </a>
-              <a href="https://www.rfc-editor.org/rfc/rfc1918" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">
+              <a href="https://www.rfc-editor.org/rfc/rfc1918" target="_blank" rel="noopener" class="btn btn-ghost"
+                style="justify-content:center;font-size:0.82rem;">
                 📄 RFC 1918
               </a>
-              <a href="https://www.geeksforgeeks.org/introduction-of-classful-ip-addressing/" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">
-                🟢 GfG IP Cheat Sheet
-              </a>
+
             </div>
           </div>
 
-         
+
 
         </aside>
 
@@ -806,8 +1110,8 @@ subnet octet
       return [
         (n >>> 24) & 0xFF,
         (n >>> 16) & 0xFF,
-        (n >>>  8) & 0xFF,
-         n         & 0xFF
+        (n >>> 8) & 0xFF,
+        n & 0xFF
       ].join('.');
     }
 
@@ -859,7 +1163,7 @@ subnet octet
       setErr('calcIPErr', '');
       setErr('calcMaskErr', '');
 
-      const rawIP   = document.getElementById('calcIP').value.trim();
+      const rawIP = document.getElementById('calcIP').value.trim();
       const rawMask = document.getElementById('calcMask').value.trim();
 
       let valid = true;
@@ -873,23 +1177,23 @@ subnet octet
       if (!valid) return;
 
       const { maskInt, prefix } = maskParsed;
-      const networkInt   = (ipInt & maskInt) >>> 0;
+      const networkInt = (ipInt & maskInt) >>> 0;
       const broadcastInt = (networkInt | (~maskInt >>> 0)) >>> 0;
-      const firstInt     = prefix === 32 ? networkInt   : (networkInt + 1) >>> 0;
-      const lastInt      = prefix === 32 ? broadcastInt : (broadcastInt - 1) >>> 0;
-      const total        = prefix >= 32 ? 1 : (1 << (32 - prefix)) >>> 0;
-      const usable       = prefix >= 31 ? total : total - 2;
-      const wildInt      = (~maskInt) >>> 0;
+      const firstInt = prefix === 32 ? networkInt : (networkInt + 1) >>> 0;
+      const lastInt = prefix === 32 ? broadcastInt : (broadcastInt - 1) >>> 0;
+      const total = prefix >= 32 ? 1 : (1 << (32 - prefix)) >>> 0;
+      const usable = prefix >= 31 ? total : total - 2;
+      const wildInt = (~maskInt) >>> 0;
 
-      setRes('resNetwork',   intToIp(networkInt));
-      setRes('resMask',      intToIp(maskInt));
-      setRes('resCidr',      '/' + prefix);
+      setRes('resNetwork', intToIp(networkInt));
+      setRes('resMask', intToIp(maskInt));
+      setRes('resCidr', '/' + prefix);
       setRes('resBroadcast', intToIp(broadcastInt));
-      setRes('resFirst',     intToIp(firstInt));
-      setRes('resLast',      intToIp(lastInt));
-      setRes('resWild',      intToIp(wildInt));
-      setRes('resTotal',     total.toLocaleString());
-      setRes('resUsable',    usable > 0 ? usable.toLocaleString() : '0');
+      setRes('resFirst', intToIp(firstInt));
+      setRes('resLast', intToIp(lastInt));
+      setRes('resWild', intToIp(wildInt));
+      setRes('resTotal', total.toLocaleString());
+      setRes('resUsable', usable > 0 ? usable.toLocaleString() : '0');
 
       const results = document.getElementById('calcResults');
       results.classList.remove('visible');
@@ -898,11 +1202,12 @@ subnet octet
     }
 
     /* Allow Enter key in calc inputs */
-    ['calcIP','calcMask'].forEach(id => {
+    ['calcIP', 'calcMask'].forEach(id => {
       document.getElementById(id).addEventListener('keydown', e => {
         if (e.key === 'Enter') runCalc();
       });
     });
   </script>
 </body>
+
 </html>
