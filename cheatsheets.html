@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>More — Kenneth Nweke</title>
+  <meta name="description"
+    content="Cheatsheets, mini games, quizzes and more general computing resources by Kenneth Nweke." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">KN<span>.</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="cheatsheets.html" class="active">Cheatsheets</a></li>
+      <li><a href="more.html">More</a></li>
+      <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+          </svg>
+        </a></li>
+      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener"
+          class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+          </svg>
+        </a></li>
+
+      <li>
+        <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z" />
+          </svg>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+          </svg>
+        </a>
+      </li>
+
+
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span>☀️</span> Light
+        </button>
+      </li>
+    </ul>
+
+    <!-- Hamburger for mobile -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="nav-mobile" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html">More</a>
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+    <div class="container">
+
+      <!-- Page Hero -->
+      <div class="page-hero">
+        <span class="section-label fade-in">Cheatsheets for Computing</span>
+        <h1 class="section-title fade-in" style="font-size: clamp(2rem, 4vw, 3.2rem);">Cheatsheets</h1>
+        <p class="section-subtitle fade-in" style="margin: 0 auto; text-align: center;">
+          Quick reference guides for Python, networking, security and computing topics.
+        </p>
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           MORE SECTIONS — horizontal scroll rows
+           To add a new section: copy a .more-section block below.
+           Each section contains a .scroll-row of .scroll-card items.
+           ══════════════════════════════════════════ -->
+
+      <!-- ── SECTION: Cheatsheets ── -->
+      <div class="more-section fade-in">
+        <div class="more-section-header">
+          <div class="more-section-title-row">
+            <span class="more-section-icon">🐍</span>
+            <h2 class="more-section-title">Python</h2>
+          </div>
+          <p class="more-section-desc">Quick reference guides for Python programming.</p>
+        </div>
+
+        <!-- Horizontal scroll row -->
+        <div class="scroll-row" role="list">
+
+          <!-- Coming Soon cards — replace with real content when ready -->
+          <a href="cheatsheet-pandas.html">
+            <div class="scroll-card" role="listitem">
+              <div class="scroll-card-icon">📋</div>
+              <div class="scroll-card-body">
+                <div class="card-tag">Data Analysis</div>
+                <h3 class="scroll-card-title">Pandas</h3>
+                <p class="scroll-card-desc">Data Science in Python</p>
+              </div>
+            </div>
+          </a>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">🐧</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">Linux</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">🐍</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">Python</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">☁️</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">AWS</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+        </div><!-- /.scroll-row -->
+      </div><!-- /.more-section -->
+
+
+
+<!-- ── SECTION: Cheatsheets ── -->
+      <div class="more-section fade-in">
+        <div class="more-section-header">
+          <div class="more-section-title-row">
+            <span class="more-section-icon">🌐</span>
+            <h2 class="more-section-title">Networking</h2>
+          </div>
+          <p class="more-section-desc">Quick reference guides for Networking.</p>
+        </div>
+
+        <!-- Horizontal scroll row -->
+        <div class="scroll-row" role="list">
+
+          <!-- Coming Soon cards — replace with real content when ready -->
+         
+           <a href="cheatsheet-ip.html">
+            <div class="scroll-card" role="listitem">
+              <div class="scroll-card-icon">📡</div>
+              <div class="scroll-card-body">
+                <div class="card-tag">Networking</div>
+                <h3 class="scroll-card-title">IPV4 Addressing</h3>
+                <p class="scroll-card-desc">IPV4 Addressing in Networking</p>
+              </div>
+            </div>
+          </a>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">🐧</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">Linux</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">🐍</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">Python</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+          <div class="scroll-card card-coming-soon" role="listitem">
+            <span class="coming-soon-badge">Coming Soon</span>
+            <div class="scroll-card-icon">☁️</div>
+            <div class="scroll-card-body">
+              <div class="card-tag">AWS</div>
+              <h3 class="scroll-card-title">Coming Soon</h3>
+              <p class="scroll-card-desc">Content in development</p>
+            </div>
+          </div>
+
+        </div><!-- /.scroll-row -->
+      </div><!-- /.more-section -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div><!-- /.container -->
+  </main>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+        <div class="footer-links">
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+          <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>
