@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="A quick reference guide for Python fundamentals, syntax, and common operations — by Kenneth Nweke." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .cs-section { margin-bottom: 2.5rem; }
+    .cs-section h2 { margin-bottom: 1rem; }
+    .code-block {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 10px;
+      padding: 1.25rem 1.5rem; overflow-x: auto; position: relative; margin: 0.75rem 0 1rem;
+    }
+    .code-block pre {
+      margin: 0; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.82rem; line-height: 1.75; color: #e6edf3; white-space: pre;
+    }
+    .code-block .kw  { color: #ff7b72; }
+    .code-block .fn  { color: #d2a8ff; }
+    .code-block .st  { color: #a5d6ff; }
+    .code-block .cm  { color: #8b949e; font-style: italic; }
+    .code-block .nb  { color: #79c0ff; }
+    .code-block .nm  { color: #ffa657; }
+    .copy-btn {
+      position: absolute; top: 10px; right: 12px; background: #21262d;
+      border: 1px solid #30363d; color: #8b949e; font-size: 0.7rem;
+      padding: 3px 10px; border-radius: 5px; cursor: pointer;
+      transition: background 0.2s, color 0.2s; font-family: inherit;
+    }
+    .copy-btn:hover { background: #30363d; color: #e6edf3; }
+    .copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+    .code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 700px) { .code-grid { grid-template-columns: 1fr; } }
+    .ic {
+      background: rgba(110,118,129,0.15); border: 1px solid rgba(110,118,129,0.25);
+      border-radius: 4px; padding: 1px 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em; color: #e6edf3;
+    }
+    [data-theme="light"] .ic { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.12); color: #24292f; }
+    [data-theme="light"] .code-block { background: #161b22; }
+    .reading-link {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1rem;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg);
+      text-decoration: none; color: var(--text-primary); font-size: 0.85rem;
+      transition: border-color 0.2s, transform 0.2s; margin-bottom: 0.5rem;
+    }
+    .reading-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .reading-link .rl-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .reading-link .rl-title { font-weight: 600; color: var(--text-primary); }
+    .reading-link .rl-sub { font-size: 0.75rem; color: var(--text-secondary); }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.75rem 0; }
+    .ref-table th {
+      text-align: left; padding: 8px 12px; background: rgba(110,118,129,0.1);
+      color: var(--text-secondary); font-weight: 600; font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+    }
+    .ref-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+    .ref-table td:first-child { font-family: 'JetBrains Mono', monospace; color: #d2a8ff; white-space: nowrap; font-size: 0.8rem; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: rgba(110,118,129,0.05); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">KN<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="cheatsheets.html">Cheatsheets</a></li>
+      <li><a href="more.html">More</a></li>
+      <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a></li>
+      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a></li>
+      <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg>
+        </a></li>
+      <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a></li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button>
+      </li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html">More</a>
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+    <div class="container">
+
+      <div class="project-header fade-in">
+        <div class="breadcrumb">
+          <a href="cheatsheets.html">← Cheatsheets</a>
+          <span>/</span>
+          <span>Python</span>
+        </div>
+        <div class="card-tag" style="margin-bottom: 0.75rem;">Python · Fundamentals · Quick Reference</div>
+        <h1 class="project-title">Python<br>Cheatsheet</h1>
+        <p style="color: var(--text-secondary); max-width: 620px; font-size: 1.05rem; line-height: 1.8;">
+          A quick reference guide for <strong>Python</strong> fundamentals, syntax, and common operations —
+          from basics and data types through to file handling, exceptions, and useful one-liners.
+        </p>
+        <div class="project-meta">
+          <div class="meta-item"><span>Language:</span> Python 3</div>
+          <div class="meta-item"><span>Level:</span> Beginner → Intermediate</div>
+          <div class="meta-item"><span>Topics:</span> 10 sections</div>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://docs.python.org/3/" target="_blank" rel="noopener" class="btn btn-primary">📖 View Official Docs</a>
+          <a href="https://pypi.org" target="_blank" rel="noopener" class="btn btn-outline">📦 PyPI</a>
+        </div>
+      </div>
+
+      <div class="project-layout" style="padding-bottom: 80px;">
+        <div class="project-content">
+
+          <!-- 1. BASICS -->
+          <div class="cs-section" id="basics">
+            <h2 class="fade-in">🐍 1. Basics</h2>
+            <p class="fade-in">Variables, printing, input, and comments.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Variables — no type declaration needed</span>
+name   = <span class="st">"Kenneth"</span>
+age    = <span class="nm">25</span>
+score  = <span class="nm">98.5</span>
+active = <span class="kw">True</span>
+
+<span class="cm"># Print</span>
+<span class="nb">print</span>(<span class="st">"Hello, World!"</span>)
+<span class="nb">print</span>(<span class="st">f"Name: {name}, Age: {age}"</span>)   <span class="cm"># f-string</span>
+
+<span class="cm"># Input</span>
+user = <span class="nb">input</span>(<span class="st">"Enter your name: "</span>)
+
+<span class="cm"># Multiple assignment</span>
+x, y, z = <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+
+<span class="cm"># Check type</span>
+<span class="nb">type</span>(name)    <span class="cm"># &lt;class 'str'&gt;</span></pre>
+            </div>
+          </div>
+
+          <!-- 2. DATA TYPES -->
+          <div class="cs-section" id="datatypes">
+            <h2 class="fade-in">📦 2. Data Types</h2>
+            <p class="fade-in">Python's core built-in types: strings, lists, tuples, sets, and dicts.</p>
+            <div class="code-grid fade-in">
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Strings</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre>s = <span class="st">"hello world"</span>
+s.<span class="fn">upper</span>()        <span class="cm"># HELLO WORLD</span>
+s.<span class="fn">title</span>()        <span class="cm"># Hello World</span>
+s.<span class="fn">split</span>(<span class="st">" "</span>)     <span class="cm"># ['hello','world']</span>
+s.<span class="fn">replace</span>(<span class="st">"hello"</span>,<span class="st">"hi"</span>)
+s[<span class="nm">0</span>:<span class="nm">5</span>]           <span class="cm"># hello (slice)</span>
+<span class="nb">len</span>(s)           <span class="cm"># 11</span>
+<span class="st">","</span>.<span class="fn">join</span>([<span class="st">"a"</span>,<span class="st">"b"</span>]) <span class="cm"># "a,b"</span></pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Lists</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre>lst = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>]
+lst.<span class="fn">append</span>(<span class="nm">5</span>)    <span class="cm"># add to end</span>
+lst.<span class="fn">insert</span>(<span class="nm">0</span>, <span class="nm">0</span>) <span class="cm"># insert at index</span>
+lst.<span class="fn">remove</span>(<span class="nm">3</span>)    <span class="cm"># remove value</span>
+lst.<span class="fn">pop</span>()        <span class="cm"># remove last</span>
+lst.<span class="fn">sort</span>()       <span class="cm"># sort in-place</span>
+lst[<span class="nm">1</span>:<span class="nm">3</span>]         <span class="cm"># [2, 3]</span>
+lst[::<span class="nm">-1</span>]        <span class="cm"># reversed</span></pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Dictionaries</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre>d = {<span class="st">"name"</span>: <span class="st">"Ken"</span>, <span class="st">"age"</span>: <span class="nm">25</span>}
+d[<span class="st">"age"</span>]          <span class="cm"># 25</span>
+d.<span class="fn">get</span>(<span class="st">"city"</span>, <span class="st">"N/A"</span>) <span class="cm"># safe get</span>
+d[<span class="st">"city"</span>] = <span class="st">"London"</span>
+d.<span class="fn">keys</span>()
+d.<span class="fn">values</span>()
+d.<span class="fn">items</span>()        <span class="cm"># key-value pairs</span>
+<span class="st">"name"</span> <span class="kw">in</span> d       <span class="cm"># True</span></pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Tuples &amp; Sets</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="cm"># Tuple — immutable</span>
+t = (<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>)
+t[<span class="nm">0</span>]             <span class="cm"># 1</span>
+a, b, c = t      <span class="cm"># unpack</span>
+
+<span class="cm"># Set — unique values</span>
+s = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">3</span>}  <span class="cm"># {1, 2, 3}</span>
+s.<span class="fn">add</span>(<span class="nm">4</span>)
+s.<span class="fn">discard</span>(<span class="nm">1</span>)
+s1 &amp; s2          <span class="cm"># intersection</span>
+s1 | s2          <span class="cm"># union</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. CONTROL FLOW -->
+          <div class="cs-section" id="controlflow">
+            <h2 class="fade-in">🔀 3. Control Flow</h2>
+            <div class="code-grid fade-in">
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">if / elif / else</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="kw">if</span> age &gt;= <span class="nm">18</span>:
+    <span class="nb">print</span>(<span class="st">"Adult"</span>)
+<span class="kw">elif</span> age &gt;= <span class="nm">13</span>:
+    <span class="nb">print</span>(<span class="st">"Teen"</span>)
+<span class="kw">else</span>:
+    <span class="nb">print</span>(<span class="st">"Child"</span>)
+
+<span class="cm"># Ternary</span>
+label = <span class="st">"Adult"</span> <span class="kw">if</span> age &gt;= <span class="nm">18</span> <span class="kw">else</span> <span class="st">"Minor"</span></pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Loops</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="cm"># for loop</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">5</span>):
+    <span class="nb">print</span>(i)
+
+<span class="kw">for</span> item <span class="kw">in</span> [<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>]:
+    <span class="nb">print</span>(item)
+
+<span class="cm"># while loop</span>
+n = <span class="nm">0</span>
+<span class="kw">while</span> n &lt; <span class="nm">5</span>:
+    n += <span class="nm">1</span>
+
+<span class="cm"># enumerate</span>
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="nb">enumerate</span>(lst):
+    <span class="nb">print</span>(i, v)</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. FUNCTIONS -->
+          <div class="cs-section" id="functions">
+            <h2 class="fade-in">⚙️ 4. Functions</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Basic function</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="st">"Hello"</span>):
+    <span class="kw">return</span> <span class="st">f"{greeting}, {name}!"</span>
+
+<span class="fn">greet</span>(<span class="st">"Ken"</span>)            <span class="cm"># Hello, Ken!</span>
+<span class="fn">greet</span>(<span class="st">"Ken"</span>, <span class="st">"Hi"</span>)      <span class="cm"># Hi, Ken!</span>
+
+<span class="cm"># *args and **kwargs</span>
+<span class="kw">def</span> <span class="fn">add_all</span>(*args):
+    <span class="kw">return</span> <span class="nb">sum</span>(args)
+
+<span class="kw">def</span> <span class="fn">show_info</span>(**kwargs):
+    <span class="kw">for</span> k, v <span class="kw">in</span> kwargs.<span class="fn">items</span>():
+        <span class="nb">print</span>(<span class="st">f"{k}: {v}"</span>)
+
+<span class="cm"># Lambda (anonymous function)</span>
+square = <span class="kw">lambda</span> x: x ** <span class="nm">2</span>
+square(<span class="nm">4</span>)               <span class="cm"># 16</span>
+
+<span class="cm"># Type hints (Python 3.5+)</span>
+<span class="kw">def</span> <span class="fn">add</span>(a: <span class="nb">int</span>, b: <span class="nb">int</span>) -> <span class="nb">int</span>:
+    <span class="kw">return</span> a + b</pre>
+            </div>
+          </div>
+
+          <!-- 5. LIST COMPREHENSIONS -->
+          <div class="cs-section" id="comprehensions">
+            <h2 class="fade-in">⚡ 5. List Comprehensions</h2>
+            <p class="fade-in">Compact syntax for building lists, dicts, and sets in a single line.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># List comprehension</span>
+squares = [x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">10</span>)]
+
+<span class="cm"># With condition</span>
+evens = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">20</span>) <span class="kw">if</span> x % <span class="nm">2</span> == <span class="nm">0</span>]
+
+<span class="cm"># Nested comprehension</span>
+matrix = [[i*j <span class="kw">for</span> j <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">3</span>)] <span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">3</span>)]
+
+<span class="cm"># Dict comprehension</span>
+word_len = {w: <span class="nb">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="st">"apple"</span>, <span class="st">"cat"</span>, <span class="st">"dog"</span>]}
+
+<span class="cm"># Set comprehension</span>
+unique_lens = {<span class="nb">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="st">"hi"</span>, <span class="st">"hey"</span>, <span class="st">"hello"</span>]}
+
+<span class="cm"># Generator expression (memory-efficient)</span>
+total = <span class="nb">sum</span>(x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="nb">range</span>(<span class="nm">1000</span>))</pre>
+            </div>
+          </div>
+
+          <!-- 6. WORKING WITH FILES -->
+          <div class="cs-section" id="files">
+            <h2 class="fade-in">📁 6. Working with Files</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Read entire file</span>
+<span class="kw">with</span> <span class="nb">open</span>(<span class="st">"file.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    content = f.<span class="fn">read</span>()
+
+<span class="cm"># Read line by line</span>
+<span class="kw">with</span> <span class="nb">open</span>(<span class="st">"file.txt"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> line <span class="kw">in</span> f:
+        <span class="nb">print</span>(line.<span class="fn">strip</span>())
+
+<span class="cm"># Read all lines into a list</span>
+lines = f.<span class="fn">readlines</span>()
+
+<span class="cm"># Write to file</span>
+<span class="kw">with</span> <span class="nb">open</span>(<span class="st">"output.txt"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"Hello\n"</span>)
+
+<span class="cm"># Append to file</span>
+<span class="kw">with</span> <span class="nb">open</span>(<span class="st">"output.txt"</span>, <span class="st">"a"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"New line\n"</span>)
+
+<span class="cm"># File modes: "r" read  "w" write  "a" append  "rb" read binary</span></pre>
+            </div>
+          </div>
+
+          <!-- 7. EXCEPTION HANDLING -->
+          <div class="cs-section" id="exceptions">
+            <h2 class="fade-in">🛡️ 7. Exception Handling</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># try / except / else / finally</span>
+<span class="kw">try</span>:
+    result = <span class="nm">10</span> / <span class="nm">0</span>
+<span class="kw">except</span> ZeroDivisionError <span class="kw">as</span> e:
+    <span class="nb">print</span>(<span class="st">f"Error: {e}"</span>)
+<span class="kw">except</span> (TypeError, ValueError):
+    <span class="nb">print</span>(<span class="st">"Type or value error"</span>)
+<span class="kw">else</span>:
+    <span class="nb">print</span>(<span class="st">"No error occurred"</span>)
+<span class="kw">finally</span>:
+    <span class="nb">print</span>(<span class="st">"Always runs"</span>)
+
+<span class="cm"># Raise custom exception</span>
+<span class="kw">raise</span> ValueError(<span class="st">"Invalid input"</span>)
+
+<span class="cm"># Custom exception class</span>
+<span class="kw">class</span> <span class="fn">AppError</span>(Exception):
+    <span class="kw">pass</span>
+
+<span class="kw">raise</span> AppError(<span class="st">"Something went wrong"</span>)</pre>
+            </div>
+          </div>
+
+          <!-- 8. MODULES & IMPORTS -->
+          <div class="cs-section" id="modules">
+            <h2 class="fade-in">📚 8. Modules &amp; Imports</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Standard imports</span>
+<span class="kw">import</span> os
+<span class="kw">import</span> sys
+<span class="kw">import</span> math
+<span class="kw">import</span> datetime
+<span class="kw">import</span> json
+<span class="kw">import</span> re
+
+<span class="cm"># Aliased import</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># Selective import</span>
+<span class="kw">from</span> math <span class="kw">import</span> sqrt, pi
+<span class="kw">from</span> os.path <span class="kw">import</span> join, exists
+
+<span class="cm"># Useful os / sys snippets</span>
+os.<span class="fn">getcwd</span>()              <span class="cm"># current directory</span>
+os.<span class="fn">listdir</span>(<span class="st">"."</span>)          <span class="cm"># list files</span>
+os.path.<span class="fn">join</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)   <span class="cm"># path join</span>
+sys.argv                  <span class="cm"># command-line args</span></pre>
+            </div>
+          </div>
+
+          <!-- 9. COMMON BUILT-IN FUNCTIONS -->
+          <div class="cs-section" id="builtins">
+            <h2 class="fade-in">🔧 9. Common Built-in Functions</h2>
+            <table class="ref-table fade-in">
+              <thead><tr><th>Function</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>len(x)</td><td>Length of a sequence or collection</td></tr>
+                <tr><td>range(start, stop, step)</td><td>Generate a range of integers</td></tr>
+                <tr><td>enumerate(iterable)</td><td>Returns (index, value) pairs</td></tr>
+                <tr><td>zip(a, b)</td><td>Pair elements from two iterables</td></tr>
+                <tr><td>map(func, iterable)</td><td>Apply function to each element</td></tr>
+                <tr><td>filter(func, iterable)</td><td>Keep elements where function returns True</td></tr>
+                <tr><td>sorted(iterable, key, reverse)</td><td>Return a new sorted list</td></tr>
+                <tr><td>min(x) / max(x)</td><td>Minimum or maximum value</td></tr>
+                <tr><td>sum(iterable)</td><td>Sum all numeric elements</td></tr>
+                <tr><td>any(iterable) / all(iterable)</td><td>True if any/all elements are truthy</td></tr>
+                <tr><td>isinstance(obj, type)</td><td>Check object type</td></tr>
+                <tr><td>int() / str() / float() / list()</td><td>Type conversion</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 10. USEFUL ONE-LINERS -->
+          <div class="cs-section" id="oneliners">
+            <h2 class="fade-in">✨ 10. Useful One-Liners</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Swap variables</span>
+a, b = b, a
+
+<span class="cm"># Flatten a nested list</span>
+flat = [x <span class="kw">for</span> sub <span class="kw">in</span> nested <span class="kw">for</span> x <span class="kw">in</span> sub]
+
+<span class="cm"># Count items in a list</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+counts = Counter([<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"a"</span>, <span class="st">"c"</span>, <span class="st">"a"</span>])
+
+<span class="cm"># Reverse a string</span>
+rev = s[::<span class="nm">-1</span>]
+
+<span class="cm"># Remove duplicates preserving order</span>
+unique = <span class="nb">list</span>(<span class="nb">dict</span>.<span class="fn">fromkeys</span>(lst))
+
+<span class="cm"># Check palindrome</span>
+is_pal = s == s[::<span class="nm">-1</span>]
+
+<span class="cm"># Merge two dicts (Python 3.9+)</span>
+merged = dict1 | dict2
+
+<span class="cm"># Unpack and ignore</span>
+first, *rest = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>]
+
+<span class="cm"># Sort dict by value</span>
+<span class="nb">sorted</span>(d.<span class="fn">items</span>(), key=<span class="kw">lambda</span> x: x[<span class="nm">1</span>])
+
+<span class="cm"># Read CSV in one line</span>
+rows = [line.<span class="fn">split</span>(<span class="st">","</span>) <span class="kw">for</span> line <span class="kw">in</span> <span class="nb">open</span>(<span class="st">"f.csv"</span>)]</pre>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- FURTHER LEARNING -->
+          <h2 class="fade-in">📚 Further Learning</h2>
+          <div class="fade-in">
+            <a href="https://docs.python.org/3/" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">🐍</span>
+              <div>
+                <div class="rl-title">Official Python Documentation</div>
+                <div class="rl-sub">docs.python.org — language reference, library, and tutorials</div>
+              </div>
+            </a>
+            <a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">📖</span>
+              <div>
+                <div class="rl-title">The Python Tutorial</div>
+                <div class="rl-sub">docs.python.org/3/tutorial — official beginner guide by the PSF</div>
+              </div>
+            </a>
+            <a href="https://www.python.org/psf/" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">🏛️</span>
+              <div>
+                <div class="rl-title">Python Software Foundation</div>
+                <div class="rl-sub">python.org/psf — the non-profit behind Python</div>
+              </div>
+            </a>
+            <a href="https://docs.python.org/3/library/index.html" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">📦</span>
+              <div>
+                <div class="rl-title">Python Standard Library Reference</div>
+                <div class="rl-sub">docs.python.org — full index of built-in modules</div>
+              </div>
+            </a>
+          </div>
+
+        </div><!-- /.project-content -->
+
+        <!-- ── Sidebar ── -->
+        <aside class="project-sidebar fade-in fade-in-delay-1">
+
+          <div class="sidebar-card">
+            <h3>Topics Covered</h3>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Basics &amp; Variables</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Data Types</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Control Flow</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Functions</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> List Comprehensions</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Working with Files</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Exception Handling</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Modules &amp; Imports</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Built-in Functions</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Useful One-Liners</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Tech Stack</h3>
+            <div class="tech-list">
+              <span class="tech-badge">Python 3</span>
+              <span class="tech-badge">Built-ins</span>
+              <span class="tech-badge">os</span>
+              <span class="tech-badge">sys</span>
+              <span class="tech-badge">math</span>
+              <span class="tech-badge">json</span>
+              <span class="tech-badge">re</span>
+              <span class="tech-badge">collections</span>
+              <span class="tech-badge">datetime</span>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Quick Install</h3>
+            <div class="code-block" style="margin:0;">
+              <pre style="font-size:0.78rem;"><span class="cm"># Check version</span>
+python --version
+
+<span class="cm"># Run a script</span>
+python script.py
+
+<span class="cm"># Interactive REPL</span>
+python3</pre>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Links</h3>
+            <div style="display:flex;flex-direction:column;gap:0.6rem;">
+              <a href="https://docs.python.org/3/" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content:center;font-size:0.82rem;">📖 Official Docs</a>
+              <a href="https://pypi.org" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">📦 PyPI</a>
+              <a href="https://github.com/python/cpython" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                CPython on GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Related Cheatsheets</h3>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem;">
+              <a href="cheatsheet-pandas.html" style="color:var(--accent);text-decoration:none;">🐼 Pandas Cheatsheet</a>
+              <a href="cheatsheet-matplotlib.html" style="color:var(--accent);text-decoration:none;">📊 Matplotlib Cheatsheet</a>
+              <a href="cheatsheet-seaborn.html" style="color:var(--accent);text-decoration:none;">🌊 Seaborn Cheatsheet</a>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+        <div class="footer-links">
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+          <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.nextElementSibling;
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seaborn Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="A quick reference guide for statistical data visualization using Seaborn in Python — by Kenneth Nweke." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .cs-section { margin-bottom: 2.5rem; }
+    .cs-section h2 { margin-bottom: 1rem; }
+    .code-block {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 10px;
+      padding: 1.25rem 1.5rem; overflow-x: auto; position: relative; margin: 0.75rem 0 1rem;
+    }
+    .code-block pre {
+      margin: 0; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.82rem; line-height: 1.75; color: #e6edf3; white-space: pre;
+    }
+    .code-block .kw  { color: #ff7b72; }
+    .code-block .fn  { color: #d2a8ff; }
+    .code-block .st  { color: #a5d6ff; }
+    .code-block .cm  { color: #8b949e; font-style: italic; }
+    .code-block .nb  { color: #79c0ff; }
+    .code-block .nm  { color: #ffa657; }
+    .copy-btn {
+      position: absolute; top: 10px; right: 12px; background: #21262d;
+      border: 1px solid #30363d; color: #8b949e; font-size: 0.7rem;
+      padding: 3px 10px; border-radius: 5px; cursor: pointer;
+      transition: background 0.2s, color 0.2s; font-family: inherit;
+    }
+    .copy-btn:hover { background: #30363d; color: #e6edf3; }
+    .copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+    .code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 700px) { .code-grid { grid-template-columns: 1fr; } }
+    .ic {
+      background: rgba(110,118,129,0.15); border: 1px solid rgba(110,118,129,0.25);
+      border-radius: 4px; padding: 1px 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em; color: #e6edf3;
+    }
+    [data-theme="light"] .ic { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.12); color: #24292f; }
+    [data-theme="light"] .code-block { background: #161b22; }
+    .reading-link {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1rem;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg);
+      text-decoration: none; color: var(--text-primary); font-size: 0.85rem;
+      transition: border-color 0.2s, transform 0.2s; margin-bottom: 0.5rem;
+    }
+    .reading-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .reading-link .rl-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .reading-link .rl-title { font-weight: 600; color: var(--text-primary); }
+    .reading-link .rl-sub { font-size: 0.75rem; color: var(--text-secondary); }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.75rem 0; }
+    .ref-table th {
+      text-align: left; padding: 8px 12px; background: rgba(110,118,129,0.1);
+      color: var(--text-secondary); font-weight: 600; font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+    }
+    .ref-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+    .ref-table td:first-child { font-family: 'JetBrains Mono', monospace; color: #d2a8ff; white-space: nowrap; font-size: 0.8rem; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: rgba(110,118,129,0.05); }
+    .bp-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-top: 0.75rem;
+    }
+    .bp-card {
+      padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--card-bg); transition: border-color 0.2s, transform 0.2s;
+    }
+    .bp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .bp-card h4 { margin: 0 0 0.4rem; font-size: 0.9rem; color: var(--text-primary); }
+    .bp-card p  { margin: 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">KN<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="cheatsheets.html">Cheatsheets</a></li>
+      <li><a href="more.html">More</a></li>
+      <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a></li>
+      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a></li>
+      <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg>
+        </a></li>
+      <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a></li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button>
+      </li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html">More</a>
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+    <div class="container">
+
+      <div class="project-header fade-in">
+        <div class="breadcrumb">
+          <a href="cheatsheets.html">← Cheatsheets</a>
+          <span>/</span>
+          <span>Seaborn</span>
+        </div>
+        <div class="card-tag" style="margin-bottom: 0.75rem;">Python · Statistical Visualization · Seaborn</div>
+        <h1 class="project-title">Seaborn<br>Cheatsheet</h1>
+        <p style="color: var(--text-secondary); max-width: 620px; font-size: 1.05rem; line-height: 1.8;">
+          A quick reference guide for statistical data visualization using <strong>Seaborn</strong> in Python —
+          covering relational plots, distributions, categorical plots, heatmaps, and themes.
+        </p>
+        <div class="project-meta">
+          <div class="meta-item"><span>Library:</span> seaborn ≥ 0.12</div>
+          <div class="meta-item"><span>Language:</span> Python 3</div>
+          <div class="meta-item"><span>Level:</span> Beginner → Intermediate</div>
+          <div class="meta-item"><span>Topics:</span> 10 sections</div>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://seaborn.pydata.org/" target="_blank" rel="noopener" class="btn btn-primary">📖 View Official Docs</a>
+          <a href="https://seaborn.pydata.org/examples/index.html" target="_blank" rel="noopener" class="btn btn-outline">🖼️ Examples Gallery</a>
+        </div>
+      </div>
+
+      <div class="project-layout" style="padding-bottom: 80px;">
+        <div class="project-content">
+
+          <!-- 1. IMPORTING & SETUP -->
+          <div class="cs-section" id="setup">
+            <h2 class="fade-in">📦 1. Importing &amp; Setup</h2>
+            <p class="fade-in">Seaborn builds on top of Matplotlib — import both. Always pass a DataFrame directly to Seaborn functions.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Check version</span>
+<span class="nb">print</span>(sns.__version__)
+
+<span class="cm"># Set default theme at start</span>
+sns.<span class="fn">set_theme</span>(style=<span class="st">"darkgrid"</span>)  <span class="cm"># or whitegrid, dark, white, ticks</span>
+sns.<span class="fn">set_context</span>(<span class="st">"notebook"</span>)     <span class="cm"># paper, notebook, talk, poster</span></pre>
+            </div>
+          </div>
+
+          <!-- 2. BUILT-IN DATASETS -->
+          <div class="cs-section" id="datasets">
+            <h2 class="fade-in">🗂️ 2. Built-in Datasets</h2>
+            <p class="fade-in">Seaborn includes several ready-to-use datasets — great for quick experiments.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># List all available datasets</span>
+sns.<span class="fn">get_dataset_names</span>()
+
+<span class="cm"># Load a dataset</span>
+tips    = sns.<span class="fn">load_dataset</span>(<span class="st">"tips"</span>)       <span class="cm"># restaurant tips</span>
+iris    = sns.<span class="fn">load_dataset</span>(<span class="st">"iris"</span>)       <span class="cm"># flower measurements</span>
+titanic = sns.<span class="fn">load_dataset</span>(<span class="st">"titanic"</span>)   <span class="cm"># passenger survival</span>
+flights = sns.<span class="fn">load_dataset</span>(<span class="st">"flights"</span>)   <span class="cm"># monthly passengers</span>
+penguins= sns.<span class="fn">load_dataset</span>(<span class="st">"penguins"</span>)  <span class="cm"># penguin measurements</span>
+fmri    = sns.<span class="fn">load_dataset</span>(<span class="st">"fmri"</span>)      <span class="cm"># brain signals</span></pre>
+            </div>
+          </div>
+
+          <!-- 3. RELATIONAL PLOTS (SCATTER) -->
+          <div class="cs-section" id="relational">
+            <h2 class="fade-in">🔵 3. Relational Plot (Scatter)</h2>
+            <p class="fade-in"><code class="ic">sns.relplot()</code> and <code class="ic">sns.scatterplot()</code> are the go-to for exploring relationships between numeric variables.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre>tips = sns.<span class="fn">load_dataset</span>(<span class="st">"tips"</span>)
+
+<span class="cm"># Figure-level relplot</span>
+sns.<span class="fn">relplot</span>(data=tips, x=<span class="st">"total_bill"</span>, y=<span class="st">"tip"</span>,
+           hue=<span class="st">"smoker"</span>, size=<span class="st">"size"</span>, style=<span class="st">"time"</span>)
+
+<span class="cm"># Axes-level scatterplot</span>
+sns.<span class="fn">scatterplot</span>(data=tips, x=<span class="st">"total_bill"</span>, y=<span class="st">"tip"</span>,
+               hue=<span class="st">"day"</span>, palette=<span class="st">"Set2"</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+
+          <!-- 4. LINE PLOT -->
+          <div class="cs-section" id="lineplot">
+            <h2 class="fade-in">📈 4. Line Plot</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre>fmri = sns.<span class="fn">load_dataset</span>(<span class="st">"fmri"</span>)
+
+<span class="cm"># Figure-level line plot</span>
+sns.<span class="fn">relplot</span>(data=fmri, x=<span class="st">"timepoint"</span>, y=<span class="st">"signal"</span>,
+           kind=<span class="st">"line"</span>, hue=<span class="st">"event"</span>, style=<span class="st">"region"</span>,
+           col=<span class="st">"region"</span>)          <span class="cm"># facet by region</span>
+
+<span class="cm"># Axes-level</span>
+sns.<span class="fn">lineplot</span>(data=fmri, x=<span class="st">"timepoint"</span>, y=<span class="st">"signal"</span>,
+            hue=<span class="st">"event"</span>, errorbar=<span class="st">"sd"</span>)  <span class="cm"># show std dev band</span>
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+
+          <!-- 5. DISTRIBUTION PLOTS -->
+          <div class="cs-section" id="distributions">
+            <h2 class="fade-in">📉 5. Distribution Plots</h2>
+            <div class="code-grid fade-in">
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Histogram + KDE</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre>penguins = sns.<span class="fn">load_dataset</span>(<span class="st">"penguins"</span>)
+
+<span class="cm"># histplot</span>
+sns.<span class="fn">histplot</span>(data=penguins,
+            x=<span class="st">"flipper_length_mm"</span>,
+            hue=<span class="st">"species"</span>, kde=<span class="kw">True</span>)
+
+<span class="cm"># kdeplot only</span>
+sns.<span class="fn">kdeplot</span>(data=penguins,
+           x=<span class="st">"body_mass_g"</span>,
+           hue=<span class="st">"species"</span>, fill=<span class="kw">True</span>)</pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">ECDF &amp; displot</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="cm"># Empirical CDF</span>
+sns.<span class="fn">ecdfplot</span>(data=penguins,
+            x=<span class="st">"body_mass_g"</span>,
+            hue=<span class="st">"species"</span>)
+
+<span class="cm"># Figure-level displot</span>
+sns.<span class="fn">displot</span>(data=penguins,
+           x=<span class="st">"flipper_length_mm"</span>,
+           col=<span class="st">"species"</span>, kde=<span class="kw">True</span>)</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. CATEGORICAL PLOTS -->
+          <div class="cs-section" id="categorical">
+            <h2 class="fade-in">📊 6. Categorical Plots</h2>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre>tips = sns.<span class="fn">load_dataset</span>(<span class="st">"tips"</span>)
+
+<span class="cm"># Box plot</span>
+sns.<span class="fn">boxplot</span>(data=tips, x=<span class="st">"day"</span>, y=<span class="st">"total_bill"</span>, hue=<span class="st">"smoker"</span>)
+
+<span class="cm"># Violin plot (distribution + box)</span>
+sns.<span class="fn">violinplot</span>(data=tips, x=<span class="st">"day"</span>, y=<span class="st">"total_bill"</span>, hue=<span class="st">"sex"</span>,
+              split=<span class="kw">True</span>)
+
+<span class="cm"># Bar plot (mean + confidence interval)</span>
+sns.<span class="fn">barplot</span>(data=tips, x=<span class="st">"day"</span>, y=<span class="st">"total_bill"</span>, hue=<span class="st">"sex"</span>)
+
+<span class="cm"># Strip plot (raw data points)</span>
+sns.<span class="fn">stripplot</span>(data=tips, x=<span class="st">"day"</span>, y=<span class="st">"tip"</span>, jitter=<span class="kw">True</span>)
+
+<span class="cm"># Count plot</span>
+sns.<span class="fn">countplot</span>(data=tips, x=<span class="st">"day"</span>, hue=<span class="st">"sex"</span>)
+
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+
+          <!-- 7. PAIRPLOT -->
+          <div class="cs-section" id="pairplot">
+            <h2 class="fade-in">🔲 7. Pairplot</h2>
+            <p class="fade-in">Quickly visualize pairwise relationships across all numeric columns in a DataFrame.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre>iris = sns.<span class="fn">load_dataset</span>(<span class="st">"iris"</span>)
+
+<span class="cm"># Basic pairplot</span>
+sns.<span class="fn">pairplot</span>(iris)
+
+<span class="cm"># With hue (colour by class)</span>
+sns.<span class="fn">pairplot</span>(iris, hue=<span class="st">"species"</span>)
+
+<span class="cm"># Diagonal: KDE instead of histogram</span>
+sns.<span class="fn">pairplot</span>(iris, hue=<span class="st">"species"</span>, diag_kind=<span class="st">"kde"</span>)
+
+<span class="cm"># Select specific columns</span>
+sns.<span class="fn">pairplot</span>(iris,
+            vars=[<span class="st">"sepal_length"</span>, <span class="st">"petal_length"</span>],
+            hue=<span class="st">"species"</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+
+          <!-- 8. HEATMAP -->
+          <div class="cs-section" id="heatmap">
+            <h2 class="fade-in">🌡️ 8. Heatmap</h2>
+            <p class="fade-in">Ideal for displaying correlation matrices and pivot tables.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre>flights = sns.<span class="fn">load_dataset</span>(<span class="st">"flights"</span>)
+pivot   = flights.<span class="fn">pivot_table</span>(index=<span class="st">"month"</span>, columns=<span class="st">"year"</span>,
+                               values=<span class="st">"passengers"</span>)
+
+<span class="cm"># Basic heatmap</span>
+sns.<span class="fn">heatmap</span>(pivot, cmap=<span class="st">"YlGnBu"</span>)
+
+<span class="cm"># With annotations</span>
+sns.<span class="fn">heatmap</span>(pivot, annot=<span class="kw">True</span>, fmt=<span class="st">"d"</span>, linewidths=<span class="nm">0.5</span>)
+
+<span class="cm"># Correlation matrix</span>
+corr = iris.<span class="fn">drop</span>(<span class="st">"species"</span>, axis=<span class="nm">1</span>).<span class="fn">corr</span>()
+sns.<span class="fn">heatmap</span>(corr, annot=<span class="kw">True</span>, cmap=<span class="st">"coolwarm"</span>,
+           vmin=-<span class="nm">1</span>, vmax=<span class="nm">1</span>, center=<span class="nm">0</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+
+          <!-- 9. STYLING & THEMES -->
+          <div class="cs-section" id="themes">
+            <h2 class="fade-in">🎨 9. Styling &amp; Themes</h2>
+            <div class="code-grid fade-in">
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Themes &amp; Contexts</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="cm"># Themes (background style)</span>
+sns.<span class="fn">set_style</span>(<span class="st">"darkgrid"</span>)   <span class="cm"># default</span>
+sns.<span class="fn">set_style</span>(<span class="st">"whitegrid"</span>)
+sns.<span class="fn">set_style</span>(<span class="st">"dark"</span>)
+sns.<span class="fn">set_style</span>(<span class="st">"white"</span>)
+sns.<span class="fn">set_style</span>(<span class="st">"ticks"</span>)
+
+<span class="cm"># Context (font/element size)</span>
+sns.<span class="fn">set_context</span>(<span class="st">"paper"</span>)
+sns.<span class="fn">set_context</span>(<span class="st">"notebook"</span>)  <span class="cm"># default</span>
+sns.<span class="fn">set_context</span>(<span class="st">"talk"</span>)
+sns.<span class="fn">set_context</span>(<span class="st">"poster"</span>)</pre>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Palettes &amp; Colors</p>
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <pre><span class="cm"># Named palettes</span>
+sns.<span class="fn">set_palette</span>(<span class="st">"Set2"</span>)
+sns.<span class="fn">set_palette</span>(<span class="st">"husl"</span>)
+sns.<span class="fn">set_palette</span>(<span class="st">"muted"</span>)
+sns.<span class="fn">set_palette</span>(<span class="st">"deep"</span>)
+
+<span class="cm"># Preview a palette</span>
+sns.<span class="fn">color_palette</span>(<span class="st">"Set2"</span>)
+sns.<span class="fn">palplot</span>(sns.<span class="fn">color_palette</span>(<span class="st">"Set2"</span>))
+
+<span class="cm"># Reset to defaults</span>
+sns.<span class="fn">reset_defaults</span>()</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10. FIGURE CUSTOMIZATION -->
+          <div class="cs-section" id="customization">
+            <h2 class="fade-in">🖼️ 10. Figure Customization</h2>
+            <p class="fade-in">Seaborn figure-level functions return a <code class="ic">FacetGrid</code>; axes-level functions return an <code class="ic">Axes</code> object. Use Matplotlib calls to customize further.</p>
+            <div class="code-block fade-in">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="cm"># Axes-level: customize with matplotlib</span>
+ax = sns.<span class="fn">scatterplot</span>(data=tips, x=<span class="st">"total_bill"</span>, y=<span class="st">"tip"</span>)
+ax.<span class="fn">set_title</span>(<span class="st">"Tips vs Total Bill"</span>, fontsize=<span class="nm">14</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="st">"Total Bill ($)"</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="st">"Tip ($)"</span>)
+plt.<span class="fn">tight_layout</span>()
+
+<span class="cm"># Figure-level: use FacetGrid methods</span>
+g = sns.<span class="fn">relplot</span>(data=tips, x=<span class="st">"total_bill"</span>, y=<span class="st">"tip"</span>,
+               col=<span class="st">"time"</span>, hue=<span class="st">"smoker"</span>)
+g.<span class="fn">set_axis_labels</span>(<span class="st">"Bill ($)"</span>, <span class="st">"Tip ($)"</span>)
+g.<span class="fn">set_titles</span>(col_template=<span class="st">"{col_name} service"</span>)
+g._legend.<span class="fn">set_title</span>(<span class="st">"Smoker?"</span>)
+
+<span class="cm"># Saving</span>
+plt.<span class="fn">savefig</span>(<span class="st">"seaborn_plot.png"</span>, dpi=<span class="nm">300</span>, bbox_inches=<span class="st">"tight"</span>)</pre>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- BEST PRACTICES -->
+          <h2 class="fade-in">✅ Best Practices</h2>
+          <div class="bp-grid fade-in">
+            <div class="bp-card">
+              <h4>📊 Choose the Right Plot</h4>
+              <p>Use scatter/line for relationships, box/violin for distributions, bar for comparisons, heatmap for matrices.</p>
+            </div>
+            <div class="bp-card">
+              <h4>🎨 Use Color Meaningfully</h4>
+              <p>Map <code class="ic">hue</code> to a meaningful variable. Use sequential palettes for ordered data and qualitative for categories.</p>
+            </div>
+            <div class="bp-card">
+              <h4>🧹 Keep Visuals Simple</h4>
+              <p>Avoid overloading hue + size + style simultaneously. Each encoding should tell a distinct story.</p>
+            </div>
+            <div class="bp-card">
+              <h4>🏷️ Label Clearly</h4>
+              <p>Always set axis labels and a title. Use <code class="ic">set_axis_labels()</code> on FacetGrids.</p>
+            </div>
+            <div class="bp-card">
+              <h4>📐 Tidy Data First</h4>
+              <p>Seaborn works best with long-format (tidy) DataFrames. Use <code class="ic">pd.melt()</code> to reshape if needed.</p>
+            </div>
+            <div class="bp-card">
+              <h4>💾 Save Before Show</h4>
+              <p>Always call <code class="ic">plt.savefig()</code> before <code class="ic">plt.show()</code> — showing clears the figure buffer.</p>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- FURTHER LEARNING -->
+          <h2 class="fade-in">📚 Further Learning</h2>
+          <div class="fade-in">
+            <a href="https://seaborn.pydata.org/" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">🌊</span>
+              <div>
+                <div class="rl-title">Official Seaborn Documentation</div>
+                <div class="rl-sub">seaborn.pydata.org — full API reference, tutorials, and gallery</div>
+              </div>
+            </a>
+            <a href="https://seaborn.pydata.org/tutorial.html" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">📖</span>
+              <div>
+                <div class="rl-title">Seaborn Tutorial</div>
+                <div class="rl-sub">seaborn.pydata.org/tutorial — official walkthrough from basics to advanced</div>
+              </div>
+            </a>
+            <a href="https://seaborn.pydata.org/examples/index.html" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">🖼️</span>
+              <div>
+                <div class="rl-title">Seaborn Examples Gallery</div>
+                <div class="rl-sub">seaborn.pydata.org/examples — annotated, runnable plot examples</div>
+              </div>
+            </a>
+            <a href="https://www.python.org/psf/" target="_blank" rel="noopener" class="reading-link">
+              <span class="rl-icon">🏛️</span>
+              <div>
+                <div class="rl-title">Python Software Foundation</div>
+                <div class="rl-sub">python.org/psf — the non-profit behind Python</div>
+              </div>
+            </a>
+          </div>
+
+        </div><!-- /.project-content -->
+
+        <!-- ── Sidebar ── -->
+        <aside class="project-sidebar fade-in fade-in-delay-1">
+
+          <div class="sidebar-card">
+            <h3>Topics Covered</h3>
+            <ul style="list-style:none;padding:0;">
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Importing &amp; Setup</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Built-in Datasets</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Relational (Scatter)</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Line Plot</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Distribution Plots</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Categorical Plots</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Pairplot</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Heatmap</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Styling &amp; Themes</li>
+              <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);flex-shrink:0;">✓</span> Figure Customization</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Tech Stack</h3>
+            <div class="tech-list">
+              <span class="tech-badge">Python 3</span>
+              <span class="tech-badge">seaborn</span>
+              <span class="tech-badge">matplotlib</span>
+              <span class="tech-badge">pandas</span>
+              <span class="tech-badge">NumPy</span>
+              <span class="tech-badge">Jupyter</span>
+              <span class="tech-badge">statsmodels</span>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Quick Install</h3>
+            <div class="code-block" style="margin:0;">
+              <pre style="font-size:0.78rem;"><span class="cm"># pip</span>
+pip install seaborn
+
+<span class="cm"># conda</span>
+conda install seaborn</pre>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Plot Types Quick Ref</h3>
+            <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.9;">
+              <div><span style="color:#d2a8ff;font-family:monospace;">scatterplot</span> — x vs y</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">lineplot</span> — trends over time</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">histplot</span> — frequency dist</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">kdeplot</span> — smooth density</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">boxplot</span> — quartiles + outliers</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">violinplot</span> — box + KDE</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">barplot</span> — mean + CI</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">heatmap</span> — matrix values</div>
+              <div><span style="color:#d2a8ff;font-family:monospace;">pairplot</span> — all pairs</div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Links</h3>
+            <div style="display:flex;flex-direction:column;gap:0.6rem;">
+              <a href="https://seaborn.pydata.org/" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content:center;font-size:0.82rem;">📖 Official Docs</a>
+              <a href="https://seaborn.pydata.org/examples/index.html" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">🖼️ Gallery</a>
+              <a href="https://github.com/mwaskom/seaborn" target="_blank" rel="noopener" class="btn btn-ghost" style="justify-content:center;font-size:0.82rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Related Cheatsheets</h3>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem;">
+              <a href="cheatsheet-python.html" style="color:var(--accent);text-decoration:none;">🐍 Python Cheatsheet</a>
+              <a href="cheatsheet-pandas.html" style="color:var(--accent);text-decoration:none;">🐼 Pandas Cheatsheet</a>
+              <a href="cheatsheet-matplotlib.html" style="color:var(--accent);text-decoration:none;">📊 Matplotlib Cheatsheet</a>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+        <div class="footer-links">
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+          <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.nextElementSibling;
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
