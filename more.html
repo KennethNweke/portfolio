@@ -12,13 +12,14 @@
 
 <body>
 
-  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+ <!-- ══════════════════ NAVIGATION ══════════════════ -->
   <nav class="nav" aria-label="Main navigation">
     <a href="index.html" class="nav-logo">KN<span>.</span></a>
 
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html" class="active">Home</a></li>
       <li><a href="projects.html">Projects</a></li>
+      <li><a href="cheatsheets.html">Cheatsheets</a></li>
       <li><a href="more.html">More</a></li>
       <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -70,7 +71,8 @@
   <div class="nav-mobile" id="mobileNav">
     <a href="index.html">Home</a>
     <a href="projects.html">Projects</a>
-    <a href="more.html">More</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html" class="active">More</a>
     <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
     <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
     <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
@@ -86,7 +88,7 @@
         <span class="section-label fade-in">General Computing</span>
         <h1 class="section-title fade-in" style="font-size: clamp(2rem, 4vw, 3.2rem);">More</h1>
         <p class="section-subtitle fade-in" style="margin: 0 auto; text-align: center;">
-          Cheatsheets, mini games, quizzes and supplementary computing resources.
+          Mini games, quizzes and supplementary computing resources.
         </p>
       </div>
 
@@ -95,75 +97,6 @@
            To add a new section: copy a .more-section block below.
            Each section contains a .scroll-row of .scroll-card items.
            ══════════════════════════════════════════ -->
-
-      <!-- ── SECTION: Cheatsheets ── -->
-      <div class="more-section fade-in">
-        <div class="more-section-header">
-          <div class="more-section-title-row">
-            <span class="more-section-icon">📄</span>
-            <h2 class="more-section-title">Cheatsheets</h2>
-          </div>
-          <p class="more-section-desc">Quick reference guides for networking, security and computing topics.</p>
-        </div>
-
-        <!-- Horizontal scroll row -->
-        <div class="scroll-row" role="list">
-
-          <!-- Coming Soon cards — replace with real content when ready -->
-          <a href="cheatsheet-pandas.html">
-            <div class="scroll-card" role="listitem">
-              <div class="scroll-card-icon">📋</div>
-              <div class="scroll-card-body">
-                <div class="card-tag">Data Analysis</div>
-                <h3 class="scroll-card-title">Pandas</h3>
-                <p class="scroll-card-desc">Data Science in Python</p>
-              </div>
-            </div>
-          </a>
-
-           <a href="cheatsheet-ip.html">
-            <div class="scroll-card" role="listitem">
-              <div class="scroll-card-icon">📡</div>
-              <div class="scroll-card-body">
-                <div class="card-tag">Networking</div>
-                <h3 class="scroll-card-title">IPV4 Addressing</h3>
-                <p class="scroll-card-desc">IPV4 Addressing in Networking</p>
-              </div>
-            </div>
-          </a>
-
-          <div class="scroll-card card-coming-soon" role="listitem">
-            <span class="coming-soon-badge">Coming Soon</span>
-            <div class="scroll-card-icon">🐧</div>
-            <div class="scroll-card-body">
-              <div class="card-tag">Linux</div>
-              <h3 class="scroll-card-title">Coming Soon</h3>
-              <p class="scroll-card-desc">Content in development</p>
-            </div>
-          </div>
-
-          <div class="scroll-card card-coming-soon" role="listitem">
-            <span class="coming-soon-badge">Coming Soon</span>
-            <div class="scroll-card-icon">🐍</div>
-            <div class="scroll-card-body">
-              <div class="card-tag">Python</div>
-              <h3 class="scroll-card-title">Coming Soon</h3>
-              <p class="scroll-card-desc">Content in development</p>
-            </div>
-          </div>
-
-          <div class="scroll-card card-coming-soon" role="listitem">
-            <span class="coming-soon-badge">Coming Soon</span>
-            <div class="scroll-card-icon">☁️</div>
-            <div class="scroll-card-body">
-              <div class="card-tag">AWS</div>
-              <h3 class="scroll-card-title">Coming Soon</h3>
-              <p class="scroll-card-desc">Content in development</p>
-            </div>
-          </div>
-
-        </div><!-- /.scroll-row -->
-      </div><!-- /.more-section -->
 
 
       <!-- ── SECTION: Mini Games ── -->
