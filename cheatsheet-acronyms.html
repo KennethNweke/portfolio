@@ -404,17 +404,21 @@
       <h1 class="project-title">IT &amp; Cybersecurity<br>Acronyms</h1>
       <p style="color: var(--text-secondary); max-width: 640px; font-size: 1.05rem; line-height: 1.8;">
         An interactive reference covering <strong>279 acronyms</strong> across 7 categories —
-        with search, alphabet navigation, AI-powered fallback definitions, slideshow mode, and a flashcard quiz.
+        with search, alphabet navigation, slideshow mode, and a flashcard quiz.
       </p>
       <div class="project-meta">
         <div class="meta-item"><span>Acronyms:</span> 279</div>
         <div class="meta-item"><span>Categories:</span> 7</div>
         <div class="meta-item"><span>Source:</span> NCSC + community</div>
-        <div class="meta-item"><span>AI Fallback:</span> Gemini / Grok / GPT</div>
       </div>
       <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
         <a href="https://www.ncsc.gov.uk/section/advice-guidance/glossary" target="_blank" rel="noopener" class="btn btn-primary">📖 NCSC Glossary</a>
         <a href="https://www.tuvsud.com/en-us/-/media/regions/us/pdf-files/whitepaper-report-e-books/tuvsud-cybersecurity-acronym-e-book.pdf" target="_blank" rel="noopener" class="btn btn-outline">📄 TÜV SÜD PDF</a>
+        
+        <a onclick="openSlideshow()" class="btn btn-outline">▶ Play Slideshow</a>
+        <a onclick="startQuiz()" class="btn btn-outline">🧠 Start Quiz</a>
+   
+      
       </div>
     </div>
 
@@ -427,7 +431,7 @@
           <div class="stat-card"><div class="sv">279</div><div class="sl">Total Acronyms</div></div>
           <div class="stat-card"><div class="sv">7</div><div class="sl">Categories</div></div>
           <div class="stat-card"><div class="sv" id="statLetters">26</div><div class="sl">Letters Covered</div></div>
-          <div class="stat-card"><div class="sv">AI</div><div class="sl">Fallback Lookup</div></div>
+          <div class="stat-card"><div class="sv">SS</div><div class="sl">Slideshow</div></div>
         </div>
 
         <!-- Toolbar -->
@@ -454,7 +458,7 @@
         <div class="search-wrap fade-in">
           <span class="search-icon">🔍</span>
           <input type="text" class="search-input" id="searchInput"
-            placeholder="Search acronym (e.g. API, DNS, SOC)…"
+            placeholder="Search acronym (e.g. NGFW, DNS, SOC)…"
             oninput="onSearch(this.value)"
             onkeydown="handleSearchKey(event)"
             autocomplete="off" spellcheck="false" />
@@ -552,20 +556,7 @@
           </div>
         </div>
 
-        <div class="sidebar-card">
-          <h3>AI Providers</h3>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;color:var(--text-secondary);">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0;"></span> Gemini (Primary)
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#ffa657;flex-shrink:0;"></span> Grok (Fallback 1)
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#d2a8ff;flex-shrink:0;"></span> GPT-4o-mini (Fallback 2)
-            </div>
-          </div>
-        </div>
+        
 
         
 
