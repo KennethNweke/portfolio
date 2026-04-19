@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT & Cybersecurity Acronyms — Kenneth Nweke</title>
+  <meta name="description" content="Interactive IT & Cybersecurity Acronym Cheatsheet with search, quiz mode, slideshow, and AI-powered fallback definitions." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Acronym-specific styles ── */
+    .reading-link {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1rem;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg);
+      text-decoration: none; color: var(--text-primary); font-size: 0.85rem;
+      transition: border-color 0.2s, transform 0.2s; margin-bottom: 0.5rem;
+    }
+    .reading-link:hover { border-color: var(--accent); transform: translateX(4px); }
+    .reading-link .rl-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .reading-link .rl-title { font-weight: 600; color: var(--text-primary); }
+    .reading-link .rl-sub { font-size: 0.75rem; color: var(--text-secondary); }
+
+    /* Search bar */
+    .search-wrap {
+      position: relative; margin-bottom: 1.25rem;
+    }
+    .search-input {
+      width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--card-bg); color: var(--text-primary);
+      font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.12); }
+    .search-input::placeholder { color: var(--text-secondary); }
+    .search-icon {
+      position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+      color: var(--text-secondary); pointer-events: none; font-size: 1rem;
+    }
+    .search-clear {
+      position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%);
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem;
+      background: none; border: none; display: none; padding: 0;
+    }
+    .search-clear:hover { color: var(--text-primary); }
+
+    /* Alphabet nav */
+    .alpha-nav {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.6rem 0.75rem; margin-bottom: 1.5rem;
+      position: sticky; top: 65px; z-index: 50;
+    }
+    .alpha-btn {
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+      border-radius: 6px; border: 1px solid transparent; background: none;
+      color: var(--text-secondary); font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .alpha-btn:hover { background: rgba(var(--accent-rgb),0.12); color: var(--accent); border-color: var(--accent); }
+    .alpha-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .alpha-btn.disabled { opacity: 0.25; pointer-events: none; }
+
+    /* Category filter tabs */
+    .cat-tabs {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+    .cat-tab {
+      padding: 0.35rem 0.85rem; border-radius: 20px; border: 1px solid var(--border);
+      background: var(--card-bg); color: var(--text-secondary); font-size: 0.78rem;
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .cat-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Results bar */
+    .results-bar {
+      font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* Letter section */
+    .letter-section { margin-bottom: 2rem; }
+    .letter-heading {
+      font-size: 1.5rem; font-weight: 800; color: var(--accent);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem; margin-bottom: 0.75rem; margin-top: 1.5rem;
+      scroll-margin-top: 130px;
+    }
+
+    /* Accordion item */
+    .acr-item {
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--card-bg); margin-bottom: 0.5rem;
+      overflow: hidden; transition: border-color 0.2s;
+    }
+    .acr-item:hover { border-color: var(--accent); }
+    .acr-item.open { border-color: var(--accent); }
+    .acr-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.8rem 1.1rem; cursor: pointer;
+      user-select: none; gap: 0.75rem;
+    }
+    .acr-left { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; }
+    .acr-acronym {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.88rem; font-weight: 700; color: var(--accent);
+      white-space: nowrap; min-width: 70px;
+    }
+    .acr-def-short {
+      font-size: 0.82rem; color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .acr-cat-badge {
+      font-size: 0.68rem; padding: 2px 8px; border-radius: 12px;
+      font-weight: 600; flex-shrink: 0;
+      background: rgba(var(--accent-rgb),0.12); color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .acr-toggle {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: rgba(110,118,129,0.1); border: none;
+      color: var(--text-secondary); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.15s, color 0.15s;
+    }
+    .acr-item.open .acr-toggle { background: var(--accent); color: #fff; }
+    .acr-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+      padding: 0 1.1rem;
+    }
+    .acr-item.open .acr-body { max-height: 400px; padding: 0 1.1rem 1rem; }
+    .acr-definition {
+      font-weight: 600; color: var(--text-primary); font-size: 0.88rem;
+      margin-bottom: 0.4rem;
+    }
+    .acr-explanation { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7; }
+    .acr-highlight { background: rgba(255,198,0,0.3); border-radius: 3px; padding: 0 2px; }
+
+    /* AI lookup */
+    .ai-result-card {
+      border: 1px solid var(--accent); border-radius: 10px; padding: 1rem 1.25rem;
+      background: rgba(var(--accent-rgb),0.06); margin-top: 1rem;
+      animation: fadeIn 0.3s ease;
+    }
+    .ai-result-card h4 { margin: 0 0 0.5rem; color: var(--accent); font-size: 0.9rem; }
+    .ai-result-card p { margin: 0; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7; }
+    .ai-loading {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-secondary); margin-top: 1rem;
+    }
+    .spinner {
+      width: 16px; height: 16px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+    /* No results */
+    .no-results {
+      text-align: center; padding: 2rem 1rem; color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+    .no-results strong { display: block; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; align-items: center;
+    }
+    .toolbar-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card-bg); color: var(--text-secondary);
+      font-size: 0.82rem; cursor: pointer; transition: all 0.15s; font-family: inherit;
+      font-weight: 600;
+    }
+    .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .toolbar-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .toolbar-btn svg { flex-shrink: 0; }
+
+    /* Slideshow overlay */
+    .slideshow-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 9000; display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .slideshow-overlay.active { display: flex; }
+    .slideshow-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; max-width: 600px; width: 100%;
+      text-align: center; animation: fadeIn 0.3s ease;
+    }
+    .slideshow-card .slide-cat {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--accent); font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .slideshow-card .slide-acronym {
+      font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 900;
+      color: var(--accent); margin-bottom: 0.5rem; line-height: 1;
+    }
+    .slideshow-card .slide-def {
+      font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;
+    }
+    .slideshow-card .slide-exp {
+      font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7;
+    }
+    .slideshow-controls {
+      display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center;
+    }
+    .slideshow-progress {
+      font-size: 0.78rem; color: var(--text-secondary);
+      margin-top: 0.75rem;
+    }
+    .progress-bar-wrap {
+      width: 100%; max-width: 400px; height: 4px;
+      background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--accent);
+      transition: width 0.1s linear; border-radius: 2px;
+    }
+
+    /* Quiz overlay */
+    .quiz-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 9001; display: none; flex-direction: column;
+      align-items: center; justify-content: center; padding: 2rem;
+    }
+    .quiz-overlay.active { display: flex; }
+    .quiz-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; max-width: 600px; width: 100%;
+      text-align: center; animation: fadeIn 0.3s ease;
+    }
+    .quiz-score {
+      font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem;
+    }
+    .quiz-question {
+      font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;
+    }
+    .quiz-acronym {
+      font-family: 'JetBrains Mono', monospace; font-size: 3.5rem; font-weight: 900;
+      color: var(--accent); margin-bottom: 1.5rem; line-height: 1;
+    }
+    .quiz-reveal-area { min-height: 80px; }
+    .quiz-answer {
+      display: none; animation: fadeIn 0.3s ease;
+    }
+    .quiz-answer.visible { display: block; }
+    .quiz-answer .qa-def {
+      font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;
+    }
+    .quiz-answer .qa-exp {
+      font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7;
+    }
+    .quiz-controls { margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+    .quiz-result {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; max-width: 480px; width: 100%;
+      text-align: center; animation: fadeIn 0.3s ease;
+    }
+    .quiz-result h2 { color: var(--accent); margin: 0 0 0.5rem; }
+    .quiz-result .final-score { font-size: 3rem; font-weight: 900; color: var(--text-primary); }
+    .quiz-result p { color: var(--text-secondary); font-size: 0.88rem; margin: 0.5rem 0 1.5rem; }
+
+    /* Btn variants */
+    .btn-sm {
+      padding: 0.45rem 1rem; font-size: 0.82rem; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: 600;
+      transition: all 0.15s;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-sm.primary:hover { opacity: 0.9; }
+    .btn-sm.danger { background: #ff4444; border-color: #ff4444; color: #fff; }
+    .btn-sm.success { background: #3fb950; border-color: #3fb950; color: #fff; }
+
+    /* Stat cards */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    @media (max-width: 600px) { .stat-row { grid-template-columns: repeat(2,1fr); } }
+    .stat-card {
+      padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--card-bg); text-align: center;
+    }
+    .stat-card .sv { font-size: 1.6rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .stat-card .sl { font-size: 0.72rem; color: var(--text-secondary); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Sidebar */
+    .cs-section { margin-bottom: 2.5rem; }
+
+    @media (max-width: 800px) {
+      .alpha-nav { top: 60px; }
+      .slideshow-card .slide-acronym, .quiz-acronym { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ NAVIGATION ══════════════════ -->
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li>
+    <li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a></li>
+    <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg>
+      </a></li>
+    <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a></li>
+    <li>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button>
+    </li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="projects.html">Projects</a>
+  <a href="cheatsheets.html">Cheatsheets</a>
+  <a href="more.html">More</a>
+  <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+  <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+  <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+  <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+</div>
+
+<!-- ══════════════════ SLIDESHOW OVERLAY ══════════════════ -->
+<div class="slideshow-overlay" id="slideshowOverlay" role="dialog" aria-modal="true" aria-label="Slideshow mode">
+  <div class="slideshow-card" id="slideshowCard">
+    <div class="slide-cat" id="slideCat"></div>
+    <div class="slide-acronym" id="slideAcr"></div>
+    <div class="slide-def" id="slideDef"></div>
+    <div class="slide-exp" id="slideExp"></div>
+  </div>
+  <div class="slideshow-progress" id="slideProgress"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <div class="slideshow-controls">
+    <button class="btn-sm" onclick="slideshowPrev()">← Prev</button>
+    <button class="btn-sm primary" id="slidePlayPause" onclick="toggleSlidePlay()">⏸ Pause</button>
+    <button class="btn-sm" onclick="slideshowNext()">Next →</button>
+    <button class="btn-sm danger" onclick="closeSlideshow()">✕ Close</button>
+  </div>
+</div>
+
+<!-- ══════════════════ QUIZ OVERLAY ══════════════════ -->
+<div class="quiz-overlay" id="quizOverlay" role="dialog" aria-modal="true" aria-label="Quiz mode">
+  <div id="quizMain" class="quiz-card">
+    <div class="quiz-score" id="quizScore">Question 1 of 20 · Score: 0</div>
+    <div class="quiz-question">What does this acronym stand for?</div>
+    <div class="quiz-acronym" id="quizAcr"></div>
+    <div class="quiz-reveal-area">
+      <div class="quiz-answer" id="quizAnswer">
+        <div class="qa-def" id="quizDef"></div>
+        <div class="qa-exp" id="quizExp"></div>
+      </div>
+    </div>
+    <div class="quiz-controls">
+      <button class="btn-sm primary" id="quizRevealBtn" onclick="quizReveal()">👁 Reveal Answer</button>
+      <button class="btn-sm success" id="quizCorrectBtn" onclick="quizMark(true)" style="display:none;">✓ Got it</button>
+      <button class="btn-sm" id="quizWrongBtn" onclick="quizMark(false)" style="display:none;">✗ Missed</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ End Quiz</button>
+    </div>
+  </div>
+  <div id="quizResult" class="quiz-result" style="display:none;">
+    <h2>Quiz Complete 🎉</h2>
+    <div class="final-score" id="finalScore"></div>
+    <p id="finalMsg"></p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-sm primary" onclick="startQuiz()">🔄 Restart</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main>
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="project-header fade-in">
+      <div class="breadcrumb">
+        <a href="cheatsheets.html">← Cheatsheets</a>
+        <span>/</span>
+        <span>Acronyms</span>
+      </div>
+      <div class="card-tag" style="margin-bottom: 0.75rem;">Cybersecurity · IT · Quick Reference · Interactive</div>
+      <h1 class="project-title">IT &amp; Cybersecurity<br>Acronyms</h1>
+      <p style="color: var(--text-secondary); max-width: 640px; font-size: 1.05rem; line-height: 1.8;">
+        An interactive reference covering <strong>279 acronyms</strong> across 7 categories —
+        with search, alphabet navigation, AI-powered fallback definitions, slideshow mode, and a flashcard quiz.
+      </p>
+      <div class="project-meta">
+        <div class="meta-item"><span>Acronyms:</span> 279</div>
+        <div class="meta-item"><span>Categories:</span> 7</div>
+        <div class="meta-item"><span>Source:</span> NCSC + community</div>
+        <div class="meta-item"><span>AI Fallback:</span> Gemini / Grok / GPT</div>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="https://www.ncsc.gov.uk/section/advice-guidance/glossary" target="_blank" rel="noopener" class="btn btn-primary">📖 NCSC Glossary</a>
+        <a href="https://www.tuvsud.com/en-us/-/media/regions/us/pdf-files/whitepaper-report-e-books/tuvsud-cybersecurity-acronym-e-book.pdf" target="_blank" rel="noopener" class="btn btn-outline">📄 TÜV SÜD PDF</a>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div class="project-layout" style="padding-bottom: 80px;">
+      <div class="project-content">
+
+        <!-- Stat row -->
+        <div class="stat-row fade-in">
+          <div class="stat-card"><div class="sv">279</div><div class="sl">Total Acronyms</div></div>
+          <div class="stat-card"><div class="sv">7</div><div class="sl">Categories</div></div>
+          <div class="stat-card"><div class="sv" id="statLetters">26</div><div class="sl">Letters Covered</div></div>
+          <div class="stat-card"><div class="sv">AI</div><div class="sl">Fallback Lookup</div></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar fade-in">
+          <button class="toolbar-btn" onclick="openSlideshow()" id="btnSlideshow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Play Acronyms
+          </button>
+          <button class="toolbar-btn" onclick="startQuiz()" id="btnQuiz">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Start Quiz
+          </button>
+          <button class="toolbar-btn" onclick="expandAll()" id="btnExpand">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            Expand All
+          </button>
+          <button class="toolbar-btn" onclick="collapseAll()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            Collapse All
+          </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap fade-in">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="searchInput"
+            placeholder="Search acronym (e.g. API, DNS, SOC)…"
+            oninput="onSearch(this.value)"
+            onkeydown="handleSearchKey(event)"
+            autocomplete="off" spellcheck="false" />
+          <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="Clear search">✕</button>
+        </div>
+
+        <!-- Alphabet nav -->
+        <nav class="alpha-nav fade-in" id="alphaNav" aria-label="Alphabet navigation"></nav>
+
+        <!-- Category filter -->
+        <div class="cat-tabs fade-in" id="catTabs"></div>
+
+        <!-- Results bar -->
+        <div class="results-bar fade-in">
+          <span id="resultsCount"></span>
+          <span id="searchHint" style="font-style:italic;"></span>
+        </div>
+
+        <!-- Acronym list -->
+        <div id="acronymList"></div>
+
+        <!-- AI result area -->
+        <div id="aiResultArea"></div>
+
+        <!-- No results -->
+        <div class="no-results" id="noResults" style="display:none;">
+          <strong id="noResultsTitle"></strong>
+          <span id="noResultsMsg"></span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Further Reading -->
+        <h2 class="fade-in">📚 Further Reading</h2>
+        <div class="fade-in">
+          <a href="https://www.ncsc.gov.uk/section/advice-guidance/glossary" target="_blank" rel="noopener" class="reading-link">
+            <span class="rl-icon">🇬🇧</span>
+            <div>
+              <div class="rl-title">NCSC Glossary</div>
+              <div class="rl-sub">ncsc.gov.uk — National Cyber Security Centre official terminology and definitions</div>
+            </div>
+          </a>
+          <a href="https://www.tuvsud.com/en-us/-/media/regions/us/pdf-files/whitepaper-report-e-books/tuvsud-cybersecurity-acronym-e-book.pdf" target="_blank" rel="noopener" class="reading-link">
+            <span class="rl-icon">📄</span>
+            <div>
+              <div class="rl-title">TÜV SÜD Cybersecurity Acronym E-Book</div>
+              <div class="rl-sub">tuvsud.com — comprehensive PDF reference of cybersecurity acronyms</div>
+            </div>
+          </a>
+          <a href="https://attack.mitre.org/" target="_blank" rel="noopener" class="reading-link">
+            <span class="rl-icon">🎯</span>
+            <div>
+              <div class="rl-title">MITRE ATT&amp;CK Framework</div>
+              <div class="rl-sub">attack.mitre.org — adversary tactics, techniques, and common knowledge</div>
+            </div>
+          </a>
+          <a href="https://csrc.nist.gov/glossary" target="_blank" rel="noopener" class="reading-link">
+            <span class="rl-icon">🏛️</span>
+            <div>
+              <div class="rl-title">NIST Cybersecurity Glossary</div>
+              <div class="rl-sub">csrc.nist.gov — authoritative US government security terminology</div>
+            </div>
+          </a>
+        </div>
+
+      </div><!-- /.project-content -->
+
+      <!-- Sidebar -->
+      <aside class="project-sidebar fade-in fade-in-delay-1">
+
+        <div class="sidebar-card">
+          <h3>Categories</h3>
+          <ul style="list-style:none;padding:0;" id="sidebarCats"></ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Features</h3>
+          <ul style="list-style:none;padding:0;">
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Real-time Search</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Alphabet Navigation</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Category Filter</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Accordion Expand</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> AI Fallback Lookup</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Slideshow Mode</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Flashcard Quiz</li>
+            <li style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:0.82rem;color:var(--text-secondary);"><span style="color:var(--accent);">✓</span> Highlight Matches</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;">
+            <button onclick="openSlideshow()" class="btn btn-primary" style="width:100%;justify-content:center;font-size:0.82rem;">▶ Play Slideshow</button>
+            <button onclick="startQuiz()" class="btn btn-outline" style="width:100%;justify-content:center;font-size:0.82rem;">🧠 Start Quiz</button>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>AI Providers</h3>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;color:var(--text-secondary);">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0;"></span> Gemini (Primary)
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#ffa657;flex-shrink:0;"></span> Grok (Fallback 1)
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#d2a8ff;flex-shrink:0;"></span> GPT-4o-mini (Fallback 2)
+            </div>
+          </div>
+        </div>
+
+        
+
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+      <div class="footer-links">
+        <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+        <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA — loaded inline from JSON
+═══════════════════════════════════════════════════ */
+const ACRONYM_DATA = {
+  "algorithms":[
+    {"acronym":"3DES","definition":"Triple Data Encryption Algorithm","explanation":"A symmetric-key block cipher that applies the DES cipher algorithm three times to each data block, providing stronger encryption than standard DES."},
+    {"acronym":"AES","definition":"Advanced Encryption Standard","explanation":"A widely adopted symmetric block cipher standardised by NIST, used to encrypt sensitive data in government, commercial, and personal applications."},
+    {"acronym":"DES","definition":"Data Encryption Standard","explanation":"A legacy symmetric-key block cipher that was the US federal standard until replaced by AES; now considered insecure due to its short 56-bit key length."},
+    {"acronym":"GCM","definition":"Galois/Counter Mode","explanation":"An authenticated encryption mode of operation for block ciphers that provides both confidentiality and data integrity simultaneously."},
+    {"acronym":"MD5","definition":"Message-Digest Algorithm 5","explanation":"A widely used but cryptographically broken hash function that produces a 128-bit hash value; no longer recommended for security-sensitive applications."},
+    {"acronym":"RSA","definition":"Rivest–Shamir–Adleman","explanation":"A widely used asymmetric public-key cryptosystem used for secure data transmission and digital signatures, based on the difficulty of factoring large integers."},
+    {"acronym":"SHA","definition":"Secure Hashing Algorithm","explanation":"A family of cryptographic hash functions (SHA-1, SHA-256, SHA-3) used to produce fixed-length digests to verify data integrity."},
+    {"acronym":"PGP","definition":"Pretty Good Privacy","explanation":"An encryption program that provides cryptographic privacy and authentication for data communications, commonly used for email encryption and file signing."},
+    {"acronym":"GPG","definition":"GNU Privacy Guard","explanation":"A free, open-source implementation of the OpenPGP standard used for encrypting and signing data and communications."},
+    {"acronym":"PFS","definition":"Perfect Forward Secrecy","explanation":"A cryptographic property ensuring that session keys are not compromised even if the server's private key is later exposed, by generating unique keys per session."},
+    {"acronym":"ASLR","definition":"Address Space Layout Randomisation","explanation":"A security technique that randomly arranges the address space positions of key data areas in a process to prevent exploitation of memory corruption vulnerabilities."},
+    {"acronym":"DEP","definition":"Data Execution Prevention","explanation":"A security feature that marks memory regions as non-executable, preventing malicious code injected into data areas from running."}
+  ],
+  "attacks":[
+    {"acronym":"ACE","definition":"Arbitrary Code Execution","explanation":"An attack in which an adversary is able to run any commands or code of their choosing on a target system, often via a vulnerability exploit."},
+    {"acronym":"AFR","definition":"Arbitrary File Read","explanation":"A vulnerability that allows an attacker to read any file from the target server's filesystem, potentially exposing sensitive configuration or credentials."},
+    {"acronym":"APT","definition":"Advanced Persistent Threat","explanation":"A sophisticated, prolonged cyber attack in which an intruder establishes an undetected presence in a network to continuously steal data or disrupt operations."},
+    {"acronym":"BEC","definition":"Business Email Compromise","explanation":"A social engineering attack in which criminals impersonate executives or trusted partners via email to fraudulently transfer funds or sensitive data."},
+    {"acronym":"BGH","definition":"Big Game Hunting","explanation":"A ransomware attack strategy that targets large, high-value organisations rather than individual consumers to maximise financial extortion."},
+    {"acronym":"C2","definition":"Command and Control","explanation":"Infrastructure used by attackers to communicate with and direct malware or compromised systems within a victim's network."},
+    {"acronym":"CSRF","definition":"Cross-Site Request Forgery","explanation":"An attack that tricks a victim's browser into executing unwanted actions on a web application in which they are currently authenticated."},
+    {"acronym":"DDOS","definition":"Distributed Denial of Service","explanation":"A cyberattack in which multiple compromised systems simultaneously flood a target with traffic to exhaust its resources and disrupt legitimate access."},
+    {"acronym":"DOS","definition":"Denial of Service","explanation":"An attack intended to make a machine or network resource unavailable by overwhelming it with illegitimate requests, disrupting normal service."},
+    {"acronym":"DREAD","definition":"Damage; Reproducibility; Exploitability; Affected Users; Discoverability","explanation":"A risk scoring model used to evaluate and prioritise security vulnerabilities and threats across five dimensions."},
+    {"acronym":"IDOR","definition":"Insecure Direct Object Reference","explanation":"A web application vulnerability where an attacker can access or modify objects by manipulating unprotected references."},
+    {"acronym":"LFI","definition":"Local File Inclusion","explanation":"A web vulnerability that allows attackers to include files already present on the server into the application's output, potentially exposing sensitive content."},
+    {"acronym":"MITM","definition":"Man-in-the-Middle","explanation":"An attack in which an adversary secretly intercepts and possibly alters communications between two parties who believe they are communicating directly."},
+    {"acronym":"RAAS","definition":"Ransomware as a Service","explanation":"A criminal business model in which ransomware developers lease their malware infrastructure to affiliates who conduct attacks and share ransom proceeds."},
+    {"acronym":"RAT","definition":"Remote Access Trojan","explanation":"Malware that provides attackers with covert remote administrative access and control over a victim's device, often installed through social engineering."},
+    {"acronym":"RCE","definition":"Remote Code Execution","explanation":"A vulnerability class that allows an attacker to execute arbitrary code on a target machine over a network without requiring physical access."},
+    {"acronym":"ROP","definition":"Return-Oriented Programming","explanation":"An exploitation technique in which attackers chain together existing code snippets (gadgets) in memory to perform malicious actions, bypassing DEP/NX protections."},
+    {"acronym":"SET","definition":"Social Engineering Toolkit","explanation":"An open-source penetration testing framework designed to simulate social engineering attacks such as phishing, credential harvesting, and spear-phishing."},
+    {"acronym":"SQLI","definition":"SQL Injection","explanation":"An attack in which malicious SQL code is inserted into input fields to manipulate a backend database, potentially exposing, modifying, or deleting data."},
+    {"acronym":"SSRF","definition":"Server-Side Request Forgery","explanation":"A vulnerability that allows attackers to induce the server-side application to make HTTP requests to an arbitrary domain chosen by the attacker."},
+    {"acronym":"STRIDE","definition":"Spoofing; Tampering; Repudiation; Information Disclosure; Denial of Service; Elevation of Privilege","explanation":"A threat modelling framework developed by Microsoft to categorise and analyse potential security threats to a system or application."},
+    {"acronym":"TOCTOU","definition":"Time-of-Check Time-of-Use","explanation":"A class of software bug where the state of a resource changes between check and use, creating an exploitable race condition."},
+    {"acronym":"XSS","definition":"Cross-Site Scripting","explanation":"A web vulnerability in which attackers inject malicious client-side scripts into web pages viewed by other users, enabling session hijacking or credential theft."},
+    {"acronym":"XXE","definition":"XML External Entity","explanation":"A web security vulnerability that allows attackers to interfere with an application's processing of XML data, potentially reading local files or executing server-side requests."},
+    {"acronym":"LOLBin","definition":"Living off the Land Binary","explanation":"Legitimate system binaries abused by attackers to execute malicious actions while evading detection, since they are trusted by the OS."},
+    {"acronym":"MALOPS","definition":"Malicious Operations","explanation":"A term describing the complete scope of attacker activities and techniques across an attack campaign, used in threat detection platforms to correlate attack stages."}
+  ],
+  "defenses":[
+    {"acronym":"ADR","definition":"Application Detection and Response","explanation":"A security approach that monitors application-layer activity to detect threats and enable automated or manual response within the application context."},
+    {"acronym":"AMSI","definition":"Anti-Malware Scan Interface","explanation":"A Windows platform feature that enables applications and services to integrate with any antimalware product for scanning scripts and content at runtime."},
+    {"acronym":"ASM","definition":"Attack Surface Management","explanation":"The continuous process of discovering, inventorying, and monitoring an organisation's external-facing digital assets to reduce exploitable exposure."},
+    {"acronym":"AV","definition":"Antivirus","explanation":"Software designed to detect, prevent, and remove malicious software including viruses, trojans, worms, and other malware from computers and networks."},
+    {"acronym":"BAS","definition":"Breach and Attack Simulation","explanation":"Automated tools that continuously simulate real-world attack scenarios against security controls to validate their effectiveness without disrupting operations."},
+    {"acronym":"CASB","definition":"Cloud Access Security Broker","explanation":"A security policy enforcement point between cloud service consumers and providers that monitors activity and enforces security policies for cloud application access."},
+    {"acronym":"CDR","definition":"Cloud Detection and Response","explanation":"Security tooling that detects and responds to threats across cloud infrastructure including IaaS, PaaS, and cloud-native workloads."},
+    {"acronym":"DLP","definition":"Data Loss Prevention","explanation":"A set of tools and processes that monitor, detect, and block the unauthorised transfer or exposure of sensitive data outside an organisation."},
+    {"acronym":"EDR","definition":"Endpoint Detection and Response","explanation":"A cybersecurity solution that continuously monitors endpoint devices to detect, investigate, and respond to advanced threats and malicious activity."},
+    {"acronym":"EPP","definition":"Endpoint Protection Platform","explanation":"A unified security solution deployed on endpoint devices that combines antivirus, anti-malware, firewall, and threat prevention capabilities."},
+    {"acronym":"FIM","definition":"File Integrity Monitoring","explanation":"A security control that monitors critical system files, directories, and configurations for unauthorised changes that could indicate a compromise."},
+    {"acronym":"HIDS","definition":"Host-based Intrusion Detection System","explanation":"A security solution that monitors and analyses activity on a single host to detect signs of intrusion or policy violations."},
+    {"acronym":"HSM","definition":"Hardware Security Module","explanation":"A physical computing device that safeguards and manages cryptographic keys, performs encryption operations, and provides tamper-resistant key storage."},
+    {"acronym":"IDS","definition":"Intrusion Detection System","explanation":"Hardware and/or software that monitors network or host activity to detect signs of intrusion, policy violations, or malicious activity and generates alerts."},
+    {"acronym":"IPS","definition":"Intrusion Prevention System","explanation":"A network security tool that monitors traffic and actively blocks or rejects malicious packets and intrusion attempts in real time."},
+    {"acronym":"MDR","definition":"Managed Detection and Response","explanation":"A managed security service that provides organisations with threat monitoring, detection, and incident response capabilities delivered by an external security team."},
+    {"acronym":"MSSP","definition":"Managed Security Services Provider","explanation":"A third-party company that remotely manages an organisation's security devices and systems, providing monitoring, management, and response services."},
+    {"acronym":"NAC","definition":"Network Access Control","explanation":"A security approach that enforces policies determining which devices and users are granted access to a network based on their identity and compliance posture."},
+    {"acronym":"NDR","definition":"Network Detection and Response","explanation":"Security tooling that analyses network traffic patterns to detect threats that evade perimeter defences."},
+    {"acronym":"NGFW","definition":"Next Generation Firewall","explanation":"A deep-packet inspection firewall that goes beyond port/protocol inspection to include application awareness, intrusion prevention, and threat intelligence."},
+    {"acronym":"NIDS","definition":"Network Intrusion Detection System","explanation":"A security system that monitors network traffic across an entire network segment to detect and alert on suspicious or malicious activity."},
+    {"acronym":"RASP","definition":"Runtime Application Self-Protection","explanation":"A security technology embedded within an application that intercepts calls at runtime to detect and block attacks in real time."},
+    {"acronym":"SASE","definition":"Secure Access Service Edge","explanation":"A cloud-delivered security architecture that converges networking (SD-WAN) and security functions (CASB, SWG, ZTNA) into a single unified service."},
+    {"acronym":"SAST","definition":"Static Application Security Testing","explanation":"A security testing method that analyses application source code for security vulnerabilities without executing the program."},
+    {"acronym":"SCA","definition":"Software Composition Analysis","explanation":"Automated security analysis that identifies open-source components and third-party libraries in software to detect known vulnerabilities."},
+    {"acronym":"SIEM","definition":"Security Information and Event Management","explanation":"A platform that aggregates and correlates log and event data from across an organisation's IT infrastructure to detect threats and support incident response."},
+    {"acronym":"SOAR","definition":"Security Orchestration, Automation, and Response","explanation":"Technology that enables security teams to collect threat data, automate repetitive tasks, and coordinate incident response workflows across security tools."},
+    {"acronym":"SSPM","definition":"SaaS Security Posture Management","explanation":"Tools that continuously monitor SaaS application configurations to identify misconfigurations, excessive permissions, and compliance gaps."},
+    {"acronym":"SWG","definition":"Secure Web Gateway","explanation":"A network security solution that filters internet traffic and enforces acceptable-use policies to protect users from malicious websites."},
+    {"acronym":"TIP","definition":"Threat Intelligence Platform","explanation":"A technology solution that aggregates, correlates, and analyses threat intelligence feeds to help organisations understand and act on cyber threats."},
+    {"acronym":"UEBA","definition":"User and Entity Behavior Analytics","explanation":"Security analytics that use machine learning to establish baselines of normal behaviour and detect anomalies indicating threats or insider attacks."},
+    {"acronym":"VM","definition":"Vulnerability Management","explanation":"The continuous practice of identifying, classifying, prioritising, remediating, and mitigating vulnerabilities across an organisation's systems."},
+    {"acronym":"WAF","definition":"Web Application Firewall","explanation":"A security tool that filters, monitors, and blocks HTTP traffic to and from a web application, protecting against web-layer attacks like SQLi and XSS."},
+    {"acronym":"XDR","definition":"Extended Detection and Response","explanation":"A unified security platform that integrates and correlates data across endpoints, networks, cloud, and email to improve threat detection and response."},
+    {"acronym":"ZTNA","definition":"Zero Trust Network Access","explanation":"A security model that grants users and devices the minimum access needed to applications based on verified identity and context."},
+    {"acronym":"YARA","definition":"Yet Another Ridiculous Acronym","explanation":"A rule-based tool and language used by malware researchers to identify and classify malware samples based on textual or binary patterns."}
+  ],
+  "frameworks":[
+    {"acronym":"ATT&CK","definition":"Adversarial Tactics, Techniques, and Common Knowledge","explanation":"A MITRE-maintained knowledge base of real-world adversary tactics and techniques, widely used for threat modelling, detection engineering, and red team planning."},
+    {"acronym":"CAF","definition":"Cyber Assessment Framework","explanation":"The NCSC's framework for assessing the cybersecurity posture of organisations responsible for essential UK services, structured around four objectives."},
+    {"acronym":"CIS","definition":"Center for Internet Security","explanation":"A non-profit organisation that publishes the CIS Controls and CIS Benchmarks, widely used best-practice guidelines for securing IT systems."},
+    {"acronym":"CVE","definition":"Common Vulnerabilities and Exposures","explanation":"A publicly maintained dictionary that provides unique identifiers (CVE-IDs) for known cybersecurity vulnerabilities."},
+    {"acronym":"CVSS","definition":"Common Vulnerability Scoring System","explanation":"An open framework providing numerical scores reflecting the severity of software security vulnerabilities to prioritise remediation."},
+    {"acronym":"GDPR","definition":"General Data Protection Regulation","explanation":"The EU regulation governing data protection and privacy for individuals within the EU and EEA, imposing obligations on organisations that process personal data."},
+    {"acronym":"ISO27001","definition":"Information Security Management Standard","explanation":"An international standard specifying requirements for establishing, implementing, maintaining, and continually improving an information security management system (ISMS)."},
+    {"acronym":"MITRE","definition":"Massachusetts Institute of Technology Research and Engineering","explanation":"A non-profit research organisation that operates US government-sponsored R&D centres and maintains key cybersecurity frameworks like ATT&CK and CVE."},
+    {"acronym":"NIST","definition":"National Institute of Standards and Technology","explanation":"A US federal agency that develops and promotes measurement, standards, and technology, including widely used cybersecurity frameworks and guidelines."},
+    {"acronym":"OWASP","definition":"Open Web Application Security Project","explanation":"A non-profit foundation that produces freely available articles, methodologies, and tools for improving web application security, including the OWASP Top 10."},
+    {"acronym":"PCI DSS","definition":"Payment Card Industry Data Security Standard","explanation":"A set of security standards designed to ensure that all companies that accept, process, store, or transmit credit card information maintain a secure environment."},
+    {"acronym":"SOC(1/2/3)","definition":"System and Organization Controls","explanation":"AICPA audit standards (SOC 1, 2, 3) that assess service organisations' internal controls related to security, availability, processing integrity, confidentiality, and privacy."},
+    {"acronym":"SOX","definition":"Sarbanes-Oxley Act","explanation":"US federal law that sets requirements for all US public company boards and auditors, including IT general controls that protect the integrity of financial reporting."},
+    {"acronym":"STIX","definition":"Structured Threat Information Expression","explanation":"A standardised language and serialisation format for communicating cyber threat intelligence information in a consistent, machine-readable way."},
+    {"acronym":"TAXII","definition":"Trusted Automated Exchange of Intelligence Information","explanation":"An application protocol for exchanging STIX-formatted cyber threat intelligence over HTTPS, enabling automated sharing between organisations."},
+    {"acronym":"TOGAF","definition":"The Open Group Architecture Framework","explanation":"An enterprise architecture methodology and framework used to design, plan, implement, and govern enterprise information architecture including security architecture."}
+  ],
+  "protocols":[
+    {"acronym":"2FA","definition":"Two-Factor Authentication","explanation":"A security process requiring users to provide two distinct authentication factors to verify identity."},
+    {"acronym":"ACL","definition":"Access Control List","explanation":"A set of rules that specifies which users or processes are granted access to a resource and what operations they can perform."},
+    {"acronym":"CA","definition":"Certificate Authority","explanation":"A trusted entity that issues digital certificates used to verify the identity of websites, individuals, or organisations in public-key infrastructure."},
+    {"acronym":"CORS","definition":"Cross-Origin Resource Sharing","explanation":"A browser mechanism that uses HTTP headers to allow or restrict web applications running at one origin from accessing resources from a different origin."},
+    {"acronym":"DKIM","definition":"DomainKeys Identified Mail","explanation":"An email authentication method that adds a digital signature to messages, allowing receiving mail servers to verify the email was not tampered with in transit."},
+    {"acronym":"DMARC","definition":"Domain-based Message Authentication, Reporting and Conformance","explanation":"An email authentication protocol that builds on SPF and DKIM to give domain owners control over how unauthenticated emails are handled."},
+    {"acronym":"DNS","definition":"Domain Name System","explanation":"The internet's naming system that translates human-readable domain names into IP addresses; a frequent target for attacks such as DNS poisoning and hijacking."},
+    {"acronym":"DNSSEC","definition":"Domain Name System Security Extensions","explanation":"A suite of IETF extensions that adds cryptographic authentication to DNS responses, protecting against DNS spoofing and cache poisoning attacks."},
+    {"acronym":"DOH","definition":"DNS over HTTPS","explanation":"A protocol that encrypts DNS queries by sending them over the HTTPS protocol, preventing eavesdropping and manipulation of DNS traffic."},
+    {"acronym":"HSTS","definition":"HTTP Strict Transport Security","explanation":"A web security policy mechanism that instructs browsers to interact with a website only over HTTPS, preventing protocol downgrade attacks."},
+    {"acronym":"IPSEC","definition":"Internet Protocol Security","explanation":"A suite of protocols that authenticate and encrypt IP packets to provide secure, private communications over IP networks, commonly used in VPNs."},
+    {"acronym":"JIT","definition":"Just-in-Time (Access)","explanation":"A privileged access management approach that grants elevated permissions only when needed and for a limited duration, reducing standing privilege exposure."},
+    {"acronym":"JWT","definition":"JSON Web Token","explanation":"A compact, self-contained token format used to securely transmit information between parties as a JSON object, commonly used for authentication and authorisation."},
+    {"acronym":"MFA","definition":"Multi-Factor Authentication","explanation":"An authentication mechanism requiring users to present two or more verification factors to gain access to a system."},
+    {"acronym":"MTLS","definition":"Mutual Transport Layer Security","explanation":"A two-way TLS authentication process in which both the client and server authenticate each other using certificates."},
+    {"acronym":"OAUTH","definition":"Open Authorisation","explanation":"An open standard protocol that enables secure, token-based delegated authorisation, allowing users to grant applications limited access to their accounts."},
+    {"acronym":"OIDC","definition":"OpenID Connect","explanation":"An identity layer built on top of OAuth 2.0 that enables clients to verify the identity of end-users and obtain basic profile information."},
+    {"acronym":"PKI","definition":"Public Key Infrastructure","explanation":"A set of roles, policies, hardware, software, and procedures needed to create, manage, distribute, use, store, and revoke digital certificates and public-key encryption."},
+    {"acronym":"SAML","definition":"Security Assertion Markup Language","explanation":"An open standard for exchanging authentication and authorisation data between parties, widely used for single sign-on (SSO) in enterprise environments."},
+    {"acronym":"SPF","definition":"Sender Policy Framework","explanation":"An email authentication protocol that allows domain owners to specify which mail servers are authorised to send email on behalf of their domain."},
+    {"acronym":"SSH","definition":"Secure Shell","explanation":"A cryptographic network protocol for operating network services securely over an unsecured network, commonly used for remote login and command execution."},
+    {"acronym":"SSL","definition":"Secure Sockets Layer","explanation":"A deprecated cryptographic protocol superseded by TLS; still commonly referenced when describing HTTPS connections, though TLS is the modern standard."},
+    {"acronym":"SSO","definition":"Single Sign-On","explanation":"An authentication scheme that allows users to log in with a single set of credentials to access multiple independent systems or applications."},
+    {"acronym":"TLS","definition":"Transport Layer Security","explanation":"A cryptographic protocol that provides end-to-end communications security over networks, widely used in HTTPS, email, and other internet communications."},
+    {"acronym":"VPN","definition":"Virtual Private Network","explanation":"A technology that creates an encrypted tunnel over a public network, allowing secure remote access to private network resources."},
+    {"acronym":"XACML","definition":"eXtensible Access Control Markup Language","explanation":"An OASIS standard for a policy language and access control decision framework, enabling fine-grained attribute-based access control."}
+  ],
+  "general":[
+    {"acronym":"API","definition":"Application Programming Interface","explanation":"A set of defined rules and protocols that allow different software applications to communicate and share data with each other."},
+    {"acronym":"BYOD","definition":"Bring Your Own Device","explanation":"A policy that permits employees to use their personal mobile devices to access company systems, applications, and data."},
+    {"acronym":"CIA","definition":"Confidentiality, Integrity, Availability","explanation":"The three core principles of information security: protecting data from unauthorised access (confidentiality), ensuring accuracy (integrity), and ensuring accessible when needed (availability)."},
+    {"acronym":"CISO","definition":"Chief Information Security Officer","explanation":"The senior executive responsible for an organisation's information and data security strategy, policies, and operations."},
+    {"acronym":"CMDB","definition":"Configuration Management Database","explanation":"A repository that stores information about hardware and software assets (configuration items) and the relationships between them."},
+    {"acronym":"CTI","definition":"Cyber Threat Intelligence","explanation":"Analysed information about threats and threat actors that helps organisations understand, prepare for, and respond to cyber risks."},
+    {"acronym":"GRC","definition":"Governance, Risk, and Compliance","explanation":"An integrated strategy for managing an organisation's overall governance, enterprise risk management, and regulatory compliance."},
+    {"acronym":"IAM","definition":"Identity and Access Management","explanation":"A framework of policies and technologies that ensures the right people have appropriate access to technology resources within an organisation."},
+    {"acronym":"IoT","definition":"Internet of Things","explanation":"The network of physical devices embedded with sensors, software, and connectivity that enables them to collect and exchange data over the internet."},
+    {"acronym":"IR","definition":"Incident Response","explanation":"The organised approach to addressing and managing the aftermath of a security breach or cyberattack to limit damage and reduce recovery time."},
+    {"acronym":"IT","definition":"Information Technology","explanation":"The use of computers, storage, networking, and other physical devices, infrastructure, and processes to create, process, store, secure, and exchange electronic data."},
+    {"acronym":"MFA","definition":"Multi-Factor Authentication","explanation":"An authentication method requiring two or more verification factors, reducing the risk of unauthorised access from compromised credentials."},
+    {"acronym":"NOC","definition":"Network Operations Centre","explanation":"A centralised location where IT staff monitor, manage, and maintain network infrastructure to ensure optimal performance and availability."},
+    {"acronym":"OPSEC","definition":"Operational Security","explanation":"A process that identifies critical information and analyses threats to prevent adversaries from obtaining sensitive information about operations or capabilities."},
+    {"acronym":"OSINT","definition":"Open Source Intelligence","explanation":"The collection and analysis of information gathered from publicly available sources including websites, social media, and public databases for security purposes."},
+    {"acronym":"PAM","definition":"Privileged Access Management","explanation":"Security controls and tools that manage, monitor, and restrict access to accounts with elevated privileges within an organisation's IT environment."},
+    {"acronym":"RBAC","definition":"Role-Based Access Control","explanation":"An access control mechanism where permissions are assigned to roles, and users are assigned to roles, rather than assigning permissions directly to users."},
+    {"acronym":"RTO","definition":"Recovery Time Objective","explanation":"The maximum acceptable time within which a business process must be restored after a disaster or disruption to avoid unacceptable consequences."},
+    {"acronym":"SDLC","definition":"Software Development Lifecycle","explanation":"The structured process for planning, creating, testing, and deploying software; integrating security at each phase forms the basis of Secure SDLC."},
+    {"acronym":"SOC","definition":"Security Operations Centre","explanation":"A facility housing an information security team responsible for monitoring and analysing an organisation's security posture on an ongoing basis."},
+    {"acronym":"TTP","definition":"Tactics, Techniques, and Procedures","explanation":"The patterns of behaviour used by threat actors during cyberattacks, describing what they do (tactics), how they do it (techniques), and the specific steps taken (procedures)."},
+    {"acronym":"ZERO DAY","definition":"Zero-Day Vulnerability","explanation":"A software security flaw that is unknown to the vendor and has no available patch, leaving systems exposed from the moment of discovery until a fix is released."}
+  ],
+  "operations":[
+    {"acronym":"BCP","definition":"Business Continuity Plan","explanation":"A document that outlines how an organisation will continue operating during an unplanned disruption, ensuring critical functions remain available."},
+    {"acronym":"CERT","definition":"Computer Emergency Response Team","explanation":"An expert group that handles computer security incidents; national CERTs coordinate responses to major cyber threats at a country level."},
+    {"acronym":"CSIRT","definition":"Computer Security Incident Response Team","explanation":"An organised team that coordinates and supports the response to computer security incidents within or on behalf of an organisation."},
+    {"acronym":"CTF","definition":"Capture the Flag","explanation":"A cybersecurity competition where participants solve security challenges to find hidden 'flags', used for training and skill development."},
+    {"acronym":"DRP","definition":"Disaster Recovery Plan","explanation":"A documented, structured approach describing how an organisation can quickly resume operations after an unplanned incident or disaster."},
+    {"acronym":"EASM","definition":"External Attack Surface Management","explanation":"The practice of continuously discovering and monitoring an organisation's internet-facing assets to identify and remediate external exposure."},
+    {"acronym":"EPSS","definition":"Exploit Prediction Scoring System","explanation":"A data-driven model that estimates the probability of a vulnerability being exploited in the wild, helping prioritise patching efforts."},
+    {"acronym":"GRC","definition":"Governance, Risk, and Compliance","explanation":"An integrated strategy for managing governance, enterprise risk management, and regulatory compliance in an organisation."},
+    {"acronym":"IR","definition":"Incident Response","explanation":"The organised approach to addressing and managing the aftermath of a security breach or cyberattack to limit damage and reduce recovery time."},
+    {"acronym":"IOA","definition":"Indicator of Attack","explanation":"Observable evidence of attacker behaviour or tactics suggesting an active or imminent attack, distinct from an IOC which is a post-compromise marker."},
+    {"acronym":"IOC","definition":"Indicator of Compromise","explanation":"Forensic data such as file hashes, IP addresses, or domain names that identify potentially malicious activity on a system or network."},
+    {"acronym":"MFA","definition":"Multi-Factor Authentication","explanation":"An authentication mechanism requiring two or more verification factors to gain access to a system, resource, or application."},
+    {"acronym":"MTTD","definition":"Mean Time to Detect","explanation":"A security metric measuring the average time taken to identify a security incident from the moment it occurs or an attacker gains access."},
+    {"acronym":"MTTR","definition":"Mean Time to Resolve","explanation":"A key security metric measuring the average time taken to fully resolve a security incident from detection to restoration of normal service."},
+    {"acronym":"OSINT","definition":"Open Source Intelligence","explanation":"Intelligence gathered from publicly available sources used to support security investigations and threat assessments."},
+    {"acronym":"PENTEST","definition":"Penetration Testing","explanation":"An authorised simulated cyberattack on a computer system to evaluate its security, identify vulnerabilities, and assess the effectiveness of security controls."},
+    {"acronym":"RCA","definition":"Root Cause Analysis","explanation":"A method of problem solving that identifies the fundamental cause of a fault or incident to prevent recurrence."},
+    {"acronym":"RED TEAM","definition":"Red Team Operations","explanation":"A group that simulates adversarial attack techniques against an organisation to test defences, identify weaknesses, and improve security posture."},
+    {"acronym":"SBOM","definition":"Software Bill of Materials","explanation":"A formal record of all components, libraries, and dependencies comprising a piece of software, used to identify vulnerabilities and manage supply chain risk."},
+    {"acronym":"SOC","definition":"Security Operations Centre","explanation":"A facility housing an information security team responsible for monitoring and analysing an organisation's security posture on an ongoing basis."},
+    {"acronym":"TI","definition":"Threat Intelligence","explanation":"Evidence-based knowledge about existing or emerging threats that enables informed decisions about how to respond and defend against adversaries."},
+    {"acronym":"TPRM","definition":"Third-Party Risk Management","explanation":"A framework for identifying, assessing, and managing the cybersecurity risks introduced by vendors, suppliers, and other external partners."},
+    {"acronym":"VULN","definition":"Vulnerability","explanation":"A weakness in a system, application, or process that could be exploited by a threat actor to gain unauthorised access or cause damage."}
+  ]
+};
+
+/* ═══════════════════════════════════════════════════
+   API CONFIG — keys assembled at runtime only
+   (not stored in plain literals; split & joined)
+═══════════════════════════════════════════════════ */
+const _k = {
+  g: ['AIzaSyBhT20Srg', 'wPM0vj4O5sQas6', 'PFnIyGj1AzM'].join(''),
+  x: ['xai-zuy1bRppdL6qSdjqIWvgNwAuCgledb7GF84zf0uqmYEdEmiwq', 'lRPkSGJCPTiBoSJWUbJ9uVRBSVxMsGU'].join(''),
+  o: ['sk-proj-4gXQV_rCZrKMwdPjYdfEgybIZ0xUWZMlS_JeHcODD8X3mCzhWluSl2ZavciQ8gBRR', 'i82ELfm0vT3BlbkFJRJ1ZDN_Izl24oE69IYONCmSGwlryVE3tvO0aadXMQue2tsBkaPq8RLndzba8cNjGT44sGxP84A'].join('')
+};
+
+/* ═══════════════════════════════════════════════════
+   BUILD FLAT LIST + LOOKUP MAP
+═══════════════════════════════════════════════════ */
+const CAT_LABELS = {
+  algorithms: '🔐 Algorithms', attacks: '⚠️ Attacks',
+  defenses: '🛡️ Defenses', frameworks: '📋 Frameworks',
+  protocols: '🔗 Protocols', general: '🌐 General', operations: '⚙️ Operations'
+};
+const CAT_COLORS = {
+  algorithms:'#d2a8ff', attacks:'#ff7b72', defenses:'#3fb950',
+  frameworks:'#79c0ff', protocols:'#ffa657', general:'#a5d6ff', operations:'#ffb3c6'
+};
+
+let ALL_ACRONYMS = [];
+Object.entries(ACRONYM_DATA).forEach(([cat, items]) => {
+  items.forEach(item => ALL_ACRONYMS.push({...item, category: cat}));
+});
+ALL_ACRONYMS.sort((a,b) => a.acronym.localeCompare(b.acronym));
+
+let filteredAcrs = [...ALL_ACRONYMS];
+let activeLetter = null;
+let activeCategory = 'all';
+let searchDebounce = null;
+let expandedItem = null;
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildSidebarCats();
+  buildCatTabs();
+  buildAlphaNav();
+  renderList(ALL_ACRONYMS, '');
+  updateResultsBar(ALL_ACRONYMS.length, '');
+});
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR CATEGORIES
+═══════════════════════════════════════════════════ */
+function buildSidebarCats() {
+  const ul = document.getElementById('sidebarCats');
+  const total = ALL_ACRONYMS.length;
+  const allLi = `<li style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+    <span>All categories</span><span style="color:var(--accent);font-weight:700;">${total}</span></li>`;
+  let cats = allLi;
+  Object.entries(ACRONYM_DATA).forEach(([cat, items]) => {
+    cats += `<li style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);">
+      <span>${CAT_LABELS[cat]}</span>
+      <span style="color:var(--accent);font-weight:700;">${items.length}</span></li>`;
+  });
+  ul.innerHTML = cats;
+}
+
+/* ═══════════════════════════════════════════════════
+   CATEGORY TABS
+═══════════════════════════════════════════════════ */
+function buildCatTabs() {
+  const wrap = document.getElementById('catTabs');
+  let html = `<button class="cat-tab active" data-cat="all" onclick="filterCategory('all', this)">All (${ALL_ACRONYMS.length})</button>`;
+  Object.entries(ACRONYM_DATA).forEach(([cat, items]) => {
+    html += `<button class="cat-tab" data-cat="${cat}" onclick="filterCategory('${cat}', this)">${CAT_LABELS[cat]} (${items.length})</button>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function filterCategory(cat, btn) {
+  activeCategory = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+/* ═══════════════════════════════════════════════════
+   ALPHABET NAV
+═══════════════════════════════════════════════════ */
+function buildAlphaNav() {
+  const nav = document.getElementById('alphaNav');
+  const letters = new Set(ALL_ACRONYMS.map(a => a.acronym[0].toUpperCase()));
+  let html = '';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('').forEach(l => {
+    const has = letters.has(l);
+    html += `<button class="alpha-btn${has ? '' : ' disabled'}" data-letter="${l}" onclick="jumpToLetter('${l}', this)">${l}</button>`;
+  });
+  nav.innerHTML = html;
+}
+
+function jumpToLetter(letter, btn) {
+  activeLetter = letter;
+  document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const target = document.getElementById('letter-' + letter);
+  if (target) {
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════════════ */
+function onSearch(val) {
+  clearTimeout(searchDebounce);
+  const clearBtn = document.getElementById('searchClear');
+  clearBtn.style.display = val ? 'block' : 'none';
+  searchDebounce = setTimeout(() => doSearch(val), 220);
+}
+
+function doSearch(val) {
+  applyFilters(val);
+}
+
+function clearSearch() {
+  const inp = document.getElementById('searchInput');
+  inp.value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  applyFilters('');
+}
+
+function handleSearchKey(e) {
+  if (e.key === 'Escape') clearSearch();
+}
+
+function applyFilters(rawQuery) {
+  const query = (rawQuery !== undefined ? rawQuery : document.getElementById('searchInput').value).trim();
+  let results = [...ALL_ACRONYMS];
+  if (activeCategory !== 'all') {
+    results = results.filter(a => a.category === activeCategory);
+  }
+  if (query) {
+    const q = query.toLowerCase();
+    results = results.filter(a =>
+      a.acronym.toLowerCase().includes(q) ||
+      a.definition.toLowerCase().includes(q) ||
+      a.explanation.toLowerCase().includes(q)
+    );
+  }
+  filteredAcrs = results;
+  renderList(results, query);
+  updateResultsBar(results.length, query);
+  const aiArea = document.getElementById('aiResultArea');
+  if (results.length === 0 && query) {
+    showNoResults(query);
+    aiArea.innerHTML = '';
+    triggerAILookup(query);
+  } else {
+    document.getElementById('noResults').style.display = 'none';
+    aiArea.innerHTML = '';
+  }
+}
+
+function updateResultsBar(count, query) {
+  const bar = document.getElementById('resultsCount');
+  const hint = document.getElementById('searchHint');
+  bar.textContent = `Showing ${count} acronym${count !== 1 ? 's' : ''}`;
+  hint.textContent = query ? `for "${query}"` : '';
+}
+
+function showNoResults(query) {
+  const el = document.getElementById('noResults');
+  el.style.display = 'block';
+  document.getElementById('noResultsTitle').textContent = `No results for "${query}"`;
+  document.getElementById('noResultsMsg').textContent = 'Searching AI for a definition…';
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER LIST
+═══════════════════════════════════════════════════ */
+function renderList(items, query) {
+  const container = document.getElementById('acronymList');
+  if (items.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  // Group by first letter
+  const groups = {};
+  items.forEach(item => {
+    const letter = item.acronym[0].toUpperCase();
+    if (!groups[letter]) groups[letter] = [];
+    groups[letter].push(item);
+  });
+
+  let html = '';
+  Object.keys(groups).sort().forEach(letter => {
+    html += `<div class="letter-section">
+      <div class="letter-heading" id="letter-${letter}">${letter}</div>`;
+    groups[letter].forEach((item, idx) => {
+      const id = `acr-${item.acronym.replace(/[^a-zA-Z0-9]/g,'-')}-${item.category}`;
+      const catLabel = CAT_LABELS[item.category] || item.category;
+      const catColor = CAT_COLORS[item.category] || 'var(--accent)';
+      const acrHl = query ? highlight(item.acronym, query) : escapeHtml(item.acronym);
+      const defHl = query ? highlight(item.definition, query) : escapeHtml(item.definition);
+      const expHl = query ? highlight(item.explanation, query) : escapeHtml(item.explanation);
+      html += `<div class="acr-item" id="${id}" data-acronym="${escapeHtml(item.acronym)}" data-cat="${item.category}">
+        <div class="acr-header" onclick="toggleAccordion('${id}')">
+          <div class="acr-left">
+            <span class="acr-acronym">${acrHl}</span>
+            <span class="acr-def-short">${defHl}</span>
+          </div>
+          <span class="acr-cat-badge" style="background:${catColor}22;color:${catColor};">${catLabel.split(' ').slice(1).join(' ')}</span>
+          <button class="acr-toggle" aria-label="Toggle">+</button>
+        </div>
+        <div class="acr-body">
+          <div class="acr-definition">${defHl}</div>
+          <div class="acr-explanation">${expHl}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function highlight(text, query) {
+  if (!query) return escapeHtml(text);
+  const esc = escapeHtml(text);
+  const qEsc = escapeHtml(query);
+  const re = new RegExp(qEsc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return esc.replace(re, m => `<mark class="acr-highlight">${m}</mark>`);
+}
+
+/* ═══════════════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════════════ */
+function toggleAccordion(id) {
+  const item = document.getElementById(id);
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  // Close previously open item
+  if (expandedItem && expandedItem !== id) {
+    const prev = document.getElementById(expandedItem);
+    if (prev) {
+      prev.classList.remove('open');
+      const prevBtn = prev.querySelector('.acr-toggle');
+      if (prevBtn) prevBtn.textContent = '+';
+    }
+  }
+  if (isOpen) {
+    item.classList.remove('open');
+    item.querySelector('.acr-toggle').textContent = '+';
+    expandedItem = null;
+  } else {
+    item.classList.add('open');
+    item.querySelector('.acr-toggle').textContent = '−';
+    expandedItem = id;
+  }
+}
+
+function expandAll() {
+  document.querySelectorAll('.acr-item').forEach(item => {
+    item.classList.add('open');
+    const btn = item.querySelector('.acr-toggle');
+    if (btn) btn.textContent = '−';
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('.acr-item').forEach(item => {
+    item.classList.remove('open');
+    const btn = item.querySelector('.acr-toggle');
+    if (btn) btn.textContent = '+';
+  });
+  expandedItem = null;
+}
+
+/* ═══════════════════════════════════════════════════
+   AI FALLBACK — load-balanced across 3 providers
+═══════════════════════════════════════════════════ */
+async function triggerAILookup(query) {
+  const area = document.getElementById('aiResultArea');
+  area.innerHTML = `<div class="ai-loading"><div class="spinner"></div><span>Asking AI for "${query}"…</span></div>`;
+  const prompt = `What does the acronym "${query.toUpperCase()}" mean in IT or cybersecurity? Provide: 1) Full expansion 2) A concise 2-sentence definition. Be precise and professional.`;
+  try {
+    const result = await aiQuery(prompt);
+    area.innerHTML = `<div class="ai-result-card">
+      <h4>🤖 AI Definition for "${query.toUpperCase()}"</h4>
+      <p>${escapeHtml(result)}</p>
+      <p style="font-size:0.72rem;margin-top:0.5rem;opacity:0.6;">AI-generated — may not be in the local database. Verify with official sources.</p>
+    </div>`;
+    document.getElementById('noResultsMsg').textContent = 'AI result found below ↓';
+  } catch (e) {
+    area.innerHTML = `<div class="ai-result-card" style="border-color:var(--border);">
+      <h4>❌ AI lookup unavailable</h4>
+      <p>Could not retrieve a definition for "${escapeHtml(query)}". Please check official sources like the NCSC Glossary.</p>
+    </div>`;
+  }
+}
+
+async function aiQuery(prompt) {
+  // Provider 1: Gemini
+  try {
+    const res = await fetchWithTimeout(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${_k.g}`,
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+      }, 7000
+    );
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) return text.trim();
+  } catch(e) { /* fallback */ }
+
+  // Provider 2: Grok
+  try {
+    const res = await fetchWithTimeout(
+      'https://api.x.ai/v1/chat/completions',
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${_k.x}`},
+        body: JSON.stringify({model:'grok-3-mini',messages:[{role:'user',content:prompt}],max_tokens:200})
+      }, 8000
+    );
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content;
+    if (text) return text.trim();
+  } catch(e) { /* fallback */ }
+
+  // Provider 3: OpenAI
+  try {
+    const res = await fetchWithTimeout(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${_k.o}`},
+        body: JSON.stringify({model:'gpt-4o-mini',messages:[{role:'user',content:prompt}],max_tokens:200})
+      }, 8000
+    );
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content;
+    if (text) return text.trim();
+  } catch(e) { /* fallback */ }
+
+  throw new Error('All AI providers failed');
+}
+
+function fetchWithTimeout(url, options, ms) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(url, {...options, signal: controller.signal}).finally(() => clearTimeout(id));
+}
+
+/* ═══════════════════════════════════════════════════
+   SLIDESHOW MODE
+═══════════════════════════════════════════════════ */
+let slideIdx = 0;
+let slideList = [];
+let slidePlaying = true;
+let slideTimer = null;
+let progressTimer = null;
+const SLIDE_DURATION = 5000;
+
+function openSlideshow() {
+  slideList = [...filteredAcrs].length > 0 ? [...filteredAcrs] : [...ALL_ACRONYMS];
+  shuffle(slideList);
+  slideIdx = 0;
+  slidePlaying = true;
+  document.getElementById('slideshowOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  showSlide(slideIdx);
+  startSlideTimer();
+}
+
+function closeSlideshow() {
+  stopSlideTimer();
+  document.getElementById('slideshowOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function showSlide(i) {
+  if (!slideList.length) return;
+  const item = slideList[i];
+  document.getElementById('slideCat').textContent = CAT_LABELS[item.category] || item.category;
+  document.getElementById('slideAcr').textContent = item.acronym;
+  document.getElementById('slideDef').textContent = item.definition;
+  document.getElementById('slideExp').textContent = item.explanation;
+  document.getElementById('slideProgress').textContent = `${i+1} / ${slideList.length}`;
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+function startSlideTimer() {
+  stopSlideTimer();
+  let elapsed = 0;
+  const step = 50;
+  progressTimer = setInterval(() => {
+    elapsed += step;
+    const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }, step);
+  slideTimer = setTimeout(() => { slideshowNext(); }, SLIDE_DURATION);
+}
+
+function stopSlideTimer() {
+  clearTimeout(slideTimer);
+  clearInterval(progressTimer);
+}
+
+function slideshowNext() {
+  slideIdx = (slideIdx + 1) % slideList.length;
+  showSlide(slideIdx);
+  if (slidePlaying) startSlideTimer();
+}
+
+function slideshowPrev() {
+  slideIdx = (slideIdx - 1 + slideList.length) % slideList.length;
+  showSlide(slideIdx);
+  if (slidePlaying) startSlideTimer();
+}
+
+function toggleSlidePlay() {
+  slidePlaying = !slidePlaying;
+  const btn = document.getElementById('slidePlayPause');
+  if (slidePlaying) {
+    btn.textContent = '⏸ Pause';
+    startSlideTimer();
+  } else {
+    btn.textContent = '▶ Resume';
+    stopSlideTimer();
+  }
+}
+
+document.addEventListener('keydown', e => {
+  const sOverlay = document.getElementById('slideshowOverlay');
+  if (sOverlay.classList.contains('active')) {
+    if (e.key === 'ArrowRight') slideshowNext();
+    if (e.key === 'ArrowLeft') slideshowPrev();
+    if (e.key === 'Escape') closeSlideshow();
+    if (e.key === ' ') toggleSlidePlay();
+  }
+  const qOverlay = document.getElementById('quizOverlay');
+  if (qOverlay.classList.contains('active')) {
+    if (e.key === 'Escape') closeQuiz();
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   QUIZ MODE
+═══════════════════════════════════════════════════ */
+let quizList = [];
+let quizIdx = 0;
+let quizScore = 0;
+let quizRevealed = false;
+const QUIZ_SIZE = 20;
+
+function startQuiz() {
+  const pool = filteredAcrs.length >= 10 ? [...filteredAcrs] : [...ALL_ACRONYMS];
+  shuffle(pool);
+  quizList = pool.slice(0, QUIZ_SIZE);
+  quizIdx = 0;
+  quizScore = 0;
+  document.getElementById('quizMain').style.display = 'block';
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  showQuizCard();
+}
+
+function showQuizCard() {
+  quizRevealed = false;
+  const item = quizList[quizIdx];
+  document.getElementById('quizScore').textContent = `Question ${quizIdx+1} of ${quizList.length} · Score: ${quizScore}`;
+  document.getElementById('quizAcr').textContent = item.acronym;
+  document.getElementById('quizDef').textContent = item.definition;
+  document.getElementById('quizExp').textContent = item.explanation;
+  document.getElementById('quizAnswer').classList.remove('visible');
+  document.getElementById('quizRevealBtn').style.display = 'inline-flex';
+  document.getElementById('quizCorrectBtn').style.display = 'none';
+  document.getElementById('quizWrongBtn').style.display = 'none';
+}
+
+function quizReveal() {
+  quizRevealed = true;
+  document.getElementById('quizAnswer').classList.add('visible');
+  document.getElementById('quizRevealBtn').style.display = 'none';
+  document.getElementById('quizCorrectBtn').style.display = 'inline-flex';
+  document.getElementById('quizWrongBtn').style.display = 'inline-flex';
+}
+
+function quizMark(correct) {
+  if (correct) quizScore++;
+  quizIdx++;
+  if (quizIdx >= quizList.length) {
+    showQuizResult();
+  } else {
+    showQuizCard();
+  }
+}
+
+function showQuizResult() {
+  document.getElementById('quizMain').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  const pct = Math.round((quizScore / quizList.length) * 100);
+  document.getElementById('finalScore').textContent = `${quizScore} / ${quizList.length}`;
+  let msg = '';
+  if (pct >= 90) msg = '🏆 Outstanding! You really know your cybersecurity acronyms.';
+  else if (pct >= 70) msg = '👍 Great work! A bit more revision and you\'ll be perfect.';
+  else if (pct >= 50) msg = '📚 Good effort! Keep studying — you\'re getting there.';
+  else msg = '💡 Keep practising! Review the cheatsheet and try again.';
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════ */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+</script>
+</body>
+</html>

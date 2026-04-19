@@ -1,0 +1,1422 @@
+{
+  "metadata": {
+    "title": "Cybersecurity Acronyms Master Reference",
+    "sources": [
+      "https://www.ncsc.gov.uk/section/advice-guidance/glossary (NCSC Glossary + CAF Terms & Definitions)",
+      "https://github.com/cloudsecurelab/security-acronyms"
+    ],
+    "total_acronyms": 279,
+    "last_updated": "2026-04-18"
+  },
+  "categories": {
+    "algorithms": [
+      {
+        "acronym": "3DES",
+        "definition": "Triple Data Encryption Algorithm",
+        "explanation": "A symmetric-key block cipher that applies the DES cipher algorithm three times to each data block, providing stronger encryption than standard DES."
+      },
+      {
+        "acronym": "AES",
+        "definition": "Advanced Encryption Standard",
+        "explanation": "A widely adopted symmetric block cipher standardised by NIST, used to encrypt sensitive data in government, commercial, and personal applications."
+      },
+      {
+        "acronym": "DES",
+        "definition": "Data Encryption Standard",
+        "explanation": "A legacy symmetric-key block cipher that was the US federal standard until replaced by AES; now considered insecure due to its short 56-bit key length."
+      },
+      {
+        "acronym": "GCM",
+        "definition": "Galois/Counter Mode",
+        "explanation": "An authenticated encryption mode of operation for block ciphers that provides both confidentiality and data integrity simultaneously."
+      },
+      {
+        "acronym": "MD5",
+        "definition": "Message-Digest Algorithm 5",
+        "explanation": "A widely used but cryptographically broken hash function that produces a 128-bit hash value; no longer recommended for security-sensitive applications."
+      },
+      {
+        "acronym": "RSA",
+        "definition": "Rivest\u2013Shamir\u2013Adleman",
+        "explanation": "A widely used asymmetric public-key cryptosystem used for secure data transmission and digital signatures, based on the difficulty of factoring large integers."
+      },
+      {
+        "acronym": "SHA",
+        "definition": "Secure Hashing Algorithm",
+        "explanation": "A family of cryptographic hash functions (SHA-1, SHA-256, SHA-3) used to produce fixed-length digests to verify data integrity."
+      },
+      {
+        "acronym": "PGP",
+        "definition": "Pretty Good Privacy",
+        "explanation": "An encryption program that provides cryptographic privacy and authentication for data communications, commonly used for email encryption and file signing."
+      },
+      {
+        "acronym": "GPG",
+        "definition": "GNU Privacy Guard",
+        "explanation": "A free, open-source implementation of the OpenPGP standard used for encrypting and signing data and communications."
+      },
+      {
+        "acronym": "PFS",
+        "definition": "Perfect Forward Secrecy",
+        "explanation": "A cryptographic property ensuring that session keys are not compromised even if the server's private key is later exposed, by generating unique keys per session."
+      },
+      {
+        "acronym": "ASLR",
+        "definition": "Address Space Layout Randomisation",
+        "explanation": "A security technique that randomly arranges the address space positions of key data areas in a process to prevent exploitation of memory corruption vulnerabilities."
+      },
+      {
+        "acronym": "DEP",
+        "definition": "Data Execution Prevention",
+        "explanation": "A security feature that marks memory regions as non-executable, preventing malicious code injected into data areas from running."
+      }
+    ],
+    "attacks": [
+      {
+        "acronym": "ACE",
+        "definition": "Arbitrary Code Execution",
+        "explanation": "An attack in which an adversary is able to run any commands or code of their choosing on a target system, often via a vulnerability exploit."
+      },
+      {
+        "acronym": "AFR",
+        "definition": "Arbitrary File Read",
+        "explanation": "A vulnerability that allows an attacker to read any file from the target server's filesystem, potentially exposing sensitive configuration or credentials."
+      },
+      {
+        "acronym": "APT",
+        "definition": "Advanced Persistent Threat",
+        "explanation": "A sophisticated, prolonged cyber attack in which an intruder establishes an undetected presence in a network to continuously steal data or disrupt operations."
+      },
+      {
+        "acronym": "BEC",
+        "definition": "Business Email Compromise",
+        "explanation": "A social engineering attack in which criminals impersonate executives or trusted partners via email to fraudulently transfer funds or sensitive data."
+      },
+      {
+        "acronym": "BGH",
+        "definition": "Big Game Hunting",
+        "explanation": "A ransomware attack strategy that targets large, high-value organisations rather than individual consumers to maximise financial extortion."
+      },
+      {
+        "acronym": "C2",
+        "definition": "Command and Control",
+        "explanation": "Infrastructure used by attackers to communicate with and direct malware or compromised systems within a victim's network."
+      },
+      {
+        "acronym": "CSRF",
+        "definition": "Cross-Site Request Forgery",
+        "explanation": "An attack that tricks a victim's browser into executing unwanted actions on a web application in which they are currently authenticated."
+      },
+      {
+        "acronym": "DA",
+        "definition": "Davies Attack",
+        "explanation": "A cryptanalytic attack specifically targeting the DES cipher that exploits statistical weaknesses in the cipher's structure."
+      },
+      {
+        "acronym": "DC",
+        "definition": "Differential Cryptanalysis",
+        "explanation": "A form of cryptanalysis that studies how differences in input plaintext can affect resulting differences in ciphertext output to recover encryption keys."
+      },
+      {
+        "acronym": "DDOS",
+        "definition": "Distributed Denial of Service",
+        "explanation": "A cyberattack in which multiple compromised systems simultaneously flood a target with traffic to exhaust its resources and disrupt legitimate access."
+      },
+      {
+        "acronym": "DOS",
+        "definition": "Denial of Service",
+        "explanation": "An attack intended to make a machine or network resource unavailable by overwhelming it with illegitimate requests, disrupting normal service."
+      },
+      {
+        "acronym": "DREAD",
+        "definition": "Damage; Reproducibility; Exploitability; Affected Users; Discoverability",
+        "explanation": "A risk scoring model used to evaluate and prioritise security vulnerabilities and threats across five dimensions."
+      },
+      {
+        "acronym": "IDOR",
+        "definition": "Insecure Direct Object Reference",
+        "explanation": "A web application vulnerability where an attacker can access or modify objects (such as files or database records) by manipulating unprotected references."
+      },
+      {
+        "acronym": "LC",
+        "definition": "Linear Cryptanalysis",
+        "explanation": "A cryptographic attack that exploits linear approximations to describe the behaviour of a block cipher and recover encryption keys."
+      },
+      {
+        "acronym": "LFI",
+        "definition": "Local File Inclusion",
+        "explanation": "A web vulnerability that allows attackers to include files already present on the server into the application's output, potentially exposing sensitive content."
+      },
+      {
+        "acronym": "MITM",
+        "definition": "Man-in-the-Middle",
+        "explanation": "An attack in which an adversary secretly intercepts and possibly alters communications between two parties who believe they are communicating directly."
+      },
+      {
+        "acronym": "RAAS",
+        "definition": "Ransomware as a Service",
+        "explanation": "A criminal business model in which ransomware developers lease their malware infrastructure to affiliates who conduct attacks and share ransom proceeds."
+      },
+      {
+        "acronym": "RAT",
+        "definition": "Remote Access Trojan",
+        "explanation": "Malware that provides attackers with covert remote administrative access and control over a victim's device, often installed through social engineering."
+      },
+      {
+        "acronym": "RCE",
+        "definition": "Remote Code Execution",
+        "explanation": "A vulnerability class that allows an attacker to execute arbitrary code on a target machine over a network without requiring physical access."
+      },
+      {
+        "acronym": "ROP",
+        "definition": "Return-Oriented Programming",
+        "explanation": "An exploitation technique in which attackers chain together existing code snippets (gadgets) in memory to perform malicious actions, bypassing DEP/NX protections."
+      },
+      {
+        "acronym": "SET",
+        "definition": "Social Engineering Toolkit",
+        "explanation": "An open-source penetration testing framework designed to simulate social engineering attacks such as phishing, credential harvesting, and spear-phishing."
+      },
+      {
+        "acronym": "SQLI",
+        "definition": "SQL Injection",
+        "explanation": "An attack in which malicious SQL code is inserted into input fields to manipulate a backend database, potentially exposing, modifying, or deleting data."
+      },
+      {
+        "acronym": "SSRF",
+        "definition": "Server-Side Request Forgery",
+        "explanation": "A vulnerability that allows attackers to induce the server-side application to make HTTP requests to an arbitrary domain chosen by the attacker."
+      },
+      {
+        "acronym": "STRIDE",
+        "definition": "Spoofing; Tampering; Repudiation; Information Disclosure; Denial of Service; Elevation of Privilege",
+        "explanation": "A threat modelling framework developed by Microsoft to categorise and analyse potential security threats to a system or application."
+      },
+      {
+        "acronym": "TOCTOU",
+        "definition": "Time-of-Check Time-of-Use",
+        "explanation": "A class of software bug where a program checks the state of a resource and then uses it, but the state changes between check and use, creating an exploitable race condition."
+      },
+      {
+        "acronym": "XFS",
+        "definition": "Cross Frame Scripting",
+        "explanation": "An attack technique that exploits browser frame permissions to inject malicious content into a legitimate framed page across origin boundaries."
+      },
+      {
+        "acronym": "XSS",
+        "definition": "Cross-Site Scripting",
+        "explanation": "A web vulnerability in which attackers inject malicious client-side scripts into web pages viewed by other users, enabling session hijacking or credential theft."
+      },
+      {
+        "acronym": "XXE",
+        "definition": "XML External Entity",
+        "explanation": "A web security vulnerability that allows attackers to interfere with an application's processing of XML data, potentially reading local files or executing server-side requests."
+      },
+      {
+        "acronym": "LOLBin",
+        "definition": "Living off the Land Binary",
+        "explanation": "Legitimate system binaries (also LOLScripts/LOLBAS) abused by attackers to execute malicious actions while evading detection, since they are trusted by the OS."
+      },
+      {
+        "acronym": "MALOPS",
+        "definition": "Malicious Operations",
+        "explanation": "A term describing the complete scope of attacker activities and techniques across an attack campaign, used in threat detection platforms to correlate attack stages."
+      }
+    ],
+    "defenses": [
+      {
+        "acronym": "ADR",
+        "definition": "Application Detection and Response",
+        "explanation": "A security approach that monitors application-layer activity to detect threats and enable automated or manual response within the application context."
+      },
+      {
+        "acronym": "AIDA",
+        "definition": "Artificial Intelligence Defense Agent",
+        "explanation": "An AI-driven security tool (by KnowBe4) that applies machine learning to identify risky user behaviour and automate personalised security awareness training."
+      },
+      {
+        "acronym": "AMSI",
+        "definition": "Anti-Malware Scan Interface",
+        "explanation": "A Windows platform feature that enables applications and services to integrate with any antimalware product for scanning scripts and content at runtime."
+      },
+      {
+        "acronym": "ASM",
+        "definition": "Attack Surface Management",
+        "explanation": "The continuous process of discovering, inventorying, and monitoring an organisation's external-facing digital assets to reduce exploitable exposure."
+      },
+      {
+        "acronym": "ASO",
+        "definition": "Autonomic Security Operations",
+        "explanation": "A model for achieving highly automated, intelligence-driven security operations that reduces manual toil and improves threat detection and response at scale."
+      },
+      {
+        "acronym": "ASPM",
+        "definition": "Application Security Posture Management",
+        "explanation": "A practice that continuously assesses and manages application security risks across the software development lifecycle, from code to runtime."
+      },
+      {
+        "acronym": "AST",
+        "definition": "Application Security Testing",
+        "explanation": "The process of testing software to identify vulnerabilities and security weaknesses, encompassing static, dynamic, and interactive analysis methods."
+      },
+      {
+        "acronym": "AV",
+        "definition": "Antivirus",
+        "explanation": "Software designed to detect, prevent, and remove malicious software including viruses, trojans, worms, and other malware from computers and networks."
+      },
+      {
+        "acronym": "BAS",
+        "definition": "Breach and Attack Simulation",
+        "explanation": "Automated tools that continuously simulate real-world attack scenarios against security controls to validate their effectiveness without disrupting operations."
+      },
+      {
+        "acronym": "CAASM",
+        "definition": "Cyber Asset Attack Surface Management",
+        "explanation": "A security tool that consolidates asset inventory data from multiple sources to provide continuous visibility and management of the organisation's entire attack surface."
+      },
+      {
+        "acronym": "CADR",
+        "definition": "Cloud Application Detection and Response",
+        "explanation": "A security capability focused on detecting and responding to threats specifically within cloud-hosted application environments."
+      },
+      {
+        "acronym": "CASB",
+        "definition": "Cloud Access Security Broker",
+        "explanation": "A security policy enforcement point between cloud service consumers and providers that monitors activity and enforces security policies for cloud application access."
+      },
+      {
+        "acronym": "CDR",
+        "definition": "Cloud Detection and Response",
+        "explanation": "Security tooling that detects and responds to threats across cloud infrastructure including IaaS, PaaS, and cloud-native workloads."
+      },
+      {
+        "acronym": "CIAM",
+        "definition": "Cloud Identity Access Management",
+        "explanation": "A framework and tooling for managing cloud-specific identities, access permissions, and authentication policies across cloud platforms and services."
+      },
+      {
+        "acronym": "CIEM",
+        "definition": "Cloud Infrastructure Entitlement Management",
+        "explanation": "Security tools that manage and reduce excessive cloud permissions (entitlements) for users, workloads, and services to enforce least-privilege access."
+      },
+      {
+        "acronym": "CIRA",
+        "definition": "Cloud Investigation and Response Automation",
+        "explanation": "Automated tooling that accelerates the investigation of cloud security incidents and streamlines response actions to reduce attacker dwell time."
+      },
+      {
+        "acronym": "CNAPP",
+        "definition": "Cloud Native Application Protection Platform",
+        "explanation": "An integrated security platform that combines CSPM, CWPP, and other capabilities to protect cloud-native applications from development through runtime."
+      },
+      {
+        "acronym": "CSPM",
+        "definition": "Cloud Security Posture Management",
+        "explanation": "Automated tooling that continuously monitors cloud infrastructure configurations to identify and remediate misconfigurations and compliance violations."
+      },
+      {
+        "acronym": "CTEM",
+        "definition": "Continuous Threat Exposure Management",
+        "explanation": "A programme-based approach to continuously assessing, prioritising, and remediating exploitable exposures across an organisation's attack surface."
+      },
+      {
+        "acronym": "CWP",
+        "definition": "Cloud Workload Protection",
+        "explanation": "Security measures that monitor, detect, and respond to threats targeting cloud-hosted workloads such as virtual machines, containers, and serverless functions."
+      },
+      {
+        "acronym": "CWPP",
+        "definition": "Cloud Workload Protection Platform",
+        "explanation": "A security solution that provides threat detection, vulnerability management, and runtime protection for cloud workloads across hybrid and multi-cloud environments."
+      },
+      {
+        "acronym": "DAST",
+        "definition": "Dynamic Application Security Testing",
+        "explanation": "A security testing method that analyses a running application from the outside by sending malicious inputs to identify vulnerabilities without access to source code."
+      },
+      {
+        "acronym": "DDR",
+        "definition": "Data Detection and Response",
+        "explanation": "Security tooling that monitors data activity and movement to detect anomalous or risky behaviour and enable rapid response to data-related threats."
+      },
+      {
+        "acronym": "DLP",
+        "definition": "Data Loss Prevention",
+        "explanation": "Security technology that monitors, detects, and blocks sensitive data from leaving the organisation through unauthorised channels."
+      },
+      {
+        "acronym": "DSPM",
+        "definition": "Data Security Posture Management",
+        "explanation": "Tools that discover, classify, and continuously assess the security posture of data assets, identifying sensitive data at risk across cloud and on-premises storage."
+      },
+      {
+        "acronym": "EASM",
+        "definition": "External Attack Surface Management",
+        "explanation": "The practice of continuously discovering and monitoring an organisation's internet-facing assets to identify exposures before attackers can exploit them."
+      },
+      {
+        "acronym": "EDR",
+        "definition": "Endpoint Detection and Response",
+        "explanation": "A cybersecurity solution that continuously monitors endpoint devices to detect, investigate, and respond to advanced threats and malicious activity."
+      },
+      {
+        "acronym": "EPP",
+        "definition": "Endpoint Protection Platform",
+        "explanation": "A unified security solution deployed on endpoint devices that combines antivirus, anti-malware, firewall, and threat prevention capabilities."
+      },
+      {
+        "acronym": "FAM",
+        "definition": "File Access Monitoring",
+        "explanation": "Security capability that tracks and logs all access to files and directories to detect unauthorised access or suspicious file activity."
+      },
+      {
+        "acronym": "FIM",
+        "definition": "File Integrity Monitoring",
+        "explanation": "A security control that monitors critical system files, directories, and configurations for unauthorised changes that could indicate a compromise."
+      },
+      {
+        "acronym": "HIDS",
+        "definition": "Host-based Intrusion Detection System",
+        "explanation": "A security solution that monitors and analyses activity on a single host (computer) to detect signs of intrusion or policy violations."
+      },
+      {
+        "acronym": "HIPS",
+        "definition": "Host Intrusion Prevention System",
+        "explanation": "A security agent installed on an endpoint that monitors and actively blocks suspicious activity and attacks targeting that specific host."
+      },
+      {
+        "acronym": "HSM",
+        "definition": "Hardware Security Module",
+        "explanation": "A physical computing device that safeguards and manages cryptographic keys, performs encryption operations, and provides tamper-resistant key storage."
+      },
+      {
+        "acronym": "IAST",
+        "definition": "Interactive Application Security Testing",
+        "explanation": "A security testing approach that instruments an application at runtime to detect vulnerabilities by analysing code behaviour as the application executes."
+      },
+      {
+        "acronym": "IDS",
+        "definition": "Intrusion Detection System",
+        "explanation": "Hardware and/or software that monitors network or host activity to detect signs of intrusion, policy violations, or malicious activity and generates alerts."
+      },
+      {
+        "acronym": "IDTR",
+        "definition": "Identity Detection and Response",
+        "explanation": "Security tooling that monitors identity-related events and behaviours to detect and respond to identity-based attacks such as credential theft and lateral movement."
+      },
+      {
+        "acronym": "IGA",
+        "definition": "Identity Governance and Administration",
+        "explanation": "A framework of policies and technologies that enables organisations to manage digital identities and user access rights across systems and applications."
+      },
+      {
+        "acronym": "IPS",
+        "definition": "Intrusion Prevention System",
+        "explanation": "A network security tool that monitors traffic and actively blocks or rejects malicious packets and intrusion attempts in real time."
+      },
+      {
+        "acronym": "ISPM",
+        "definition": "Identity Security Posture Management",
+        "explanation": "Tools that continuously assess an organisation's identity infrastructure to identify risky configurations, over-privileged accounts, and identity-related vulnerabilities."
+      },
+      {
+        "acronym": "ITDR",
+        "definition": "Identity Threat Detection and Response",
+        "explanation": "A security domain focused on detecting and responding to attacks targeting identity infrastructure such as Active Directory, IAM, and SSO systems."
+      },
+      {
+        "acronym": "MDR",
+        "definition": "Managed Detection and Response",
+        "explanation": "A managed security service that provides organisations with threat monitoring, detection, and incident response capabilities delivered by an external security team."
+      },
+      {
+        "acronym": "MDFT",
+        "definition": "Mobile Device Forensic Tool",
+        "explanation": "A specialised tool used by investigators to extract, analyse, and preserve digital evidence from mobile devices."
+      },
+      {
+        "acronym": "MSSP",
+        "definition": "Managed Security Services Provider",
+        "explanation": "A third-party company that remotely manages an organisation's security devices and systems, providing monitoring, management, and response services."
+      },
+      {
+        "acronym": "NAC",
+        "definition": "Network Access Control",
+        "explanation": "A security approach that enforces policies determining which devices and users are granted access to a network based on their identity and compliance posture."
+      },
+      {
+        "acronym": "NDR",
+        "definition": "Network Detection and Response",
+        "explanation": "Security tooling that analyses network traffic patterns to detect threats that evade perimeter defences and enables investigation and response to network-based attacks."
+      },
+      {
+        "acronym": "NGFW",
+        "definition": "Next Generation Firewall",
+        "explanation": "A deep-packet inspection firewall that goes beyond port/protocol inspection to include application awareness, intrusion prevention, and threat intelligence."
+      },
+      {
+        "acronym": "NGES",
+        "definition": "Next Generation Endpoint Security",
+        "explanation": "Advanced endpoint security solutions that use AI, behavioural analysis, and cloud intelligence to detect and block modern threats beyond traditional signature-based antivirus."
+      },
+      {
+        "acronym": "NGSWG",
+        "definition": "Next Generation Secure Web Gateway",
+        "explanation": "An advanced web security solution combining URL filtering, malware detection, DLP, and CASB capabilities to secure web access from any location."
+      },
+      {
+        "acronym": "NIDS",
+        "definition": "Network Intrusion Detection System",
+        "explanation": "A security system that monitors network traffic across an entire network segment to detect and alert on suspicious or malicious activity."
+      },
+      {
+        "acronym": "NTA",
+        "definition": "Network Traffic Analysis",
+        "explanation": "The process of capturing and examining network packets to understand usage patterns, detect anomalies, and identify security threats."
+      },
+      {
+        "acronym": "OTSPM",
+        "definition": "Operational Technology Security Posture Management",
+        "explanation": "Tools and practices that assess and improve the security posture of OT environments such as industrial control systems and critical infrastructure."
+      },
+      {
+        "acronym": "RASP",
+        "definition": "Runtime Application Self-Protection",
+        "explanation": "A security technology embedded within an application that intercepts calls at runtime to detect and block attacks such as SQL injection and XSS in real time."
+      },
+      {
+        "acronym": "SASE",
+        "definition": "Secure Access Service Edge",
+        "explanation": "A cloud-delivered security architecture that converges networking (SD-WAN) and security functions (CASB, SWG, ZTNA) into a single unified service."
+      },
+      {
+        "acronym": "SAST",
+        "definition": "Static Application Security Testing",
+        "explanation": "A security testing method that analyses application source code, bytecode, or binaries for security vulnerabilities without executing the program."
+      },
+      {
+        "acronym": "SCA",
+        "definition": "Software Composition Analysis",
+        "explanation": "Automated security analysis that identifies open-source components and third-party libraries in software to detect known vulnerabilities and licence risks."
+      },
+      {
+        "acronym": "SCAP",
+        "definition": "Security Content Automation Protocol",
+        "explanation": "A NIST standard that provides a suite of specifications for automating vulnerability management, policy compliance measurement, and security control assessment."
+      },
+      {
+        "acronym": "SECCOMP",
+        "definition": "Secure Computing",
+        "explanation": "A Linux kernel security facility that restricts system calls an application can make, limiting the potential damage from a compromised process."
+      },
+      {
+        "acronym": "SIEM",
+        "definition": "Security Information and Event Management",
+        "explanation": "A platform that aggregates and correlates log and event data from across an organisation's IT infrastructure to detect threats and support incident response."
+      },
+      {
+        "acronym": "SOAR",
+        "definition": "Security Orchestration, Automation, and Response",
+        "explanation": "Technology that enables security teams to collect threat data, automate repetitive tasks, and coordinate incident response workflows across security tools."
+      },
+      {
+        "acronym": "SSE",
+        "definition": "Security Service Edge",
+        "explanation": "A subset of SASE that focuses on the security components \u2014 including SWG, CASB, and ZTNA \u2014 delivered as a cloud-based service, without the networking component."
+      },
+      {
+        "acronym": "SSP",
+        "definition": "Stack Smashing Protector",
+        "explanation": "A compiler security feature that inserts canary values on the stack to detect and abort buffer overflow exploits before they can execute malicious code."
+      },
+      {
+        "acronym": "SSPM",
+        "definition": "SaaS Security Posture Management",
+        "explanation": "Tools that continuously monitor SaaS application configurations to identify misconfigurations, excessive permissions, and compliance gaps."
+      },
+      {
+        "acronym": "SWG",
+        "definition": "Secure Web Gateway",
+        "explanation": "A network security solution that filters internet traffic and enforces acceptable-use policies to protect users from malicious websites and web-borne threats."
+      },
+      {
+        "acronym": "TIP",
+        "definition": "Threat Intelligence Platform",
+        "explanation": "A technology solution that aggregates, correlates, and analyses threat intelligence feeds to help organisations understand and act on cyber threats."
+      },
+      {
+        "acronym": "TPRM",
+        "definition": "Third-Party Risk Management",
+        "explanation": "A framework for identifying, assessing, and managing the cybersecurity risks introduced by vendors, suppliers, and other external partners."
+      },
+      {
+        "acronym": "UEBA",
+        "definition": "User and Entity Behavior Analytics",
+        "explanation": "Security analytics that use machine learning to establish baselines of normal user and system behaviour, then detect anomalies indicating threats or insider attacks."
+      },
+      {
+        "acronym": "VM",
+        "definition": "Vulnerability Management",
+        "explanation": "The continuous practice of identifying, classifying, prioritising, remediating, and mitigating vulnerabilities across an organisation's systems and software."
+      },
+      {
+        "acronym": "WAF",
+        "definition": "Web Application Firewall",
+        "explanation": "A security tool that filters, monitors, and blocks HTTP traffic to and from a web application, protecting against web-layer attacks like SQLi and XSS."
+      },
+      {
+        "acronym": "WAAP",
+        "definition": "Web Application and API Protection",
+        "explanation": "An evolved WAF category that extends protection to APIs as well as web applications, guarding against bot attacks, DDoS, and API-specific threats."
+      },
+      {
+        "acronym": "XDR",
+        "definition": "Extended Detection and Response",
+        "explanation": "A unified security platform that integrates and correlates data across endpoints, networks, cloud, and email to improve threat detection and incident response."
+      },
+      {
+        "acronym": "ZTNA",
+        "definition": "Zero Trust Network Access",
+        "explanation": "A security model that grants users and devices the minimum access needed to applications based on verified identity and context, replacing implicit VPN-based trust."
+      },
+      {
+        "acronym": "YARA",
+        "definition": "Yet Another Ridiculous Acronym",
+        "explanation": "A rule-based tool and language used by malware researchers to identify and classify malware samples based on textual or binary patterns."
+      }
+    ],
+    "frameworks": [
+      {
+        "acronym": "APRA",
+        "definition": "Australian Prudential Regulation Authority",
+        "explanation": "Australia's financial services regulator that publishes cybersecurity standards (notably CPS 234) applicable to banks, insurers, and superannuation entities."
+      },
+      {
+        "acronym": "ASVS",
+        "definition": "Application Security Verification Standard",
+        "explanation": "An OWASP framework that defines security requirements and controls for web application security testing and secure development."
+      },
+      {
+        "acronym": "ATT&CK",
+        "definition": "Adversarial Tactics, Techniques, and Common Knowledge",
+        "explanation": "A MITRE-maintained knowledge base of real-world adversary tactics and techniques, widely used for threat modelling, detection engineering, and red team planning."
+      },
+      {
+        "acronym": "BGDPL",
+        "definition": "Brazilian General Data Protection Law",
+        "explanation": "Brazil's comprehensive data protection legislation (Lei Geral de Prote\u00e7\u00e3o de Dados) that regulates the collection and processing of personal data."
+      },
+      {
+        "acronym": "BSIMM",
+        "definition": "Building Security In Maturity Model",
+        "explanation": "A data-driven model that describes software security practices observed in real organisations, used as a benchmark to measure and improve security programmes."
+      },
+      {
+        "acronym": "CAF",
+        "definition": "Cyber Assessment Framework",
+        "explanation": "The NCSC's framework for assessing the cybersecurity posture of organisations responsible for essential UK services, structured around four objectives."
+      },
+      {
+        "acronym": "CAPEC",
+        "definition": "Common Attack Pattern Enumeration and Classification",
+        "explanation": "A MITRE-maintained comprehensive dictionary of attack patterns used to describe how adversaries exploit weaknesses in applications and systems."
+      },
+      {
+        "acronym": "CIS",
+        "definition": "Center for Internet Security",
+        "explanation": "A non-profit organisation that publishes the CIS Controls and CIS Benchmarks, widely used best-practice guidelines for securing IT systems."
+      },
+      {
+        "acronym": "CSAF",
+        "definition": "Common Security Advisory Framework",
+        "explanation": "An OASIS standard (v2.0) for machine-readable security advisories that enables automated processing and distribution of vulnerability disclosure information."
+      },
+      {
+        "acronym": "C-SCRM",
+        "definition": "Cyber Supply Chain Risk Management",
+        "explanation": "A set of activities and practices for identifying, assessing, and mitigating cyber risks arising from the use of third-party hardware, software, and services."
+      },
+      {
+        "acronym": "CVE",
+        "definition": "Common Vulnerabilities and Exposures",
+        "explanation": "A publicly maintained dictionary that provides unique identifiers (CVE-IDs) for known cybersecurity vulnerabilities to facilitate consistent tracking and remediation."
+      },
+      {
+        "acronym": "CVRF",
+        "definition": "Common Vulnerability Reporting Framework",
+        "explanation": "An XML-based standard for sharing vulnerability information between security organisations; superseded by the CSAF standard."
+      },
+      {
+        "acronym": "CVSS",
+        "definition": "Common Vulnerability Scoring System",
+        "explanation": "An open industry standard maintained by FIRST that provides a numerical score (0\u201310) representing the severity of a vulnerability based on multiple metrics."
+      },
+      {
+        "acronym": "CWE",
+        "definition": "Common Weakness Enumeration",
+        "explanation": "A community-developed catalogue of software and hardware weaknesses maintained by MITRE, used to classify vulnerability root causes."
+      },
+      {
+        "acronym": "DSS",
+        "definition": "Data Security Standard",
+        "explanation": "Refers to the PCI DSS; a set of security requirements for organisations that handle payment card data to protect cardholder information."
+      },
+      {
+        "acronym": "EPSS",
+        "definition": "Exploit Prediction Scoring System",
+        "explanation": "A data-driven model that estimates the probability that a given CVE will be exploited in the wild within 30 days, used to prioritise remediation efforts."
+      },
+      {
+        "acronym": "FAIR",
+        "definition": "Factor Analysis of Information Risk",
+        "explanation": "A quantitative risk analysis framework that helps organisations measure, manage, and communicate cyber risk in financial terms."
+      },
+      {
+        "acronym": "GDPR",
+        "definition": "General Data Protection Regulation",
+        "explanation": "The European Union's comprehensive data privacy regulation that governs how organisations collect, process, and protect personal data of EU residents."
+      },
+      {
+        "acronym": "GRC",
+        "definition": "Governance, Risk and Compliance",
+        "explanation": "An integrated approach to managing an organisation's governance framework, enterprise risk management, and regulatory compliance activities."
+      },
+      {
+        "acronym": "HIPAA",
+        "definition": "Health Insurance Portability and Accountability Act",
+        "explanation": "US federal legislation that establishes national standards to protect sensitive patient health information from disclosure without consent or knowledge."
+      },
+      {
+        "acronym": "IRM",
+        "definition": "Integrated Risk Management",
+        "explanation": "A holistic approach to managing all types of risk across an enterprise in a unified, coordinated programme rather than siloed risk functions."
+      },
+      {
+        "acronym": "ISMS",
+        "definition": "Information Security Management System",
+        "explanation": "A systematic approach (codified in ISO/IEC 27001) to managing sensitive company information and ensuring it remains secure through policies, processes, and controls."
+      },
+      {
+        "acronym": "ISO",
+        "definition": "International Organization for Standardization",
+        "explanation": "An independent international body that develops and publishes standards across industries, including the ISO 27000 series for information security management."
+      },
+      {
+        "acronym": "NIST",
+        "definition": "National Institute of Standards and Technology",
+        "explanation": "A US federal agency that develops technology standards and guidelines including the NIST Cybersecurity Framework, widely adopted globally for managing cyber risk."
+      },
+      {
+        "acronym": "NVD",
+        "definition": "National Vulnerability Database",
+        "explanation": "A US government repository of vulnerability management data maintained by NIST, providing enriched CVE details including CVSS scores and patch information."
+      },
+      {
+        "acronym": "OSCAL",
+        "definition": "Open Security Controls Assessment Language",
+        "explanation": "A NIST-developed set of machine-readable formats for representing security controls, assessments, and system security plans to automate compliance work."
+      },
+      {
+        "acronym": "OWASP",
+        "definition": "Open Web Application Security Project",
+        "explanation": "A non-profit foundation that produces freely available resources including the OWASP Top 10, testing guides, and tools to improve web application security."
+      },
+      {
+        "acronym": "PASTA",
+        "definition": "Process for Attack Simulation and Threat Analysis",
+        "explanation": "A risk-centric threat modelling framework that simulates attacker goals and techniques to identify critical threats and prioritise security controls."
+      },
+      {
+        "acronym": "PCI DSS",
+        "definition": "Payment Card Industry Data Security Standard",
+        "explanation": "An information security standard mandated for organisations that process, store, or transmit payment card data, defining 12 core security requirement domains."
+      },
+      {
+        "acronym": "PIPEDA",
+        "definition": "Personal Information Protection and Electronic Documents Act",
+        "explanation": "Canada's federal privacy law governing how private-sector organisations collect, use, and disclose personal information in commercial activities."
+      },
+      {
+        "acronym": "PTES",
+        "definition": "Penetration Testing Execution Standard",
+        "explanation": "A technical framework providing guidance and best practices for conducting comprehensive penetration testing engagements."
+      },
+      {
+        "acronym": "SABSA",
+        "definition": "Sherwood Applied Business Security Architecture",
+        "explanation": "A risk-driven enterprise security architecture framework used to design, implement, and govern security architectures aligned with business objectives."
+      },
+      {
+        "acronym": "SAMM",
+        "definition": "Software Assurance Maturity Model",
+        "explanation": "An OWASP framework that helps organisations assess, formulate, and implement a software security programme across five business functions."
+      },
+      {
+        "acronym": "SLSA",
+        "definition": "Supply-chain Levels for Software Artifacts",
+        "explanation": "A security framework that defines four levels of integrity assurance for software build and release pipelines to prevent tampering and supply chain attacks."
+      },
+      {
+        "acronym": "SOC(1/2/3)",
+        "definition": "System and Organization Controls",
+        "explanation": "AICPA audit standards (SOC 1, 2, 3) that assess service organisations' internal controls related to security, availability, processing integrity, confidentiality, and privacy."
+      },
+      {
+        "acronym": "SOX",
+        "definition": "Sarbanes-Oxley Act",
+        "explanation": "US federal law that sets requirements for all US public company boards and auditors, including IT general controls that protect the integrity of financial reporting."
+      },
+      {
+        "acronym": "SSVC",
+        "definition": "Stakeholder-Specific Vulnerability Categorization",
+        "explanation": "A decision-tree model developed by CISA and Carnegie Mellon to help organisations prioritise vulnerability remediation based on their specific context."
+      },
+      {
+        "acronym": "STIX",
+        "definition": "Structured Threat Information Expression",
+        "explanation": "A standardised language and serialisation format for communicating cyber threat intelligence information in a consistent, machine-readable way."
+      },
+      {
+        "acronym": "TARA",
+        "definition": "Threat Agent Risk Assessment",
+        "explanation": "An Intel-developed methodology for identifying and prioritising the most relevant threat agents and their likely attack methods against an organisation."
+      },
+      {
+        "acronym": "TAXII",
+        "definition": "Trusted Automated Exchange of Intelligence Information",
+        "explanation": "An application protocol for exchanging STIX-formatted cyber threat intelligence over HTTPS, enabling automated sharing between organisations."
+      },
+      {
+        "acronym": "TOGAF",
+        "definition": "The Open Group Architecture Framework",
+        "explanation": "An enterprise architecture methodology and framework used to design, plan, implement, and govern enterprise information architecture including security architecture."
+      }
+    ],
+    "protocols": [
+      {
+        "acronym": "2FA",
+        "definition": "Two-Factor Authentication",
+        "explanation": "A security process requiring users to provide two distinct authentication factors \u2014 typically something they know and something they have \u2014 to verify identity."
+      },
+      {
+        "acronym": "ABAC",
+        "definition": "Attribute-Based Access Control",
+        "explanation": "An access control model that evaluates a set of attributes (user, resource, environment) against policies to make dynamic access decisions."
+      },
+      {
+        "acronym": "ACL",
+        "definition": "Access Control List",
+        "explanation": "A set of rules attached to a network interface, file system object, or system resource that specifies which users or processes are granted access and what operations they can perform."
+      },
+      {
+        "acronym": "CA",
+        "definition": "Certificate Authority",
+        "explanation": "A trusted entity that issues digital certificates used to verify the identity of websites, individuals, or organisations in public-key infrastructure."
+      },
+      {
+        "acronym": "CORS",
+        "definition": "Cross-Origin Resource Sharing",
+        "explanation": "A browser mechanism that uses HTTP headers to allow or restrict web applications running at one origin from accessing resources from a different origin."
+      },
+      {
+        "acronym": "DKIM",
+        "definition": "DomainKeys Identified Mail",
+        "explanation": "An email authentication method that adds a digital signature to messages, allowing receiving mail servers to verify the email was not tampered with in transit."
+      },
+      {
+        "acronym": "DMARC",
+        "definition": "Domain-based Message Authentication, Reporting and Conformance",
+        "explanation": "An email authentication protocol that builds on SPF and DKIM to give domain owners control over how unauthenticated emails are handled."
+      },
+      {
+        "acronym": "DNS",
+        "definition": "Domain Name System",
+        "explanation": "The internet's naming system that translates human-readable domain names into IP addresses; a frequent target for attacks such as DNS poisoning and hijacking."
+      },
+      {
+        "acronym": "DNSSEC",
+        "definition": "Domain Name System Security Extensions",
+        "explanation": "A suite of IETF extensions that adds cryptographic authentication to DNS responses, protecting against DNS spoofing and cache poisoning attacks."
+      },
+      {
+        "acronym": "DOH",
+        "definition": "DNS over HTTPS",
+        "explanation": "A protocol that encrypts DNS queries by sending them over the HTTPS protocol, preventing eavesdropping and manipulation of DNS traffic."
+      },
+      {
+        "acronym": "DOM",
+        "definition": "Document Object Model",
+        "explanation": "A programming interface for web documents that represents the page as a tree of objects; a common target for DOM-based XSS attacks."
+      },
+      {
+        "acronym": "FTPS",
+        "definition": "FTP Secure",
+        "explanation": "An extension of the File Transfer Protocol that adds support for TLS encryption, securing file transfers against interception."
+      },
+      {
+        "acronym": "HSTS",
+        "definition": "HTTP Strict Transport Security",
+        "explanation": "A web security policy mechanism that instructs browsers to interact with a website only over HTTPS, preventing protocol downgrade attacks."
+      },
+      {
+        "acronym": "IETF",
+        "definition": "Internet Engineering Task Force",
+        "explanation": "An open international community responsible for developing and promoting internet standards, including many foundational security protocols."
+      },
+      {
+        "acronym": "IPSEC",
+        "definition": "Internet Protocol Security",
+        "explanation": "A suite of protocols that authenticate and encrypt IP packets to provide secure, private communications over IP networks, commonly used in VPNs."
+      },
+      {
+        "acronym": "IRP",
+        "definition": "Incident Response Playbook",
+        "explanation": "A predefined set of instructions and procedures that guide security teams through the steps to respond to a specific type of security incident."
+      },
+      {
+        "acronym": "JIT",
+        "definition": "Just-in-Time (Access)",
+        "explanation": "A privileged access management approach that grants elevated permissions only when needed and for a limited duration, reducing standing privilege exposure."
+      },
+      {
+        "acronym": "JWT",
+        "definition": "JSON Web Token",
+        "explanation": "A compact, self-contained token format used to securely transmit information between parties as a JSON object, commonly used for authentication and authorisation."
+      },
+      {
+        "acronym": "MFA",
+        "definition": "Multi-Factor Authentication",
+        "explanation": "An authentication mechanism requiring users to present two or more verification factors \u2014 something they know, have, or are \u2014 to gain access to a system."
+      },
+      {
+        "acronym": "MTLS",
+        "definition": "Mutual Transport Layer Security",
+        "explanation": "A two-way TLS authentication process in which both the client and server authenticate each other using certificates, ensuring mutual trust."
+      },
+      {
+        "acronym": "OAUTH",
+        "definition": "Open Authorisation",
+        "explanation": "An open standard protocol that enables secure, token-based delegated authorisation, allowing users to grant applications limited access to their accounts."
+      },
+      {
+        "acronym": "ODOH",
+        "definition": "Oblivious DNS over HTTPS",
+        "explanation": "An enhanced privacy protocol that separates knowledge of client identity from DNS query content by routing queries through an oblivious proxy."
+      },
+      {
+        "acronym": "OIDC",
+        "definition": "OpenID Connect",
+        "explanation": "An identity layer built on top of OAuth 2.0 that enables clients to verify the identity of end-users and obtain basic profile information via an ID token."
+      },
+      {
+        "acronym": "OTP",
+        "definition": "One-Time Password",
+        "explanation": "A password valid for only a single authentication session or transaction, used as an additional authentication factor to prevent replay attacks."
+      },
+      {
+        "acronym": "PAC",
+        "definition": "Policy as Code",
+        "explanation": "The practice of defining, managing, and enforcing security and compliance policies as machine-readable code within automated pipelines."
+      },
+      {
+        "acronym": "PAM",
+        "definition": "Privileged Access Management",
+        "explanation": "A security discipline that controls, monitors, and audits privileged user and system accounts that have elevated access to critical systems and data."
+      },
+      {
+        "acronym": "RBAC",
+        "definition": "Role-Based Access Control",
+        "explanation": "An access control model that assigns permissions to users based on their role within an organisation, simplifying access management and enforcing least privilege."
+      },
+      {
+        "acronym": "RFC",
+        "definition": "Request for Comments",
+        "explanation": "A formal document published by the IETF that describes the specifications, protocols, and standards of the internet and networking technologies."
+      },
+      {
+        "acronym": "SAML",
+        "definition": "Security Assertion Markup Language",
+        "explanation": "An XML-based open standard for exchanging authentication and authorisation data between an identity provider and a service provider, enabling SSO."
+      },
+      {
+        "acronym": "SARIF",
+        "definition": "Static Analysis Results Interchange Format",
+        "explanation": "An OASIS standard JSON-based format for static analysis tool output, enabling consistent sharing and integration of security scan results."
+      },
+      {
+        "acronym": "SCIM",
+        "definition": "System for Cross-domain Identity Management",
+        "explanation": "An open standard protocol that automates the provisioning and deprovisioning of user identities between identity providers and service providers."
+      },
+      {
+        "acronym": "SFTP",
+        "definition": "SSH File Transfer Protocol",
+        "explanation": "A secure file transfer protocol that runs over SSH, providing encrypted file access, transfer, and management capabilities."
+      },
+      {
+        "acronym": "SPF",
+        "definition": "Sender Policy Framework",
+        "explanation": "An email authentication protocol that allows domain owners to specify which mail servers are authorised to send email on behalf of their domain."
+      },
+      {
+        "acronym": "SPDX",
+        "definition": "Software Package Data Exchange",
+        "explanation": "An open standard for communicating software bill of materials information, including components, licences, and security references for a software package."
+      },
+      {
+        "acronym": "SRI",
+        "definition": "Sub-resource Integrity",
+        "explanation": "A browser security feature that allows web pages to verify that fetched resources (scripts, stylesheets) have not been tampered with by comparing cryptographic hashes."
+      },
+      {
+        "acronym": "SSH",
+        "definition": "Secure Shell",
+        "explanation": "A cryptographic network protocol for operating network services securely over an unsecured network, primarily used for remote command-line login and file transfers."
+      },
+      {
+        "acronym": "SSL",
+        "definition": "Secure Sockets Layer",
+        "explanation": "A deprecated cryptographic protocol for securing communications over networks; superseded by TLS, though the term is still commonly used colloquially."
+      },
+      {
+        "acronym": "SSO",
+        "definition": "Single Sign-On",
+        "explanation": "An authentication scheme that allows users to log in once and gain access to multiple related systems without re-authenticating for each application."
+      },
+      {
+        "acronym": "STIG",
+        "definition": "Security Technical Implementation Guide",
+        "explanation": "Configuration standards published by the US Defense Information Systems Agency (DISA) that provide guidance for hardening IT systems and software."
+      },
+      {
+        "acronym": "TLP",
+        "definition": "Traffic Light Protocol",
+        "explanation": "A set of designations (Red, Amber, Green, White/Clear) used to indicate how sensitive information can be shared between organisations and individuals."
+      },
+      {
+        "acronym": "TLS",
+        "definition": "Transport Layer Security",
+        "explanation": "A cryptographic protocol that provides end-to-end security for communications over networks, widely used to secure HTTPS web traffic."
+      },
+      {
+        "acronym": "U2F",
+        "definition": "Universal Two-Factor",
+        "explanation": "An open authentication standard that enables strong second-factor authentication using physical security keys via USB or NFC, developed by the FIDO Alliance."
+      },
+      {
+        "acronym": "UAC",
+        "definition": "User Access Control",
+        "explanation": "A Windows security feature that prompts users for confirmation or administrator credentials before allowing programs to make changes that require elevated privileges."
+      },
+      {
+        "acronym": "VPN",
+        "definition": "Virtual Private Network",
+        "explanation": "A technology that creates an encrypted tunnel over a public network to enable secure remote access and protect data in transit."
+      },
+      {
+        "acronym": "WEP",
+        "definition": "Wired Equivalent Privacy",
+        "explanation": "A deprecated Wi-Fi security protocol that used RC4 encryption; replaced by WPA due to severe cryptographic weaknesses and ease of cracking."
+      },
+      {
+        "acronym": "WPA",
+        "definition": "Wi-Fi Protected Access",
+        "explanation": "A wireless security protocol replacing WEP that introduced TKIP encryption; WPA2 and WPA3 are the current standards using AES encryption."
+      },
+      {
+        "acronym": "WPS",
+        "definition": "Wi-Fi Protected Setup",
+        "explanation": "A network security standard for easy wireless router configuration; known to have critical vulnerabilities that allow PIN brute-force attacks."
+      },
+      {
+        "acronym": "XACML",
+        "definition": "eXtensible Access Control Markup Language",
+        "explanation": "An OASIS standard XML-based policy language and processing model for defining and enforcing attribute-based access control decisions."
+      }
+    ],
+    "roles": [
+      {
+        "acronym": "A&A",
+        "definition": "Assessment and Authorization",
+        "explanation": "A formal process (previously C&A) for evaluating the security controls of an information system and authorising it to operate at an acceptable level of risk."
+      },
+      {
+        "acronym": "CCSP",
+        "definition": "Certified Cloud Security Professional",
+        "explanation": "An ISC2 certification validating expertise in cloud security architecture, design, operations, and service orchestration."
+      },
+      {
+        "acronym": "CDC",
+        "definition": "Cyber Defense Center",
+        "explanation": "An organisational unit responsible for monitoring, detecting, and responding to cybersecurity threats targeting the organisation."
+      },
+      {
+        "acronym": "CERT",
+        "definition": "Computer Emergency Response Team",
+        "explanation": "A group of IT security experts that handles computer security incidents and works proactively to improve an organisation's security posture."
+      },
+      {
+        "acronym": "CISA",
+        "definition": "Cybersecurity and Infrastructure Security Agency",
+        "explanation": "The US federal agency responsible for protecting critical infrastructure from cyber and physical threats, and a separate certification: Certified Information Systems Auditor."
+      },
+      {
+        "acronym": "CISO",
+        "definition": "Chief Information Security Officer",
+        "explanation": "The senior executive responsible for developing and implementing an organisation's information security strategy, policies, and programmes."
+      },
+      {
+        "acronym": "CISSP",
+        "definition": "Certified Information Systems Security Professional",
+        "explanation": "A globally recognised ISC2 certification for experienced security practitioners, managers, and executives demonstrating expertise across eight security domains."
+      },
+      {
+        "acronym": "COC",
+        "definition": "Cybersecurity Operations Center",
+        "explanation": "A dedicated facility housing a team of security analysts who monitor, detect, and respond to cybersecurity events around the clock."
+      },
+      {
+        "acronym": "CPP",
+        "definition": "Certified Protection Professional",
+        "explanation": "An ASIS International certification recognising security management expertise across domains including physical security, investigations, and personnel protection."
+      },
+      {
+        "acronym": "CSO",
+        "definition": "Chief Security Officer",
+        "explanation": "A senior executive who oversees both physical and digital security programmes for an organisation, often responsible for personnel safety and cyber defence."
+      },
+      {
+        "acronym": "ECES",
+        "definition": "Certified Encryption Specialist",
+        "explanation": "An EC-Council certification validating knowledge of encryption algorithms, cryptographic protocols, and their practical applications in security."
+      },
+      {
+        "acronym": "FIRST",
+        "definition": "Forum of Incident Response and Security Teams",
+        "explanation": "A global organisation that brings together computer security incident response teams from government, commercial, and educational sectors."
+      },
+      {
+        "acronym": "ISC2",
+        "definition": "International Information System Security Certification Consortium",
+        "explanation": "A non-profit organisation that offers globally recognised cybersecurity certifications including CISSP, CCSP, and CSSLP."
+      },
+      {
+        "acronym": "NCSC",
+        "definition": "National Cyber Security Centre",
+        "explanation": "The UK's national technical authority for cybersecurity, part of GCHQ, providing guidance and support to government, businesses, and individuals."
+      },
+      {
+        "acronym": "NICCS",
+        "definition": "National Initiative for Cybersecurity Careers and Studies",
+        "explanation": "A US government portal that provides cybersecurity education resources and workforce development guidance, administered by CISA."
+      },
+      {
+        "acronym": "NICE",
+        "definition": "NICCS Workforce Framework for Cybersecurity",
+        "explanation": "A reference framework that categorises and describes cybersecurity work roles, tasks, and required knowledge, skills, and abilities."
+      },
+      {
+        "acronym": "OSCP",
+        "definition": "Offensive Security Certified Professional",
+        "explanation": "An Offensive Security certification that validates practical penetration testing skills through a rigorous hands-on 24-hour examination."
+      },
+      {
+        "acronym": "SANS",
+        "definition": "SysAdmin, Audit, Network, and Security",
+        "explanation": "A leading cooperative research and education organisation providing cybersecurity training, certifications (GIAC), and research resources."
+      },
+      {
+        "acronym": "SECOPS",
+        "definition": "Security Operations",
+        "explanation": "An organisational approach integrating security and IT operations teams to embed security responsibilities into day-to-day operational workflows."
+      },
+      {
+        "acronym": "SOC",
+        "definition": "Security Operations Center",
+        "explanation": "A centralised unit staffed with security analysts who continuously monitor, detect, investigate, and respond to cybersecurity incidents."
+      }
+    ],
+    "general": [
+      {
+        "acronym": "BCP",
+        "definition": "Business Continuity Plan",
+        "explanation": "A documented plan detailing how an organisation will continue operating during and after an unplanned disruption or disaster."
+      },
+      {
+        "acronym": "BIA",
+        "definition": "Business Impact Analysis",
+        "explanation": "A process that identifies and evaluates the potential effects of disruptions to critical business operations to support continuity and recovery planning."
+      },
+      {
+        "acronym": "CAPTCHA",
+        "definition": "Completely Automated Public Turing Test to Tell Computers And Humans Apart",
+        "explanation": "A challenge-response test used in web applications to determine whether a user is human or an automated bot."
+      },
+      {
+        "acronym": "CCM",
+        "definition": "Cloud Controls Matrix",
+        "explanation": "A Cloud Security Alliance framework that provides a cybersecurity control framework for cloud computing, aligned to major standards and regulations."
+      },
+      {
+        "acronym": "CIA",
+        "definition": "Confidentiality, Integrity, Availability",
+        "explanation": "The foundational security triad defining the three core objectives of information security: protecting data from unauthorised access, preventing tampering, and ensuring reliable access."
+      },
+      {
+        "acronym": "CMF",
+        "definition": "Collection Management Framework",
+        "explanation": "A structured approach for managing the collection of threat intelligence and other security-relevant data from diverse sources."
+      },
+      {
+        "acronym": "COA",
+        "definition": "Course of Action",
+        "explanation": "A recommended response or mitigation action associated with a specific threat, vulnerability, or security incident in threat intelligence contexts."
+      },
+      {
+        "acronym": "CSA",
+        "definition": "Cloud Security Alliance / Continuous Security Assessment",
+        "explanation": "Either the non-profit Cloud Security Alliance that promotes cloud security best practices, or the ongoing process of continuously evaluating an organisation's security posture."
+      },
+      {
+        "acronym": "CSP",
+        "definition": "Content Security Policy",
+        "explanation": "A web security standard delivered via HTTP headers that helps prevent XSS and other code injection attacks by controlling resource origins."
+      },
+      {
+        "acronym": "CTF",
+        "definition": "Capture the Flag",
+        "explanation": "A cybersecurity competition in which participants solve hacking challenges to find hidden flags, used for skills development and recruitment."
+      },
+      {
+        "acronym": "CTI",
+        "definition": "Cyber Threat Intelligence",
+        "explanation": "Contextual information about current or emerging threats and adversaries, processed and analysed to inform security decisions and defences."
+      },
+      {
+        "acronym": "DFIR",
+        "definition": "Digital Forensics and Incident Response",
+        "explanation": "A combined security discipline involving the investigation and recovery from cyber incidents (IR) and the forensic analysis of digital evidence (DF)."
+      },
+      {
+        "acronym": "DLS",
+        "definition": "Dedicated Leak Site",
+        "explanation": "A website operated by ransomware gangs to publish stolen data from victims who refuse to pay ransom, used as a double-extortion tactic."
+      },
+      {
+        "acronym": "EICAR",
+        "definition": "European Institute for Computer Antivirus Research",
+        "explanation": "An organisation known for the EICAR test file, a harmless string used to test antivirus software detection capabilities without using real malware."
+      },
+      {
+        "acronym": "FIDO",
+        "definition": "Fast Identity Online",
+        "explanation": "An alliance and set of open authentication standards (FIDO2, WebAuthn, U2F) that enable passwordless and phishing-resistant authentication using public-key cryptography."
+      },
+      {
+        "acronym": "FPC",
+        "definition": "Full Packet Capture",
+        "explanation": "The practice of recording all network traffic at the packet level for forensic investigation, threat hunting, and retrospective security analysis."
+      },
+      {
+        "acronym": "IDAM",
+        "definition": "Identity and Access Management",
+        "explanation": "An alternate abbreviation for Identity and Access Management \u2014 the discipline of managing digital identities and controlling resource access."
+      },
+      {
+        "acronym": "IDP",
+        "definition": "Identity Provider",
+        "explanation": "A system that creates, maintains, and manages identity information for principals (users, devices, services) and provides authentication services to relying applications."
+      },
+      {
+        "acronym": "IOA",
+        "definition": "Indicators of Attack",
+        "explanation": "Behavioural patterns and signals that suggest an attack is in progress, focusing on attacker intent and methods rather than after-the-fact compromise artefacts."
+      },
+      {
+        "acronym": "IOC",
+        "definition": "Indicators of Compromise",
+        "explanation": "Observable artefacts such as IP addresses, domain names, file hashes, and registry keys that indicate a system has been compromised."
+      },
+      {
+        "acronym": "IPE",
+        "definition": "Intelligence Preparation of the Environment",
+        "explanation": "A structured analytical process used to understand the threat landscape and adversary capabilities in order to anticipate and counter attacks."
+      },
+      {
+        "acronym": "IR",
+        "definition": "Incident Response",
+        "explanation": "The organised approach to addressing and managing the aftermath of a security breach or cyberattack to limit damage and reduce recovery time."
+      },
+      {
+        "acronym": "IT",
+        "definition": "Information Technology",
+        "explanation": "The use of computers, storage, networking, and other infrastructure to create, process, store, secure, and exchange all forms of electronic data."
+      },
+      {
+        "acronym": "KCM",
+        "definition": "Kill Chain Model",
+        "explanation": "A framework (originally the Lockheed Martin Cyber Kill Chain) that describes the phases of a cyberattack from initial reconnaissance to final objective achievement."
+      },
+      {
+        "acronym": "KPI",
+        "definition": "Key Performance Indicator",
+        "explanation": "A quantifiable measure used to evaluate the effectiveness and progress of security programmes, operations, or individual controls toward defined goals."
+      },
+      {
+        "acronym": "LANGSEC",
+        "definition": "Language Security",
+        "explanation": "A security research field that applies formal language theory to the analysis of input handling, arguing many vulnerabilities stem from ad hoc parsing of complex inputs."
+      },
+      {
+        "acronym": "MTTR",
+        "definition": "Mean Time to Resolve",
+        "explanation": "A key security metric measuring the average time taken to fully resolve a security incident from detection to restoration of normal service."
+      },
+      {
+        "acronym": "NDB",
+        "definition": "Notifiable Data Breach",
+        "explanation": "A data breach that meets legal thresholds requiring mandatory notification to regulators and affected individuals, as defined under legislation such as Australia's Privacy Act."
+      },
+      {
+        "acronym": "NGCI",
+        "definition": "Next Generation Cyber Infrastructure",
+        "explanation": "Advanced cyber infrastructure initiatives designed to address future cybersecurity challenges for critical national systems and services."
+      },
+      {
+        "acronym": "NHI",
+        "definition": "Non-Human Identity",
+        "explanation": "A digital identity assigned to non-person entities such as applications, services, bots, and devices, requiring dedicated identity governance."
+      },
+      {
+        "acronym": "NMS",
+        "definition": "Network Management System",
+        "explanation": "Software used to monitor, manage, and configure network devices and infrastructure, with security implications for access control and configuration management."
+      },
+      {
+        "acronym": "NRT",
+        "definition": "Near Real-Time",
+        "explanation": "Processing or analysis that occurs with minimal latency after an event, used in security monitoring and alerting contexts."
+      },
+      {
+        "acronym": "OPSEC",
+        "definition": "Operational Security",
+        "explanation": "A process that identifies critical information and analyses threats to prevent adversaries from obtaining sensitive information about operations or capabilities."
+      },
+      {
+        "acronym": "OSINT",
+        "definition": "Open Source Intelligence",
+        "explanation": "The collection and analysis of information gathered from publicly available sources including websites, social media, and public databases for security purposes."
+      },
+      {
+        "acronym": "OT",
+        "definition": "Operational Technology",
+        "explanation": "Hardware and software that detects or causes changes through direct monitoring and control of physical devices, processes, and events, e.g. industrial control systems."
+      },
+      {
+        "acronym": "PCD",
+        "definition": "Payment Card Data",
+        "explanation": "Sensitive financial information from payment cards including cardholder name, card number, expiry date, and security codes that must be protected under PCI DSS."
+      },
+      {
+        "acronym": "PUP",
+        "definition": "Potentially Unwanted Program",
+        "explanation": "Software that may be unwanted or harmful despite being installed with user consent, such as adware, browser toolbars, or bundled applications."
+      },
+      {
+        "acronym": "RBOM",
+        "definition": "Runtime Bill of Materials",
+        "explanation": "A real-time inventory of all software components, libraries, and dependencies actively running in an environment, used to identify live exposure to vulnerabilities."
+      },
+      {
+        "acronym": "RP",
+        "definition": "Return Pointer",
+        "explanation": "A stack memory value that stores the address to return to after a function call; a frequent target in stack-based buffer overflow exploitation techniques."
+      },
+      {
+        "acronym": "RTR",
+        "definition": "Rapid Threat Response",
+        "explanation": "Accelerated security response capabilities and workflows designed to minimise attacker dwell time and contain threats as quickly as possible."
+      },
+      {
+        "acronym": "SAQ",
+        "definition": "Self-Assessment Questionnaire",
+        "explanation": "A PCI DSS validation tool used by merchants and service providers to self-evaluate their compliance with applicable cardholder data security requirements."
+      },
+      {
+        "acronym": "SBOM",
+        "definition": "Software Bill of Materials",
+        "explanation": "A formal record of all components, libraries, and dependencies comprising a piece of software, used to identify vulnerabilities and manage supply chain risk."
+      },
+      {
+        "acronym": "SDLC",
+        "definition": "Software Development Lifecycle",
+        "explanation": "The structured process for planning, creating, testing, and deploying software; integrating security at each phase forms the basis of Secure SDLC (SSDLC)."
+      },
+      {
+        "acronym": "SD-WAN",
+        "definition": "Software-Defined Wide Area Network",
+        "explanation": "A network architecture approach using software-defined networking principles to manage WAN connections, improving flexibility and enabling security policy enforcement."
+      },
+      {
+        "acronym": "SFP",
+        "definition": "Saved Frame Pointer",
+        "explanation": "A stack memory value storing the base pointer of the caller's stack frame; targeted in certain buffer overflow exploits to redirect execution flow."
+      },
+      {
+        "acronym": "SKU",
+        "definition": "Stock Keeping Unit",
+        "explanation": "A unique identifier for a product or service; in cybersecurity licensing contexts, used to distinguish individual security product offerings and subscriptions."
+      },
+      {
+        "acronym": "SOA",
+        "definition": "Statement of Applicability",
+        "explanation": "An ISO 27001 required document that records which information security controls from Annex A are applicable to the organisation and the justification for each."
+      },
+      {
+        "acronym": "SRA",
+        "definition": "Security Response Automation",
+        "explanation": "Automated workflows and playbooks that execute security response actions such as blocking IPs, isolating hosts, or resetting credentials without manual intervention."
+      },
+      {
+        "acronym": "SSDLC",
+        "definition": "Secure Software Development Lifecycle",
+        "explanation": "An SDLC approach that embeds security activities \u2014 such as threat modelling, code review, and security testing \u2014 throughout every phase of software development."
+      },
+      {
+        "acronym": "SWOT",
+        "definition": "Strengths, Weaknesses, Opportunities, and Threats",
+        "explanation": "A strategic analysis framework applied in security contexts to assess an organisation's internal capabilities and external risk environment."
+      },
+      {
+        "acronym": "TI",
+        "definition": "Threat Intelligence",
+        "explanation": "Evidence-based knowledge about existing or emerging threats and hazards, enabling informed decisions about how to respond and defend against adversaries."
+      },
+      {
+        "acronym": "TTP",
+        "definition": "Tactics, Techniques, and Procedures",
+        "explanation": "The patterns of behaviour used by threat actors during cyberattacks, describing what they do (tactics), how they do it (techniques), and the specific steps taken (procedures)."
+      },
+      {
+        "acronym": "CAPP",
+        "definition": "Controlled Access Protection Profile",
+        "explanation": "A Common Criteria protection profile defining security requirements for systems that enforce controlled discretionary access protection."
+      },
+      {
+        "acronym": "VAP",
+        "definition": "Very Attacked Person",
+        "explanation": "A term (coined by Proofpoint) for individuals within an organisation who are disproportionately targeted by cyberattacks based on their role or access level."
+      },
+      {
+        "acronym": "YARA-L",
+        "definition": "YARA for Logs",
+        "explanation": "A rule-based detection language extending YARA concepts to log-based data in SIEM/Chronicle platforms, enabling detection of threats across log telemetry."
+      },
+      {
+        "acronym": "CRAF",
+        "definition": "Cyber Resilience Audit Framework",
+        "explanation": "An NCSC-assured framework for conducting structured cybersecurity audits of organisations against the CAF to assess resilience and compliance."
+      }
+    ]
+  }
+}
