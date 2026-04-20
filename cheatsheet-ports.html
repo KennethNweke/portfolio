@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ports &amp; Port Numbers Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="A quick reference guide for common network ports, protocols and services — by Kenneth Nweke."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .cs-section{margin-bottom:2.5rem}
+    .cs-section h2{margin-bottom:1rem}
+    .code-block{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:1.25rem 1.5rem;overflow-x:auto;position:relative;margin:.75rem 0 1rem}
+    .code-block pre{margin:0;font-family:'JetBrains Mono','Fira Code','Courier New',monospace;font-size:.82rem;line-height:1.75;color:#e6edf3;white-space:pre}
+    .copy-btn{position:absolute;top:10px;right:12px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:.7rem;padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .2s,color .2s;font-family:inherit}
+    .copy-btn:hover{background:#30363d;color:#e6edf3}
+    .copy-btn.copied{color:#3fb950;border-color:#3fb950}
+    .ic{background:rgba(110,118,129,.15);border:1px solid rgba(110,118,129,.25);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.82em;color:#e6edf3}
+    [data-theme="light"] .ic{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#24292f}
+    [data-theme="light"] .code-block{background:#161b22}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0}
+    .ref-table th{text-align:left;padding:8px 12px;background:rgba(110,118,129,.1);color:var(--text-secondary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:#d2a8ff;white-space:nowrap;font-size:.8rem}
+    .ref-table tr:last-child td{border-bottom:none}
+    .ref-table tr:hover td{background:rgba(110,118,129,.05)}
+    .reading-link{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);text-decoration:none;color:var(--text-primary);font-size:.85rem;transition:border-color .2s,transform .2s;margin-bottom:.5rem}
+    .reading-link:hover{border-color:var(--accent);transform:translateX(4px)}
+    .reading-link .rl-icon{font-size:1.1rem;flex-shrink:0}
+    .reading-link .rl-title{font-weight:600;color:var(--text-primary)}
+    .reading-link .rl-sub{font-size:.75rem;color:var(--text-secondary)}
+    .overview-card{background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .overview-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem}
+    .overview-card p{margin:0 0 .5rem;font-size:.85rem;color:var(--text-secondary);line-height:1.7}
+    .overview-card p:last-child{margin:0}
+    .overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;margin-top:.75rem}
+    .ov-item{padding:.75rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);text-align:center}
+    .ov-item i{font-size:1.4rem;color:var(--accent);margin-bottom:.4rem;display:block}
+    .ov-item span{font-size:.78rem;color:var(--text-secondary);line-height:1.4}
+    .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-right:4px}
+    .badge-blue{background:rgba(121,192,255,.15);color:#79c0ff}
+    .badge-green{background:rgba(63,185,80,.15);color:#3fb950}
+    .badge-orange{background:rgba(255,166,87,.15);color:#ffa657}
+    .badge-purple{background:rgba(210,168,255,.15);color:#d2a8ff}
+    .badge-red{background:rgba(248,81,73,.15);color:#f85149}
+    .port-num{font-family:'JetBrains Mono',monospace;font-weight:700;color:#d2a8ff}
+    /* Quiz / Slideshow shared */
+    .toolbar{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem;align-items:center}
+    .toolbar-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font-size:.82rem;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+    .toolbar-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .overlay-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+    .overlay-modal.active{display:flex}
+    .modal-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:580px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .modal-card .mc-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:.5rem}
+    .modal-card .mc-main{font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:900;color:var(--accent);margin-bottom:.5rem;line-height:1}
+    .modal-card .mc-sub{font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem}
+    .modal-card .mc-body{font-size:.85rem;color:var(--text-secondary);line-height:1.7}
+    .modal-progress{font-size:.78rem;color:var(--text-secondary);margin-top:.75rem}
+    .prog-bar-wrap{width:100%;max-width:420px;height:4px;background:var(--border);border-radius:2px;margin-top:.4rem;overflow:hidden}
+    .prog-bar-fill{height:100%;background:var(--accent);transition:width .08s linear;border-radius:2px}
+    .modal-controls{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap;justify-content:center}
+    .btn-sm{padding:.45rem 1rem;font-size:.82rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn-sm.primary:hover{opacity:.9}
+    .btn-sm.danger{background:#f85149;border-color:#f85149;color:#fff}
+    .btn-sm.success{background:#3fb950;border-color:#3fb950;color:#fff}
+    .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem}
+    .quiz-opt{padding:.65rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-secondary);cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:inherit}
+    .quiz-opt:hover{border-color:var(--accent);color:var(--accent)}
+    .quiz-opt.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}
+    .quiz-opt.wrong{border-color:#f85149;background:rgba(248,81,73,.1);color:#f85149}
+    .quiz-opt:disabled{pointer-events:none}
+    .quiz-result-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:440px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    .quiz-result-card h2{color:var(--accent);margin:0 0 .5rem}
+    .final-score{font-size:3rem;font-weight:900;color:var(--text-primary);margin:.5rem 0}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+    @media(max-width:600px){.stat-row{grid-template-columns:repeat(2,1fr)}.quiz-opts{grid-template-columns:1fr}}
+    .stat-card{padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);text-align:center}
+    .stat-card .sv{font-size:1.6rem;font-weight:800;color:var(--accent);line-height:1}
+    .stat-card .sl{font-size:.72rem;color:var(--text-secondary);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+    .search-wrap{position:relative;margin-bottom:1.25rem}
+    .search-input{width:100%;padding:.85rem 1rem .85rem 2.75rem;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--text-primary);font-size:.95rem;font-family:inherit;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
+    .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12)}
+    .search-input::placeholder{color:var(--text-secondary)}
+    .search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--text-secondary);pointer-events:none}
+  </style>
+</head>
+<body>
+
+<!-- ══════ NAV ══════ -->
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li>
+    <li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg></a></li>
+    <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="projects.html">Projects</a><a href="cheatsheets.html">Cheatsheets</a><a href="more.html">More</a>
+  <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+  <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+</div>
+
+<!-- Slideshow Overlay -->
+<div class="overlay-modal" id="slideshowOverlay">
+  <div class="modal-card" id="slideCard">
+    <div class="mc-label" id="slideCat"></div>
+    <div class="mc-main" id="slidePort"></div>
+    <div class="mc-sub" id="slideService"></div>
+    <div class="mc-body" id="slideDesc"></div>
+  </div>
+  <div class="modal-progress" id="slideProgress"></div>
+  <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill"></div></div>
+  <div class="modal-controls">
+    <button class="btn-sm" onclick="slidePrev()">← Prev</button>
+    <button class="btn-sm primary" id="slideToggleBtn" onclick="toggleSlide()">⏸ Pause</button>
+    <button class="btn-sm" onclick="slideNext()">Next →</button>
+    <button class="btn-sm danger" onclick="closeSlideshow()">✕ Close</button>
+  </div>
+</div>
+
+<!-- Quiz Overlay -->
+<div class="overlay-modal" id="quizOverlay">
+  <div id="quizMain" class="modal-card" style="max-width:600px;text-align:left">
+    <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:1rem" id="quizMeta"></div>
+    <div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:.35rem">What port number is used by:</div>
+    <div style="font-size:1.6rem;font-weight:800;color:var(--text-primary);margin-bottom:1.25rem" id="quizQ"></div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div id="quizFeedback" style="margin-top:.75rem;font-size:.84rem;min-height:1.2rem"></div>
+    <div class="modal-controls" style="justify-content:flex-start;margin-top:1rem">
+      <button class="btn-sm primary" id="quizNextBtn" onclick="quizNext()" style="display:none">Next →</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ End</button>
+    </div>
+  </div>
+  <div id="quizResultCard" class="quiz-result-card" style="display:none">
+    <h2>Quiz Complete 🎉</h2>
+    <div class="final-score" id="finalScore"></div>
+    <p id="finalMsg" style="color:var(--text-secondary);font-size:.88rem;margin:.5rem 0 1.5rem"></p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="startQuiz()">🔄 Restart</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MAIN ══════ -->
+<main><div class="container">
+
+  <div class="project-header fade-in">
+    <div class="breadcrumb"><a href="cheatsheets.html">← Cheatsheets</a><span>/</span><span>Ports</span></div>
+    <div class="card-tag" style="margin-bottom:.75rem;">Networking · Ports · Protocols · Services</div>
+    <h1 class="project-title"><i class="fa-solid fa-network-wired" style="font-size:2.2rem;margin-right:.5rem"></i>Ports &amp;<br>Port Numbers</h1>
+    <p style="color:var(--text-secondary);max-width:620px;font-size:1.05rem;line-height:1.8">A quick reference guide for <strong>network ports</strong>, protocols, and services — including well-known, registered, and dynamic port ranges with quiz and slideshow modes.</p>
+    <div class="project-meta">
+      <div class="meta-item"><span>Ports:</span> 65535 total</div>
+      <div class="meta-item"><span>Ranges:</span> Well-known / Registered / Dynamic</div>
+      <div class="meta-item"><span>Level:</span> Beginner → Advanced</div>
+      <div class="meta-item"><span>Topics:</span> 5 sections</div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-solid fa-globe"></i> IANA Port Registry</a>
+      <button onclick="startQuiz()" class="btn btn-outline">🧠 Start Quiz</button>
+    </div>
+  </div>
+
+  <div class="project-layout" style="padding-bottom:80px">
+  <div class="project-content">
+
+    <!-- OVERVIEW -->
+    <div class="overview-card fade-in">
+      <h3><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i> What are Ports?</h3>
+      <p>A <strong>network port</strong> is a virtual communication endpoint that allows a computer to differentiate between different types of network traffic. While an IP address identifies a device on a network, the port number identifies a specific service or application on that device.</p>
+      <p>Ports are 16-bit unsigned integers ranging from <strong>0 to 65535</strong> and are used by transport-layer protocols TCP and UDP to route traffic to the correct process.</p>
+      <p><strong>Why it matters:</strong> Firewalls use port numbers to allow or block specific traffic. Understanding ports is essential for network administration, security auditing, and penetration testing.</p>
+      <div class="overview-grid">
+        <div class="ov-item"><i class="fa-solid fa-building"></i><span>Corporate firewalls block unauthorised ports</span></div>
+        <div class="ov-item"><i class="fa-solid fa-shield-halved"></i><span>Security scans probe open ports</span></div>
+        <div class="ov-item"><i class="fa-solid fa-server"></i><span>Servers listen on specific ports</span></div>
+        <div class="ov-item"><i class="fa-solid fa-magnifying-glass"></i><span>Nmap discovers open/closed ports</span></div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar fade-in">
+      <button class="toolbar-btn" onclick="openSlideshow()"><i class="fa-solid fa-play"></i> Play Slideshow</button>
+      <button class="toolbar-btn" onclick="startQuiz()"><i class="fa-solid fa-circle-question"></i> Start Quiz</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrap fade-in">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="portSearch" placeholder="Search port, service or protocol (e.g. 443, SSH, HTTP)…" oninput="filterPorts(this.value)" autocomplete="off"/>
+    </div>
+
+    <!-- STAT ROW -->
+    <div class="stat-row fade-in">
+      <div class="stat-card"><div class="sv">0–1023</div><div class="sl">Well-Known</div></div>
+      <div class="stat-card"><div class="sv">1024–49151</div><div class="sl">Registered</div></div>
+      <div class="stat-card"><div class="sv">49152–65535</div><div class="sl">Dynamic/Private</div></div>
+      <div class="stat-card"><div class="sv">65535</div><div class="sl">Total Ports</div></div>
+    </div>
+
+    <!-- ── Section 1: Well-Known Ports ── -->
+    <div class="cs-section" id="sec-wellknown">
+      <h2 class="fade-in"><i class="fa-solid fa-star" style="color:#ffa657"></i> 1. Well-Known Ports (0–1023)</h2>
+      <p class="fade-in">Assigned by IANA and used by core system services. Require root/admin privileges to bind.</p>
+      <div id="well-known-table">
+      <table class="ref-table fade-in">
+        <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="port-num">20</td><td><span class="badge badge-blue">TCP</span></td><td>FTP-Data</td><td>File Transfer Protocol — data transfer channel</td></tr>
+          <tr><td class="port-num">21</td><td><span class="badge badge-blue">TCP</span></td><td>FTP</td><td>File Transfer Protocol — control/command channel</td></tr>
+          <tr><td class="port-num">22</td><td><span class="badge badge-blue">TCP</span></td><td>SSH</td><td>Secure Shell — encrypted remote login and command execution</td></tr>
+          <tr><td class="port-num">23</td><td><span class="badge badge-blue">TCP</span></td><td>Telnet</td><td>Unencrypted remote terminal access (deprecated/insecure)</td></tr>
+          <tr><td class="port-num">25</td><td><span class="badge badge-blue">TCP</span></td><td>SMTP</td><td>Simple Mail Transfer Protocol — sending email</td></tr>
+          <tr><td class="port-num">53</td><td><span class="badge badge-orange">TCP/UDP</span></td><td>DNS</td><td>Domain Name System — resolves hostnames to IPs</td></tr>
+          <tr><td class="port-num">67</td><td><span class="badge badge-green">UDP</span></td><td>DHCP Server</td><td>Dynamic Host Configuration Protocol — assigns IP addresses</td></tr>
+          <tr><td class="port-num">68</td><td><span class="badge badge-green">UDP</span></td><td>DHCP Client</td><td>DHCP client receives configuration from server</td></tr>
+          <tr><td class="port-num">69</td><td><span class="badge badge-green">UDP</span></td><td>TFTP</td><td>Trivial File Transfer Protocol — simple file transfers</td></tr>
+          <tr><td class="port-num">80</td><td><span class="badge badge-blue">TCP</span></td><td>HTTP</td><td>HyperText Transfer Protocol — unencrypted web traffic</td></tr>
+          <tr><td class="port-num">110</td><td><span class="badge badge-blue">TCP</span></td><td>POP3</td><td>Post Office Protocol v3 — receive email from server</td></tr>
+          <tr><td class="port-num">119</td><td><span class="badge badge-blue">TCP</span></td><td>NNTP</td><td>Network News Transfer Protocol — Usenet newsgroups</td></tr>
+          <tr><td class="port-num">123</td><td><span class="badge badge-green">UDP</span></td><td>NTP</td><td>Network Time Protocol — clock synchronisation</td></tr>
+          <tr><td class="port-num">135</td><td><span class="badge badge-blue">TCP</span></td><td>RPC</td><td>Microsoft Remote Procedure Call endpoint mapper</td></tr>
+          <tr><td class="port-num">137–139</td><td><span class="badge badge-orange">TCP/UDP</span></td><td>NetBIOS</td><td>NetBIOS Name / Datagram / Session services</td></tr>
+          <tr><td class="port-num">143</td><td><span class="badge badge-blue">TCP</span></td><td>IMAP</td><td>Internet Message Access Protocol — email access</td></tr>
+          <tr><td class="port-num">161</td><td><span class="badge badge-green">UDP</span></td><td>SNMP</td><td>Simple Network Management Protocol — device monitoring</td></tr>
+          <tr><td class="port-num">162</td><td><span class="badge badge-green">UDP</span></td><td>SNMP Trap</td><td>SNMP notifications sent from agent to manager</td></tr>
+          <tr><td class="port-num">179</td><td><span class="badge badge-blue">TCP</span></td><td>BGP</td><td>Border Gateway Protocol — inter-domain routing</td></tr>
+          <tr><td class="port-num">194</td><td><span class="badge badge-blue">TCP</span></td><td>IRC</td><td>Internet Relay Chat</td></tr>
+          <tr><td class="port-num">389</td><td><span class="badge badge-orange">TCP/UDP</span></td><td>LDAP</td><td>Lightweight Directory Access Protocol — directory services</td></tr>
+          <tr><td class="port-num">443</td><td><span class="badge badge-blue">TCP</span></td><td>HTTPS</td><td>HTTP over TLS/SSL — encrypted web traffic</td></tr>
+          <tr><td class="port-num">445</td><td><span class="badge badge-blue">TCP</span></td><td>SMB</td><td>Server Message Block — Windows file/printer sharing</td></tr>
+          <tr><td class="port-num">465</td><td><span class="badge badge-blue">TCP</span></td><td>SMTPS</td><td>SMTP over SSL — secure email submission</td></tr>
+          <tr><td class="port-num">514</td><td><span class="badge badge-green">UDP</span></td><td>Syslog</td><td>System Logging Protocol — log collection</td></tr>
+          <tr><td class="port-num">587</td><td><span class="badge badge-blue">TCP</span></td><td>SMTP (TLS)</td><td>SMTP submission with STARTTLS — modern email sending</td></tr>
+          <tr><td class="port-num">636</td><td><span class="badge badge-blue">TCP</span></td><td>LDAPS</td><td>LDAP over SSL — secure directory queries</td></tr>
+          <tr><td class="port-num">993</td><td><span class="badge badge-blue">TCP</span></td><td>IMAPS</td><td>IMAP over TLS — secure email access</td></tr>
+          <tr><td class="port-num">995</td><td><span class="badge badge-blue">TCP</span></td><td>POP3S</td><td>POP3 over TLS — secure email retrieval</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Registered Ports ── -->
+    <div class="cs-section" id="sec-registered">
+      <h2 class="fade-in"><i class="fa-solid fa-bookmark" style="color:#79c0ff"></i> 2. Registered Ports (1024–49151)</h2>
+      <p class="fade-in">Registered with IANA for specific services. Can be used by user processes without root privileges.</p>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Port</th><th>Protocol</th><th>Service</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="port-num">1080</td><td><span class="badge badge-blue">TCP</span></td><td>SOCKS</td><td>SOCKS proxy protocol — circuit-level gateway</td></tr>
+          <tr><td class="port-num">1194</td><td><span class="badge badge-green">UDP</span></td><td>OpenVPN</td><td>OpenVPN tunnelling protocol</td></tr>
+          <tr><td class="port-num">1433</td><td><span class="badge badge-blue">TCP</span></td><td>MS SQL</td><td>Microsoft SQL Server database</td></tr>
+          <tr><td class="port-num">1521</td><td><span class="badge badge-blue">TCP</span></td><td>Oracle DB</td><td>Oracle Database listener</td></tr>
+          <tr><td class="port-num">1723</td><td><span class="badge badge-blue">TCP</span></td><td>PPTP</td><td>Point-to-Point Tunneling Protocol — legacy VPN</td></tr>
+          <tr><td class="port-num">3306</td><td><span class="badge badge-blue">TCP</span></td><td>MySQL</td><td>MySQL / MariaDB database server</td></tr>
+          <tr><td class="port-num">3389</td><td><span class="badge badge-orange">TCP/UDP</span></td><td>RDP</td><td>Remote Desktop Protocol — Windows remote access</td></tr>
+          <tr><td class="port-num">4444</td><td><span class="badge badge-blue">TCP</span></td><td>Metasploit</td><td>Default Metasploit reverse shell / meterpreter listener</td></tr>
+          <tr><td class="port-num">5432</td><td><span class="badge badge-blue">TCP</span></td><td>PostgreSQL</td><td>PostgreSQL database server</td></tr>
+          <tr><td class="port-num">5900</td><td><span class="badge badge-blue">TCP</span></td><td>VNC</td><td>Virtual Network Computing — remote desktop</td></tr>
+          <tr><td class="port-num">6379</td><td><span class="badge badge-blue">TCP</span></td><td>Redis</td><td>Redis in-memory data structure store</td></tr>
+          <tr><td class="port-num">8080</td><td><span class="badge badge-blue">TCP</span></td><td>HTTP-Alt</td><td>Alternative HTTP port — commonly used by web proxies</td></tr>
+          <tr><td class="port-num">8443</td><td><span class="badge badge-blue">TCP</span></td><td>HTTPS-Alt</td><td>Alternative HTTPS port — common in dev/test environments</td></tr>
+          <tr><td class="port-num">9200</td><td><span class="badge badge-blue">TCP</span></td><td>Elasticsearch</td><td>Elasticsearch REST API</td></tr>
+          <tr><td class="port-num">27017</td><td><span class="badge badge-blue">TCP</span></td><td>MongoDB</td><td>MongoDB NoSQL database default port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Section 3: Dynamic Ports ── -->
+    <div class="cs-section" id="sec-dynamic">
+      <h2 class="fade-in"><i class="fa-solid fa-shuffle" style="color:#d2a8ff"></i> 3. Dynamic / Private Ports (49152–65535)</h2>
+      <p class="fade-in">Assigned dynamically by the OS for ephemeral client-side connections. Not registered with IANA — used as source ports for outbound connections.</p>
+      <div class="overview-card fade-in" style="border-left-color:#d2a8ff">
+        <h3><i class="fa-solid fa-info-circle" style="color:#d2a8ff"></i> About Ephemeral Ports</h3>
+        <p>When your browser connects to a website on port 443, your OS assigns a random <strong>ephemeral port</strong> (e.g. 54321) as the source port. The server responds to that ephemeral port. This is why you can have many simultaneous connections.</p>
+        <p>Linux default range: <code class="ic">32768–60999</code> &nbsp;|&nbsp; Windows default: <code class="ic">49152–65535</code></p>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Security-Relevant Ports ── -->
+    <div class="cs-section" id="sec-security">
+      <h2 class="fade-in"><i class="fa-solid fa-shield-virus" style="color:#f85149"></i> 4. Security-Relevant Ports</h2>
+      <p class="fade-in">Ports frequently targeted by attackers or commonly found in CTF challenges and penetration tests.</p>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Port</th><th>Service</th><th>Risk / Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="port-num">21</td><td>FTP</td><td>Anonymous login, cleartext credentials — common target</td></tr>
+          <tr><td class="port-num">22</td><td>SSH</td><td>Brute-force attacks; older versions have known vulns</td></tr>
+          <tr><td class="port-num">23</td><td>Telnet</td><td>Cleartext protocol — should never be used; always insecure</td></tr>
+          <tr><td class="port-num">25</td><td>SMTP</td><td>Open relay exploitation, phishing, spam distribution</td></tr>
+          <tr><td class="port-num">53</td><td>DNS</td><td>DNS poisoning, zone transfer (AXFR), DNS tunnelling</td></tr>
+          <tr><td class="port-num">80/443</td><td>HTTP/HTTPS</td><td>Web attacks: XSS, SQLi, IDOR, SSRF, XXE</td></tr>
+          <tr><td class="port-num">135</td><td>RPC</td><td>MS03-026 (Blaster worm), used in DCOM attacks</td></tr>
+          <tr><td class="port-num">139/445</td><td>SMB</td><td>EternalBlue (MS17-010), WannaCry, NotPetya</td></tr>
+          <tr><td class="port-num">3389</td><td>RDP</td><td>BlueKeep (CVE-2019-0708), brute-force, ransomware delivery</td></tr>
+          <tr><td class="port-num">4444</td><td>Metasploit</td><td>Common reverse shell listener — suspicious if open</td></tr>
+          <tr><td class="port-num">5900</td><td>VNC</td><td>Weak/no auth — frequently exposed on the internet</td></tr>
+          <tr><td class="port-num">6667</td><td>IRC</td><td>Botnet C2 communication historically used IRC</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Section 5: Quick Reference Commands ── -->
+    <div class="cs-section" id="sec-commands">
+      <h2 class="fade-in"><i class="fa-solid fa-terminal" style="color:#3fb950"></i> 5. Port Scanning Quick Reference</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Nmap — scan common ports</span>
+nmap -sV 192.168.1.1           <span style="color:#8b949e"># version detection</span>
+nmap -p 80,443,22 192.168.1.1  <span style="color:#8b949e"># specific ports</span>
+nmap -p- 192.168.1.1           <span style="color:#8b949e"># all 65535 ports</span>
+nmap --top-ports 1000 target   <span style="color:#8b949e"># top 1000 common ports</span>
+
+<span style="color:#8b949e"># Linux — view listening ports</span>
+ss -tlnp                       <span style="color:#8b949e"># TCP listening ports</span>
+netstat -tlnp                  <span style="color:#8b949e"># older alternative</span>
+lsof -i :443                   <span style="color:#8b949e"># process on port 443</span>
+
+<span style="color:#8b949e"># Windows — view listening ports</span>
+netstat -ano                   <span style="color:#8b949e"># all connections with PID</span>
+netstat -ano | findstr :443    <span style="color:#8b949e"># filter port 443</span></pre>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Further Reading -->
+    <h2 class="fade-in">📚 Further Reading</h2>
+    <div class="fade-in">
+      <a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🌐</span><div><div class="rl-title">IANA Service Name and Port Number Registry</div><div class="rl-sub">iana.org — official authoritative port assignments</div></div></a>
+      <a href="https://nmap.org/book/port-scanning.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🔍</span><div><div class="rl-title">Nmap Port Scanning</div><div class="rl-sub">nmap.org — port scanning techniques and port states explained</div></div></a>
+      <a href="https://www.cisco.com/c/en/us/support/docs/ip/port-numbers/10200-well-known-ports.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🔧</span><div><div class="rl-title">Cisco — Well-Known Port Numbers</div><div class="rl-sub">cisco.com — reference for well-known networking ports</div></div></a>
+    </div>
+
+  </div><!-- /.project-content -->
+
+  <!-- Sidebar -->
+  <aside class="project-sidebar fade-in fade-in-delay-1">
+    <div class="sidebar-card">
+      <h3>Port Ranges</h3>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Well-Known (0–1023)</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Registered (1024–49151)</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Dynamic (49152–65535)</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Security-Relevant Ports</li>
+        <li style="padding:6px 0;font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Port Scanning Commands</li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h3>Quick Actions</h3>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button onclick="openSlideshow()" class="btn btn-primary" style="width:100%;justify-content:center;font-size:.82rem">▶ Play Slideshow</button>
+        <button onclick="startQuiz()" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.82rem">🧠 Start Quiz</button>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Key Ports</h3>
+      <div style="font-size:.8rem;color:var(--text-secondary);line-height:2">
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">22</span> — SSH</div>
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">80</span> — HTTP</div>
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">443</span> — HTTPS</div>
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">3389</span> — RDP</div>
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">445</span> — SMB</div>
+        <div><span style="color:#d2a8ff;font-family:monospace;font-weight:700">53</span> — DNS</div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Related</h3>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+        <a href="cheatsheet-nmap.html" style="color:var(--accent);text-decoration:none">🔍 Nmap Cheatsheet</a>
+        <a href="cheatsheet-osi-tcpip.html" style="color:var(--accent);text-decoration:none">📶 OSI / TCP-IP Model</a>
+        <a href="cheatsheet-network-troubleshooting.html" style="color:var(--accent);text-decoration:none">🛠️ Network Troubleshooting</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+
+</div></main>
+
+<footer><div class="container"><div class="footer-inner">
+  <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+  <div class="footer-links">
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</div></div></footer>
+
+<script src="js/script.js"></script>
+<script>
+/* ── Copy ── */
+function copyCode(btn){const p=btn.nextElementSibling;navigator.clipboard.writeText(p.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+
+/* ── Port data for slideshow / quiz ── */
+const PORTS=[
+  {port:'20/21',service:'FTP',proto:'TCP',desc:'File Transfer Protocol — data(20) and control(21) channels'},
+  {port:'22',service:'SSH',proto:'TCP',desc:'Secure Shell — encrypted remote login and command execution'},
+  {port:'23',service:'Telnet',proto:'TCP',desc:'Unencrypted remote terminal — deprecated and insecure'},
+  {port:'25',service:'SMTP',proto:'TCP',desc:'Simple Mail Transfer Protocol — sending email between servers'},
+  {port:'53',service:'DNS',proto:'TCP/UDP',desc:'Domain Name System — resolves domain names to IP addresses'},
+  {port:'67/68',service:'DHCP',proto:'UDP',desc:'Dynamic Host Configuration Protocol — automatic IP assignment'},
+  {port:'80',service:'HTTP',proto:'TCP',desc:'HyperText Transfer Protocol — unencrypted web browsing'},
+  {port:'110',service:'POP3',proto:'TCP',desc:'Post Office Protocol v3 — download email from mail server'},
+  {port:'123',service:'NTP',proto:'UDP',desc:'Network Time Protocol — time synchronisation across network devices'},
+  {port:'143',service:'IMAP',proto:'TCP',desc:'Internet Message Access Protocol — access email on mail server'},
+  {port:'161',service:'SNMP',proto:'UDP',desc:'Simple Network Management Protocol — monitor/manage network devices'},
+  {port:'389',service:'LDAP',proto:'TCP/UDP',desc:'Lightweight Directory Access Protocol — directory services (e.g. Active Directory)'},
+  {port:'443',service:'HTTPS',proto:'TCP',desc:'HTTP over TLS — encrypted web browsing (standard secure web)'},
+  {port:'445',service:'SMB',proto:'TCP',desc:'Server Message Block — Windows file/printer sharing (EternalBlue target)'},
+  {port:'514',service:'Syslog',proto:'UDP',desc:'System Logging — centralised log collection from devices'},
+  {port:'587',service:'SMTP TLS',proto:'TCP',desc:'SMTP with STARTTLS — modern secure email submission port'},
+  {port:'636',service:'LDAPS',proto:'TCP',desc:'LDAP over SSL — encrypted directory queries'},
+  {port:'993',service:'IMAPS',proto:'TCP',desc:'IMAP over TLS — secure email access'},
+  {port:'995',service:'POP3S',proto:'TCP',desc:'POP3 over TLS — secure email download'},
+  {port:'1433',service:'MS SQL',proto:'TCP',desc:'Microsoft SQL Server — database management system port'},
+  {port:'3306',service:'MySQL',proto:'TCP',desc:'MySQL / MariaDB database server default port'},
+  {port:'3389',service:'RDP',proto:'TCP/UDP',desc:'Remote Desktop Protocol — Windows remote graphical access'},
+  {port:'4444',service:'Metasploit',proto:'TCP',desc:'Default Metasploit reverse shell / Meterpreter listener'},
+  {port:'5432',service:'PostgreSQL',proto:'TCP',desc:'PostgreSQL relational database default port'},
+  {port:'5900',service:'VNC',proto:'TCP',desc:'Virtual Network Computing — cross-platform remote desktop'},
+  {port:'8080',service:'HTTP-Alt',proto:'TCP',desc:'Alternate HTTP port — used by proxies, dev servers, and Burp Suite'},
+  {port:'8443',service:'HTTPS-Alt',proto:'TCP',desc:'Alternate HTTPS port — common in test/dev environments'}
+];
+
+const QUIZ_QUESTIONS=[
+  {q:'HTTP — web browsing',correct:'80',opts:['80','443','21','25']},
+  {q:'HTTPS — encrypted web',correct:'443',opts:['443','80','8443','8080']},
+  {q:'SSH — secure remote shell',correct:'22',opts:['22','23','21','3389']},
+  {q:'DNS — domain name resolution',correct:'53',opts:['53','67','161','123']},
+  {q:'RDP — Windows remote desktop',correct:'3389',opts:['3389','5900','22','445']},
+  {q:'SMB — Windows file sharing',correct:'445',opts:['445','135','139','137']},
+  {q:'SMTP — sending email',correct:'25',opts:['25','110','143','587']},
+  {q:'FTP — file transfer control',correct:'21',opts:['21','20','22','69']},
+  {q:'MySQL — database',correct:'3306',opts:['3306','5432','1433','27017']},
+  {q:'Telnet — legacy remote access',correct:'23',opts:['23','22','25','21']},
+  {q:'DHCP — automatic IP assignment',correct:'67',opts:['67','68','53','69']},
+  {q:'NTP — network time sync',correct:'123',opts:['123','161','514','69']},
+  {q:'Metasploit default listener',correct:'4444',opts:['4444','9999','1337','31337']},
+  {q:'PostgreSQL — database',correct:'5432',opts:['5432','3306','1521','1433']},
+  {q:'LDAP — directory services',correct:'389',opts:['389','636','88','464']}
+];
+
+/* ── Port search ── */
+function filterPorts(q){
+  const rows=document.querySelectorAll('#well-known-table tbody tr, .ref-table tbody tr');
+  const ql=q.toLowerCase();
+  rows.forEach(r=>{
+    const t=r.textContent.toLowerCase();
+    r.style.display=(!q||t.includes(ql))?'':'none';
+  });
+}
+
+/* ── Slideshow ── */
+let sIdx=0,sPlaying=true,sTimer=null,sProg=null;
+const SDUR=5000;
+function openSlideshow(){
+  sIdx=0;sPlaying=true;
+  document.getElementById('slideshowOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  showSlide(sIdx);startSTimer();
+}
+function closeSlideshow(){stopSTimer();document.getElementById('slideshowOverlay').classList.remove('active');document.body.style.overflow=''}
+function showSlide(i){
+  const p=PORTS[i];
+  document.getElementById('slideCat').textContent=p.proto;
+  document.getElementById('slidePort').textContent='Port '+p.port;
+  document.getElementById('slideService').textContent=p.service;
+  document.getElementById('slideDesc').textContent=p.desc;
+  document.getElementById('slideProgress').textContent=(i+1)+' / '+PORTS.length;
+  document.getElementById('progFill').style.width='0%';
+}
+function startSTimer(){
+  stopSTimer();let e=0;
+  sProg=setInterval(()=>{e+=50;document.getElementById('progFill').style.width=Math.min(e/SDUR*100,100)+'%'},50);
+  sTimer=setTimeout(slideNext,SDUR);
+}
+function stopSTimer(){clearTimeout(sTimer);clearInterval(sProg)}
+function slideNext(){sIdx=(sIdx+1)%PORTS.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function slidePrev(){sIdx=(sIdx-1+PORTS.length)%PORTS.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function toggleSlide(){sPlaying=!sPlaying;document.getElementById('slideToggleBtn').textContent=sPlaying?'⏸ Pause':'▶ Resume';sPlaying?startSTimer():stopSTimer()}
+
+/* ── Quiz ── */
+let qIdx=0,qScore=0,qAnswered=false;
+const QS=15;
+function startQuiz(){
+  qIdx=0;qScore=0;
+  document.getElementById('quizMain').style.display='block';
+  document.getElementById('quizResultCard').style.display='none';
+  document.getElementById('quizOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  showQ();
+}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow=''}
+function showQ(){
+  qAnswered=false;
+  const q=QUIZ_QUESTIONS[qIdx];
+  document.getElementById('quizMeta').textContent='Question '+(qIdx+1)+' of '+QS+' · Score: '+qScore;
+  document.getElementById('quizQ').textContent=q.q;
+  document.getElementById('quizFeedback').textContent='';
+  document.getElementById('quizNextBtn').style.display='none';
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  document.getElementById('quizOpts').innerHTML=shuffled.map(o=>`<button class="quiz-opt" onclick="answerQ('${o}','${q.correct}',this)">${o}</button>`).join('');
+}
+function answerQ(ans,correct,btn){
+  if(qAnswered)return;qAnswered=true;
+  document.querySelectorAll('.quiz-opt').forEach(b=>{b.disabled=true});
+  if(ans===correct){qScore++;btn.classList.add('correct');document.getElementById('quizFeedback').innerHTML='<span style="color:#3fb950">✓ Correct!</span>'}
+  else{btn.classList.add('wrong');document.querySelector(`.quiz-opt[onclick*="'${correct}'"]`)?.classList.add('correct');document.getElementById('quizFeedback').innerHTML=`<span style="color:#f85149">✗ Correct answer: ${correct}</span>`}
+  document.getElementById('quizNextBtn').style.display='inline-flex';
+}
+function quizNext(){
+  qIdx++;
+  if(qIdx>=QS){showQResult();}else{showQ();}
+}
+function showQResult(){
+  document.getElementById('quizMain').style.display='none';
+  document.getElementById('quizResultCard').style.display='block';
+  const pct=Math.round(qScore/QS*100);
+  document.getElementById('finalScore').textContent=qScore+' / '+QS;
+  document.getElementById('finalMsg').textContent=pct>=80?'🏆 Excellent! You really know your ports.':pct>=60?'👍 Good work! Keep revising.':'📚 Keep studying — review the table above.';
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('slideshowOverlay').classList.contains('active')){
+    if(e.key==='ArrowRight')slideNext();
+    if(e.key==='ArrowLeft')slidePrev();
+    if(e.key==='Escape')closeSlideshow();
+    if(e.key===' '){e.preventDefault();toggleSlide();}
+  }
+  if(document.getElementById('quizOverlay').classList.contains('active')&&e.key==='Escape')closeQuiz();
+});
+</script>
+</body>
+</html>

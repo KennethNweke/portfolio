@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nmap Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="A comprehensive Nmap network scanning cheatsheet with scan types, flags, NSE scripts, and examples — by Kenneth Nweke."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .cs-section{margin-bottom:2.5rem}.cs-section h2{margin-bottom:1rem}
+    .code-block{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:1.25rem 1.5rem;overflow-x:auto;position:relative;margin:.75rem 0 1rem}
+    .code-block pre{margin:0;font-family:'JetBrains Mono','Fira Code','Courier New',monospace;font-size:.82rem;line-height:1.75;color:#e6edf3;white-space:pre}
+    .copy-btn{position:absolute;top:10px;right:12px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:.7rem;padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .2s,color .2s;font-family:inherit}
+    .copy-btn:hover{background:#30363d;color:#e6edf3}.copy-btn.copied{color:#3fb950;border-color:#3fb950}
+    .ic{background:rgba(110,118,129,.15);border:1px solid rgba(110,118,129,.25);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.82em;color:#e6edf3}
+    [data-theme="light"] .ic{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#24292f}
+    [data-theme="light"] .code-block{background:#161b22}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0}
+    .ref-table th{text-align:left;padding:8px 12px;background:rgba(110,118,129,.1);color:var(--text-secondary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:#d2a8ff;white-space:nowrap;font-size:.8rem}
+    .ref-table tr:last-child td{border-bottom:none}.ref-table tr:hover td{background:rgba(110,118,129,.05)}
+    .reading-link{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);text-decoration:none;color:var(--text-primary);font-size:.85rem;transition:border-color .2s,transform .2s;margin-bottom:.5rem}
+    .reading-link:hover{border-color:var(--accent);transform:translateX(4px)}
+    .reading-link .rl-icon{font-size:1.1rem;flex-shrink:0}.reading-link .rl-title{font-weight:600;color:var(--text-primary)}.reading-link .rl-sub{font-size:.75rem;color:var(--text-secondary)}
+    .overview-card{background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .overview-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text-primary)}.overview-card p{margin:0 0 .5rem;font-size:.85rem;color:var(--text-secondary);line-height:1.7}
+    .warning-card{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:flex-start}
+    .warning-card i{color:#f85149;font-size:1.2rem;flex-shrink:0;margin-top:2px}
+    .warning-card p{margin:0;font-size:.84rem;color:var(--text-secondary);line-height:1.6}
+    .flag-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    @media(max-width:700px){.flag-grid{grid-template-columns:1fr}}
+    .flag-item{border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;background:var(--card-bg)}
+    .flag-item .fi-flag{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:#d2a8ff;margin-bottom:.3rem}
+    .flag-item .fi-desc{font-size:.78rem;color:var(--text-secondary);line-height:1.5}
+    .toolbar{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem;align-items:center}
+    .toolbar-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font-size:.82rem;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+    .toolbar-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .overlay-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+    .overlay-modal.active{display:flex}
+    .modal-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:580px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+    .mc-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:.5rem}
+    .mc-main{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:900;color:#e6edf3;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.6rem 1rem;margin-bottom:.75rem;word-break:break-all;text-align:left}
+    .mc-sub{font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem}
+    .mc-body{font-size:.85rem;color:var(--text-secondary);line-height:1.7;text-align:left}
+    .modal-progress{font-size:.78rem;color:var(--text-secondary);margin-top:.75rem}
+    .prog-bar-wrap{width:100%;max-width:420px;height:4px;background:var(--border);border-radius:2px;margin-top:.4rem;overflow:hidden}
+    .prog-bar-fill{height:100%;background:var(--accent);transition:width .08s linear;border-radius:2px}
+    .modal-controls{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap;justify-content:center}
+    .btn-sm{padding:.45rem 1rem;font-size:.82rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent)}.btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn-sm.primary:hover{opacity:.9}.btn-sm.danger{background:#f85149;border-color:#f85149;color:#fff}
+    .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem}
+    @media(max-width:500px){.quiz-opts{grid-template-columns:1fr}}
+    .quiz-opt{padding:.65rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-secondary);cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:inherit}
+    .quiz-opt:hover{border-color:var(--accent);color:var(--accent)}.quiz-opt.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}.quiz-opt.wrong{border-color:#f85149;background:rgba(248,81,73,.1);color:#f85149}.quiz-opt:disabled{pointer-events:none}
+    .quiz-result-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:440px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    .quiz-result-card h2{color:var(--accent);margin:0 0 .5rem}.final-score{font-size:3rem;font-weight:900;color:var(--text-primary);margin:.5rem 0}
+  </style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li><li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li><li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="projects.html">Projects</a><a href="cheatsheets.html">Cheatsheets</a><a href="more.html">More</a>
+</div>
+
+<!-- Slideshow -->
+<div class="overlay-modal" id="slideshowOverlay">
+  <div class="modal-card" style="text-align:left">
+    <div class="mc-label" id="slideCat"></div>
+    <div class="mc-main" id="slideMain"></div>
+    <div class="mc-sub" id="slideSub"></div>
+    <div class="mc-body" id="slideBody"></div>
+  </div>
+  <div class="modal-progress" id="slideProgress"></div>
+  <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill"></div></div>
+  <div class="modal-controls">
+    <button class="btn-sm" onclick="slidePrev()">← Prev</button>
+    <button class="btn-sm primary" id="slideToggleBtn" onclick="toggleSlide()">⏸ Pause</button>
+    <button class="btn-sm" onclick="slideNext()">Next →</button>
+    <button class="btn-sm danger" onclick="closeSlideshow()">✕ Close</button>
+  </div>
+</div>
+
+<!-- Quiz -->
+<div class="overlay-modal" id="quizOverlay">
+  <div id="quizMain" class="modal-card" style="max-width:580px;text-align:left">
+    <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:1rem" id="quizMeta"></div>
+    <div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:.4rem">Which Nmap flag or command…</div>
+    <div style="font-size:1.4rem;font-weight:800;color:var(--text-primary);margin-bottom:1.25rem;line-height:1.3" id="quizQ"></div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div id="quizFeedback" style="margin-top:.75rem;font-size:.84rem;min-height:1.2rem"></div>
+    <div class="modal-controls" style="justify-content:flex-start;margin-top:1rem">
+      <button class="btn-sm primary" id="quizNextBtn" onclick="quizNext()" style="display:none">Next →</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ End</button>
+    </div>
+  </div>
+  <div id="quizResultCard" class="quiz-result-card" style="display:none">
+    <h2>Quiz Complete 🎉</h2>
+    <div class="final-score" id="finalScore"></div>
+    <p id="finalMsg" style="color:var(--text-secondary);font-size:.88rem;margin:.5rem 0 1.5rem"></p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="startQuiz()">🔄 Restart</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<main><div class="container">
+  <div class="project-header fade-in">
+    <div class="breadcrumb"><a href="cheatsheets.html">← Cheatsheets</a><span>/</span><span>Nmap</span></div>
+    <div class="card-tag" style="margin-bottom:.75rem;">Networking · Port Scanning · Penetration Testing</div>
+    <h1 class="project-title"></i>Nmap<br>Cheatsheet</h1>
+    <p style="color:var(--text-secondary);max-width:620px;font-size:1.05rem;line-height:1.8">A comprehensive reference for <strong>Nmap (Network Mapper)</strong> — covering scan types, flags, output formats, NSE scripts, firewall evasion, and real-world examples with quiz and slideshow.</p>
+    <div class="project-meta">
+      <div class="meta-item"><span>Tool:</span> Nmap</div>
+      <div class="meta-item"><span>Level:</span> Beginner → Advanced</div>
+      <div class="meta-item"><span>Topics:</span> 7 sections</div>
+      <div class="meta-item"><span>Includes:</span> NSE Scripts</div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="https://nmap.org/book/toc.html" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-solid fa-book"></i> Nmap Book (Free)</a>
+      <button onclick="startQuiz()" class="btn btn-outline">🧠 Start Quiz</button>
+    </div>
+  </div>
+
+  <div class="project-layout" style="padding-bottom:80px">
+  <div class="project-content">
+
+    <div class="overview-card fade-in">
+      <h3><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i> What is Nmap?</h3>
+      <p><strong>Nmap (Network Mapper)</strong> is a free, open-source network discovery and security auditing tool created by Gordon "Fyodor" Lyon in 1997. It is the industry standard for network reconnaissance.</p>
+      <p><strong>What it does:</strong> Discovers hosts on a network, determines what services (ports) are open, identifies operating systems, and detects firewall rules — using raw IP packets.</p>
+      <p><strong>Real-world use:</strong> Network inventory, vulnerability scanning, security audits, penetration testing, and CTF challenges. Essential for CEH, OSCP, and CompTIA PenTest+ certifications.</p>
+    </div>
+
+    <div class="warning-card fade-in">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <p><strong>⚠️ Legal Warning:</strong> Only scan systems you own or have explicit written permission to scan. Unauthorised scanning may violate computer crime laws including the Computer Fraud and Abuse Act (US) and Computer Misuse Act (UK). Always obtain written authorisation before scanning.</p>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar fade-in">
+      <button class="toolbar-btn" onclick="openSlideshow()"><i class="fa-solid fa-play"></i> Play Scans</button>
+      <button class="toolbar-btn" onclick="startQuiz()"><i class="fa-solid fa-circle-question"></i> Start Quiz</button>
+    </div>
+
+    <!-- 1. Basic Scans -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-rocket" style="color:#3fb950"></i> 1. Basic Scans</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Default scan (top 1000 ports, SYN if root, Connect if not)</span>
+nmap 192.168.1.1
+nmap 192.168.1.0/24             <span style="color:#8b949e"># scan entire subnet</span>
+nmap 10.0.0.1-50                <span style="color:#8b949e"># range of IPs</span>
+nmap -iL targets.txt            <span style="color:#8b949e"># scan from file</span>
+
+<span style="color:#8b949e"># Specific ports</span>
+nmap -p 80 192.168.1.1          <span style="color:#8b949e"># single port</span>
+nmap -p 80,443,8080 192.168.1.1 <span style="color:#8b949e"># multiple ports</span>
+nmap -p 1-1000 192.168.1.1      <span style="color:#8b949e"># port range</span>
+nmap -p- 192.168.1.1            <span style="color:#8b949e"># ALL 65535 ports</span>
+nmap --top-ports 100 192.168.1.1 <span style="color:#8b949e"># top 100 common ports</span></pre>
+      </div>
+    </div>
+
+    <!-- 2. Scan Types -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-crosshairs" style="color:#ffa657"></i> 2. Scan Types</h2>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Flag</th><th>Scan Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>-sS</td><td>TCP SYN Scan (Stealth)</td><td>Default when root. Sends SYN, doesn't complete handshake. Fast and less detectable.</td></tr>
+          <tr><td>-sT</td><td>TCP Connect Scan</td><td>Default without root. Completes full TCP handshake. More detectable, logged.</td></tr>
+          <tr><td>-sU</td><td>UDP Scan</td><td>Scans UDP ports. Slow but essential — DNS(53), DHCP(67), SNMP(161) are UDP.</td></tr>
+          <tr><td>-sA</td><td>TCP ACK Scan</td><td>Maps firewall rules — determines filtered vs unfiltered ports.</td></tr>
+          <tr><td>-sN</td><td>TCP Null Scan</td><td>No flags set. Can bypass some firewalls. Open ports don't respond.</td></tr>
+          <tr><td>-sF</td><td>FIN Scan</td><td>Sends FIN flag. Works on RFC-compliant systems. Bypasses some firewalls.</td></tr>
+          <tr><td>-sX</td><td>Xmas Scan</td><td>Sets FIN, PSH, URG flags — "lit up like a Christmas tree".</td></tr>
+          <tr><td>-sW</td><td>Window Scan</td><td>Like ACK scan but examines TCP window field. Can differentiate open/closed.</td></tr>
+          <tr><td>-sn</td><td>Ping Scan (No port)</td><td>Discovers live hosts only, no port scanning. Fast host discovery.</td></tr>
+          <tr><td>-Pn</td><td>Skip host discovery</td><td>Treats all hosts as up. Use when ICMP is blocked.</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Examples</span>
+nmap -sS 192.168.1.1            <span style="color:#8b949e"># SYN stealth scan (requires root)</span>
+nmap -sU -p 53,161 192.168.1.1 <span style="color:#8b949e"># UDP scan DNS and SNMP</span>
+nmap -sn 192.168.1.0/24        <span style="color:#8b949e"># ping sweep — find live hosts</span>
+nmap -Pn 192.168.1.1           <span style="color:#8b949e"># skip ping, scan all ports</span>
+nmap -sS -sU 192.168.1.1       <span style="color:#8b949e"># combine TCP + UDP scan</span></pre>
+      </div>
+    </div>
+
+    <!-- 3. Service & OS Detection -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-fingerprint" style="color:#d2a8ff"></i> 3. Service &amp; OS Detection</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Service version detection</span>
+nmap -sV 192.168.1.1            <span style="color:#8b949e"># detect service versions</span>
+nmap -sV --version-intensity 9 192.168.1.1  <span style="color:#8b949e"># max intensity (0-9)</span>
+
+<span style="color:#8b949e"># OS detection</span>
+nmap -O 192.168.1.1             <span style="color:#8b949e"># OS fingerprinting (requires root)</span>
+nmap -O --osscan-guess 192.168.1.1  <span style="color:#8b949e"># aggressive OS guess</span>
+
+<span style="color:#8b949e"># Combined aggressive scan</span>
+nmap -A 192.168.1.1             <span style="color:#8b949e"># -sV + -O + scripts + traceroute</span>
+nmap -A -T4 192.168.1.0/24     <span style="color:#8b949e"># aggressive scan of subnet</span></pre>
+      </div>
+    </div>
+
+    <!-- 4. Timing & Performance -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-gauge-high" style="color:#79c0ff"></i> 4. Timing &amp; Performance</h2>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Flag</th><th>Template</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>-T0</td><td>Paranoid</td><td>5 min delay between probes. Extremely slow — IDS evasion</td></tr>
+          <tr><td>-T1</td><td>Sneaky</td><td>15 sec delay. Very slow — avoids most IDS detection</td></tr>
+          <tr><td>-T2</td><td>Polite</td><td>0.4 sec delay. Slow — reduces bandwidth usage</td></tr>
+          <tr><td>-T3</td><td>Normal</td><td>Default. Balanced speed and stealth</td></tr>
+          <tr><td>-T4</td><td>Aggressive</td><td>Fast — assumes reliable network. Common for CTFs/labs</td></tr>
+          <tr><td>-T5</td><td>Insane</td><td>Very fast — may miss results on slow networks</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. NSE Scripts -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-code" style="color:#3fb950"></i> 5. Nmap Scripting Engine (NSE)</h2>
+      <p class="fade-in">NSE allows Nmap to run scripts for advanced detection, vulnerability scanning, and exploitation. Scripts are in <code class="ic">/usr/share/nmap/scripts/</code></p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Run default scripts</span>
+nmap -sC 192.168.1.1            <span style="color:#8b949e"># equivalent to --script=default</span>
+nmap -sV -sC 192.168.1.1       <span style="color:#8b949e"># version + default scripts (common combo)</span>
+
+<span style="color:#8b949e"># Run specific scripts</span>
+nmap --script=http-title 192.168.1.1
+nmap --script=vuln 192.168.1.1  <span style="color:#8b949e"># all vuln-category scripts</span>
+nmap --script=exploit 192.168.1.1
+
+<span style="color:#8b949e"># Script categories</span>
+nmap --script=auth 192.168.1.1  <span style="color:#8b949e"># authentication checks</span>
+nmap --script=brute 192.168.1.1 <span style="color:#8b949e"># credential brute-force</span>
+nmap --script=discovery 192.168.1.1
+nmap --script=dos 192.168.1.1   <span style="color:#8b949e"># ⚠️ dangerous — DoS scripts</span>
+
+<span style="color:#8b949e"># Useful individual scripts</span>
+nmap --script=http-enum 192.168.1.1         <span style="color:#8b949e"># enumerate web directories</span>
+nmap --script=smb-vuln-ms17-010 192.168.1.1 <span style="color:#8b949e"># check EternalBlue</span>
+nmap --script=ftp-anon 192.168.1.1          <span style="color:#8b949e"># check FTP anonymous login</span>
+nmap --script=ssh-brute 192.168.1.1         <span style="color:#8b949e"># SSH brute force</span>
+nmap --script=dns-zone-transfer --script-args dns-zone-transfer.domain=target.com ns1.target.com</pre>
+      </div>
+    </div>
+
+    <!-- 6. Output Formats -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-file-export" style="color:#ffa657"></i> 6. Output Formats</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Save output</span>
+nmap -oN scan.txt 192.168.1.1   <span style="color:#8b949e"># normal text format</span>
+nmap -oX scan.xml 192.168.1.1   <span style="color:#8b949e"># XML (parseable by tools)</span>
+nmap -oG scan.gnmap 192.168.1.1 <span style="color:#8b949e"># greppable format</span>
+nmap -oA scan 192.168.1.1       <span style="color:#8b949e"># all three formats at once</span>
+
+<span style="color:#8b949e"># Verbosity</span>
+nmap -v 192.168.1.1             <span style="color:#8b949e"># verbose</span>
+nmap -vv 192.168.1.1            <span style="color:#8b949e"># very verbose</span>
+nmap -d 192.168.1.1             <span style="color:#8b949e"># debug mode</span>
+nmap --reason 192.168.1.1       <span style="color:#8b949e"># show why port is open/closed</span></pre>
+      </div>
+    </div>
+
+    <!-- 7. Firewall Evasion -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-mask" style="color:#f85149"></i> 7. Firewall Evasion &amp; Spoofing</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Fragment packets (bypass simple packet filters)</span>
+nmap -f 192.168.1.1             <span style="color:#8b949e"># fragment packets into 8-byte chunks</span>
+nmap -ff 192.168.1.1            <span style="color:#8b949e"># 16-byte chunks</span>
+nmap --mtu 24 192.168.1.1       <span style="color:#8b949e"># custom MTU (must be multiple of 8)</span>
+
+<span style="color:#8b949e"># Decoys (mix real scan with fake source IPs)</span>
+nmap -D RND:10 192.168.1.1      <span style="color:#8b949e"># 10 random decoy IPs</span>
+nmap -D 10.0.0.1,10.0.0.2,ME 192.168.1.1
+
+<span style="color:#8b949e"># Spoof source</span>
+nmap -S 192.168.1.50 192.168.1.1    <span style="color:#8b949e"># spoof source IP</span>
+nmap -e eth0 -S 192.168.1.50 192.168.1.1
+
+<span style="color:#8b949e"># Source port (bypass firewalls allowing port 53)</span>
+nmap --source-port 53 192.168.1.1
+
+<span style="color:#8b949e"># Scan via proxy</span>
+nmap --proxies socks4://proxy:port 192.168.1.1</pre>
+      </div>
+    </div>
+
+    <!-- Complete Examples -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-list-check" style="color:#79c0ff"></i> 8. Complete Real-World Examples</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#8b949e"># Full pentest recon scan (save all formats)</span>
+nmap -sS -sV -sC -O -A -T4 -p- --open -oA full_scan 192.168.1.1
+
+<span style="color:#8b949e"># Quick host discovery + top ports</span>
+nmap -sn 192.168.1.0/24 && nmap -T4 --top-ports 1000 192.168.1.0/24
+
+<span style="color:#8b949e"># Web server recon</span>
+nmap -p 80,443,8080,8443 -sV --script=http-title,http-headers 192.168.1.1
+
+<span style="color:#8b949e"># SMB vulnerability check (MS17-010 / EternalBlue)</span>
+nmap -p 445 --script=smb-vuln-ms17-010 192.168.1.0/24
+
+<span style="color:#8b949e"># Check for default credentials</span>
+nmap -p 22 --script=ssh-brute 192.168.1.1
+nmap -p 21 --script=ftp-anon,ftp-brute 192.168.1.1
+
+<span style="color:#8b949e"># UDP scan key services</span>
+nmap -sU -p 53,67,68,69,123,161,162 192.168.1.1</pre>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <h2 class="fade-in">📚 Further Reading</h2>
+    <div class="fade-in">
+      <a href="https://nmap.org/book/toc.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📖</span><div><div class="rl-title">Nmap Network Scanning — Free Book</div><div class="rl-sub">nmap.org — complete official Nmap reference book (free online)</div></div></a>
+      <a href="https://nmap.org/nsedoc/" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📜</span><div><div class="rl-title">NSE Script Documentation</div><div class="rl-sub">nmap.org/nsedoc — full NSE script library reference</div></div></a>
+      <a href="https://www.stationx.net/nmap-cheat-sheet/" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📋</span><div><div class="rl-title">StationX Nmap Cheat Sheet</div><div class="rl-sub">stationx.net — popular nmap flag reference guide</div></div></a>
+    </div>
+
+  </div>
+
+  <aside class="project-sidebar fade-in fade-in-delay-1">
+    <div class="sidebar-card">
+      <h3>Topics Covered</h3>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Basic Scans</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Scan Types (-sS, -sU, etc)</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Service &amp; OS Detection</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Timing Templates</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>NSE Scripts</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Output Formats</li>
+        <li style="padding:5px 0;font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Firewall Evasion</li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h3>Quick Actions</h3>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button onclick="openSlideshow()" class="btn btn-primary" style="width:100%;justify-content:center;font-size:.82rem">▶ Play Scans</button>
+        <button onclick="startQuiz()" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.82rem">🧠 Start Quiz</button>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Key Flags</h3>
+      <div style="font-size:.8rem;color:var(--text-secondary);line-height:2">
+        <div><span style="color:#d2a8ff;font-family:monospace">-sS</span> SYN scan (stealth)</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-sV</span> Version detection</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-sC</span> Default scripts</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-O</span> OS detection</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-A</span> Aggressive (all)</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-p-</span> All 65535 ports</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-T4</span> Fast timing</div>
+        <div><span style="color:#d2a8ff;font-family:monospace">-oA</span> All output formats</div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Related</h3>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+        <a href="cheatsheet-ports.html" style="color:var(--accent);text-decoration:none">🔌 Ports Cheatsheet</a>
+        <a href="cheatsheet-metasploit.html" style="color:var(--accent);text-decoration:none">💣 Metasploit</a>
+        <a href="cheatsheet-network-troubleshooting.html" style="color:var(--accent);text-decoration:none">🛠️ Network Troubleshooting</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+</div></main>
+
+<footer><div class="container"><div class="footer-inner">
+  <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+  <div class="footer-links"><a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a></div>
+</div></div></footer>
+
+<script src="js/script.js"></script>
+<script>
+function copyCode(btn){const p=btn.nextElementSibling;navigator.clipboard.writeText(p.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+
+const SLIDES=[
+  {cat:'Basic',main:'nmap 192.168.1.1',sub:'Default scan',body:'Scans top 1000 ports. Uses SYN scan if root, TCP connect if not. Always start here for a quick overview.'},
+  {cat:'Basic',main:'nmap -p- 192.168.1.1',sub:'Scan ALL ports',body:'Scans all 65535 ports. Thorough but slow. Combine with -T4 to speed up on reliable networks.'},
+  {cat:'Scan Type',main:'nmap -sS target',sub:'SYN Stealth Scan',body:'The default scan when running as root. Sends SYN, receives SYN-ACK, then sends RST — never completes the handshake. Fast and less likely to be logged.'},
+  {cat:'Scan Type',main:'nmap -sU -p 53,161',sub:'UDP Scan',body:'Scans UDP ports. Critical for finding DNS (53), SNMP (161), DHCP (67). Much slower than TCP scans.'},
+  {cat:'Scan Type',main:'nmap -sn 192.168.1.0/24',sub:'Ping Sweep',body:'Discovers live hosts without port scanning. Quick way to map a network and find active machines.'},
+  {cat:'Detection',main:'nmap -sV target',sub:'Service Version',body:'Probes open ports to determine service versions. Essential for vulnerability assessment — knowing Apache 2.4.49 vs 2.4.51 matters.'},
+  {cat:'Detection',main:'nmap -A target',sub:'Aggressive Scan',body:'Enables OS detection (-O), version detection (-sV), script scanning (-sC), and traceroute. The "give me everything" flag.'},
+  {cat:'NSE',main:'nmap -sC target',sub:'Default Scripts',body:'Runs the default NSE scripts — safe, commonly useful checks like grabbing banners, HTTP titles, and checking for common misconfigs.'},
+  {cat:'NSE',main:'nmap --script=vuln',sub:'Vulnerability Scripts',body:'Runs all vulnerability detection scripts. Can find EternalBlue (MS17-010), Shellshock, and other known CVEs.'},
+  {cat:'Timing',main:'nmap -T4 target',sub:'Aggressive Timing',body:'T4 is the sweet spot for most scans on reliable networks. Faster than default T3 without being reckless like T5.'},
+  {cat:'Output',main:'nmap -oA scan target',sub:'Save All Formats',body:'Saves output as scan.nmap (normal), scan.xml, and scan.gnmap (greppable). Always save your scan results!'},
+  {cat:'Evasion',main:'nmap -f target',sub:'Fragment Packets',body:'Splits TCP headers across multiple packets to bypass simple firewall/IDS rules that can\'t reassemble fragments.'},
+];
+
+const QUIZ_Q=[
+  {q:'Performs a SYN stealth scan (half-open)',correct:'-sS',opts:['-sS','-sT','-sU','-sA']},
+  {q:'Scans ALL 65535 ports',correct:'-p-',opts:['-p-','--top-ports','--all-ports','-p 0-65535']},
+  {q:'Detects service versions on open ports',correct:'-sV',opts:['-sV','-sC','-O','-A']},
+  {q:'Runs OS fingerprinting',correct:'-O',opts:['-O','-sV','-A','-sC']},
+  {q:'Runs default NSE scripts',correct:'-sC',opts:['-sC','--script','--nse','-sN']},
+  {q:'Enables aggressive scan (OS+version+scripts+trace)',correct:'-A',opts:['-A','-sA','-sV -sC','-T5']},
+  {q:'Host discovery only (no port scan)',correct:'-sn',opts:['-sn','-Pn','-sP','-sT']},
+  {q:'Fast timing template (T4)',correct:'-T4',opts:['-T4','-T3','-T5','-T2']},
+  {q:'Skip host discovery (treat all hosts as up)',correct:'-Pn',opts:['-Pn','-sn','-P0','-Ps']},
+  {q:'Save output in all three formats',correct:'-oA',opts:['-oA','-oN','-oX','-oG']},
+];
+
+let sIdx=0,sPlaying=true,sTimer=null,sProg=null;const SDUR=6000;
+function openSlideshow(){sIdx=0;sPlaying=true;document.getElementById('slideshowOverlay').classList.add('active');document.body.style.overflow='hidden';showSlide(sIdx);startSTimer()}
+function closeSlideshow(){stopSTimer();document.getElementById('slideshowOverlay').classList.remove('active');document.body.style.overflow=''}
+function showSlide(i){const s=SLIDES[i];document.getElementById('slideCat').textContent=s.cat;document.getElementById('slideMain').textContent=s.main;document.getElementById('slideSub').textContent=s.sub;document.getElementById('slideBody').textContent=s.body;document.getElementById('slideProgress').textContent=(i+1)+' / '+SLIDES.length;document.getElementById('progFill').style.width='0%'}
+function startSTimer(){stopSTimer();let e=0;sProg=setInterval(()=>{e+=50;document.getElementById('progFill').style.width=Math.min(e/SDUR*100,100)+'%'},50);sTimer=setTimeout(slideNext,SDUR)}
+function stopSTimer(){clearTimeout(sTimer);clearInterval(sProg)}
+function slideNext(){sIdx=(sIdx+1)%SLIDES.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function slidePrev(){sIdx=(sIdx-1+SLIDES.length)%SLIDES.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function toggleSlide(){sPlaying=!sPlaying;document.getElementById('slideToggleBtn').textContent=sPlaying?'⏸ Pause':'▶ Resume';sPlaying?startSTimer():stopSTimer()}
+
+let qIdx=0,qScore=0,qAnswered=false;const QS=10;
+function startQuiz(){qIdx=0;qScore=0;document.getElementById('quizMain').style.display='block';document.getElementById('quizResultCard').style.display='none';document.getElementById('quizOverlay').classList.add('active');document.body.style.overflow='hidden';showQ()}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow=''}
+function showQ(){qAnswered=false;const q=QUIZ_Q[qIdx];document.getElementById('quizMeta').textContent='Question '+(qIdx+1)+' of '+QS+' · Score: '+qScore;document.getElementById('quizQ').textContent=q.q;document.getElementById('quizFeedback').textContent='';document.getElementById('quizNextBtn').style.display='none';const sh=[...q.opts].sort(()=>Math.random()-.5);document.getElementById('quizOpts').innerHTML=sh.map(o=>`<button class="quiz-opt" onclick="answerQ(this,'${o.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${q.correct.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">${o}</button>`).join('')}
+function answerQ(btn,ans,correct){if(qAnswered)return;qAnswered=true;document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);if(ans===correct){qScore++;btn.classList.add('correct');document.getElementById('quizFeedback').innerHTML='<span style="color:#3fb950">✓ Correct!</span>'}else{btn.classList.add('wrong');document.querySelectorAll('.quiz-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct')});document.getElementById('quizFeedback').innerHTML=`<span style="color:#f85149">✗ Answer: ${correct}</span>`}document.getElementById('quizNextBtn').style.display='inline-flex'}
+function quizNext(){qIdx++;if(qIdx>=QS){const pct=Math.round(qScore/QS*100);document.getElementById('quizMain').style.display='none';document.getElementById('quizResultCard').style.display='block';document.getElementById('finalScore').textContent=qScore+'/'+QS;document.getElementById('finalMsg').textContent=pct>=80?'🏆 Excellent Nmap knowledge!':pct>=60?'👍 Good work! Review the flag table.':'📚 Keep practising — use the slideshow!'}else showQ()}
+document.addEventListener('keydown',e=>{if(document.getElementById('slideshowOverlay').classList.contains('active')){if(e.key==='ArrowRight')slideNext();if(e.key==='ArrowLeft')slidePrev();if(e.key==='Escape')closeSlideshow();if(e.key===' '){e.preventDefault();toggleSlide();}}if(document.getElementById('quizOverlay').classList.contains('active')&&e.key==='Escape')closeQuiz()});
+</script>
+</body>
+</html>

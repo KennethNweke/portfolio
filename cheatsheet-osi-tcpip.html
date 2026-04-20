@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TCP/IP &amp; OSI Model Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="A complete reference for the OSI and TCP/IP networking models with layer mappings, protocols, and quiz mode — by Kenneth Nweke."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .cs-section{margin-bottom:2.5rem}
+    .cs-section h2{margin-bottom:1rem}
+    .code-block{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:1.25rem 1.5rem;overflow-x:auto;position:relative;margin:.75rem 0 1rem}
+    .code-block pre{margin:0;font-family:'JetBrains Mono','Fira Code','Courier New',monospace;font-size:.82rem;line-height:1.75;color:#e6edf3;white-space:pre}
+    .copy-btn{position:absolute;top:10px;right:12px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:.7rem;padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .2s,color .2s;font-family:inherit}
+    .copy-btn:hover{background:#30363d;color:#e6edf3}.copy-btn.copied{color:#3fb950;border-color:#3fb950}
+    .ic{background:rgba(110,118,129,.15);border:1px solid rgba(110,118,129,.25);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.82em;color:#e6edf3}
+    [data-theme="light"] .ic{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#24292f}
+    [data-theme="light"] .code-block{background:#161b22}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0}
+    .ref-table th{text-align:left;padding:8px 12px;background:rgba(110,118,129,.1);color:var(--text-secondary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:#d2a8ff;white-space:nowrap;font-size:.8rem}
+    .ref-table tr:last-child td{border-bottom:none}.ref-table tr:hover td{background:rgba(110,118,129,.05)}
+    .reading-link{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);text-decoration:none;color:var(--text-primary);font-size:.85rem;transition:border-color .2s,transform .2s;margin-bottom:.5rem}
+    .reading-link:hover{border-color:var(--accent);transform:translateX(4px)}
+    .reading-link .rl-icon{font-size:1.1rem;flex-shrink:0}.reading-link .rl-title{font-weight:600;color:var(--text-primary)}.reading-link .rl-sub{font-size:.75rem;color:var(--text-secondary)}
+    .overview-card{background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .overview-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text-primary)}
+    .overview-card p{margin:0 0 .5rem;font-size:.85rem;color:var(--text-secondary);line-height:1.7}
+    /* OSI Layer visual */
+    .osi-stack{display:flex;flex-direction:column;gap:4px;margin:1rem 0}
+    .osi-layer{display:grid;grid-template-columns:60px 1fr 1fr 1fr;gap:0;border-radius:8px;overflow:hidden;min-height:54px}
+    .osi-layer .ol-num{display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#fff;padding:.5rem}
+    .osi-layer .ol-name{display:flex;flex-direction:column;justify-content:center;padding:.5rem .75rem;font-weight:700;font-size:.88rem}
+    .osi-layer .ol-name span{font-size:.72rem;font-weight:400;opacity:.8;margin-top:2px}
+    .osi-layer .ol-proto{display:flex;align-items:center;padding:.5rem .75rem;font-size:.78rem;color:var(--text-secondary);border-left:1px solid rgba(255,255,255,.08)}
+    .osi-layer .ol-pdu{display:flex;align-items:center;padding:.5rem .75rem;font-size:.78rem;color:var(--text-secondary);border-left:1px solid rgba(255,255,255,.08)}
+    .l7{background:linear-gradient(90deg,#3fb95020,var(--card-bg))}.l7 .ol-num{background:#3fb950}
+    .l6{background:linear-gradient(90deg,#79c0ff20,var(--card-bg))}.l6 .ol-num{background:#79c0ff}
+    .l5{background:linear-gradient(90deg,#a5d6ff20,var(--card-bg))}.l5 .ol-num{background:#a5d6ff;color:#0d1117}
+    .l4{background:linear-gradient(90deg,#ffa65720,var(--card-bg))}.l4 .ol-num{background:#ffa657;color:#0d1117}
+    .l3{background:linear-gradient(90deg,#d2a8ff20,var(--card-bg))}.l3 .ol-num{background:#d2a8ff;color:#0d1117}
+    .l2{background:linear-gradient(90deg,#f8514920,var(--card-bg))}.l2 .ol-num{background:#f85149}
+    .l1{background:linear-gradient(90deg,#8b949e20,var(--card-bg))}.l1 .ol-num{background:#8b949e}
+    /* TCP/IP comparison */
+    .model-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+    @media(max-width:600px){.model-compare{grid-template-columns:1fr}.osi-layer{grid-template-columns:50px 1fr 1fr}}
+    .model-col{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .model-col .mc-head{background:var(--accent);color:#fff;padding:.6rem 1rem;font-weight:700;font-size:.88rem;text-align:center}
+    .model-col .mc-row{padding:.55rem 1rem;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary);text-align:center}
+    .model-col .mc-row:last-child{border-bottom:none}
+    .model-col .mc-row strong{color:var(--text-primary)}
+    /* Toolbar, overlays */
+    .toolbar{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem;align-items:center}
+    .toolbar-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font-size:.82rem;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+    .toolbar-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .overlay-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+    .overlay-modal.active{display:flex}
+    .modal-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:580px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+    .mc-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:.5rem}
+    .mc-main{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:900;color:var(--accent);margin-bottom:.5rem;line-height:1.2}
+    .mc-sub{font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem}
+    .mc-body{font-size:.85rem;color:var(--text-secondary);line-height:1.7}
+    .modal-progress{font-size:.78rem;color:var(--text-secondary);margin-top:.75rem}
+    .prog-bar-wrap{width:100%;max-width:420px;height:4px;background:var(--border);border-radius:2px;margin-top:.4rem;overflow:hidden}
+    .prog-bar-fill{height:100%;background:var(--accent);transition:width .08s linear;border-radius:2px}
+    .modal-controls{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap;justify-content:center}
+    .btn-sm{padding:.45rem 1rem;font-size:.82rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent)}.btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn-sm.primary:hover{opacity:.9}.btn-sm.danger{background:#f85149;border-color:#f85149;color:#fff}
+    .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem}
+    @media(max-width:500px){.quiz-opts{grid-template-columns:1fr}}
+    .quiz-opt{padding:.65rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-secondary);cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:inherit}
+    .quiz-opt:hover{border-color:var(--accent);color:var(--accent)}.quiz-opt.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}.quiz-opt.wrong{border-color:#f85149;background:rgba(248,81,73,.1);color:#f85149}.quiz-opt:disabled{pointer-events:none}
+    .quiz-result-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:440px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    .quiz-result-card h2{color:var(--accent);margin:0 0 .5rem}.final-score{font-size:3rem;font-weight:900;color:var(--text-primary);margin:.5rem 0}
+  </style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li><li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li><li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg></a></li>
+    <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="projects.html">Projects</a><a href="cheatsheets.html">Cheatsheets</a><a href="more.html">More</a>
+</div>
+
+<!-- Slideshow -->
+<div class="overlay-modal" id="slideshowOverlay">
+  <div class="modal-card">
+    <div class="mc-label" id="slideCat"></div>
+    <div class="mc-main" id="slideMain"></div>
+    <div class="mc-sub" id="slideSub"></div>
+    <div class="mc-body" id="slideBody"></div>
+  </div>
+  <div class="modal-progress" id="slideProgress"></div>
+  <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill"></div></div>
+  <div class="modal-controls">
+    <button class="btn-sm" onclick="slidePrev()">← Prev</button>
+    <button class="btn-sm primary" id="slideToggleBtn" onclick="toggleSlide()">⏸ Pause</button>
+    <button class="btn-sm" onclick="slideNext()">Next →</button>
+    <button class="btn-sm danger" onclick="closeSlideshow()">✕ Close</button>
+  </div>
+</div>
+
+<!-- Quiz -->
+<div class="overlay-modal" id="quizOverlay">
+  <div id="quizMain" class="modal-card" style="max-width:600px;text-align:left">
+    <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:1rem" id="quizMeta"></div>
+    <div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:.4rem" id="quizQLabel">Which OSI layer…</div>
+    <div style="font-size:1.5rem;font-weight:800;color:var(--text-primary);margin-bottom:1.25rem;line-height:1.3" id="quizQ"></div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div id="quizFeedback" style="margin-top:.75rem;font-size:.84rem;min-height:1.2rem"></div>
+    <div class="modal-controls" style="justify-content:flex-start;margin-top:1rem">
+      <button class="btn-sm primary" id="quizNextBtn" onclick="quizNext()" style="display:none">Next →</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ End</button>
+    </div>
+  </div>
+  <div id="quizResultCard" class="quiz-result-card" style="display:none">
+    <h2>Quiz Complete 🎉</h2>
+    <div class="final-score" id="finalScore"></div>
+    <p id="finalMsg" style="color:var(--text-secondary);font-size:.88rem;margin:.5rem 0 1.5rem"></p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="startQuiz()">🔄 Restart</button>
+      <button class="btn-sm danger" onclick="closeQuiz()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<main><div class="container">
+  <div class="project-header fade-in">
+    <div class="breadcrumb"><a href="cheatsheets.html">← Cheatsheets</a><span>/</span><span>OSI / TCP-IP</span></div>
+    <div class="card-tag" style="margin-bottom:.75rem;">Networking · OSI Model · TCP/IP · Protocols</div>
+    <h1 class="project-title"><i class="fa-solid fa-layer-group" style="font-size:2rem;margin-right:.5rem"></i>TCP/IP &amp; OSI<br>Model Cheatsheet</h1>
+    <p style="color:var(--text-secondary);max-width:620px;font-size:1.05rem;line-height:1.8">A complete visual reference for the <strong>7-layer OSI model</strong> and <strong>4-layer TCP/IP model</strong>, including protocols at each layer, PDUs, and practical examples — with interactive quiz and slideshow.</p>
+    <div class="project-meta">
+      <div class="meta-item"><span>OSI Layers:</span> 7</div>
+      <div class="meta-item"><span>TCP/IP Layers:</span> 4</div>
+      <div class="meta-item"><span>Level:</span> Beginner → Advanced</div>
+      <div class="meta-item"><span>Topics:</span> 5 sections</div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13769-5.html" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-solid fa-book"></i> Cisco Networking</a>
+      <button onclick="startQuiz()" class="btn btn-outline">🧠 Start Quiz</button>
+    </div>
+  </div>
+
+  <div class="project-layout" style="padding-bottom:80px">
+  <div class="project-content">
+
+    <!-- OVERVIEW -->
+    <div class="overview-card fade-in">
+      <h3><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i> What are OSI and TCP/IP?</h3>
+      <p>The <strong>OSI (Open Systems Interconnection) model</strong> is a 7-layer conceptual framework that standardises how different network systems communicate. Created by ISO, it provides a universal language for describing network functions.</p>
+      <p>The <strong>TCP/IP model</strong> is the practical 4-layer implementation used by the internet. It combines several OSI layers and is the actual protocol suite your devices use every day.</p>
+      <p><strong>Why it matters:</strong> Network engineers use these models to diagnose faults ("at which layer is the problem?"), security analysts use them to understand attack surfaces, and certifications like CompTIA Network+ and CCNA test knowledge of both.</p>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar fade-in">
+      <button class="toolbar-btn" onclick="openSlideshow()"><i class="fa-solid fa-play"></i> Play Layers</button>
+      <button class="toolbar-btn" onclick="startQuiz()"><i class="fa-solid fa-circle-question"></i> Start Quiz</button>
+    </div>
+
+    <!-- ── Section 1: OSI Stack Visual ── -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-layer-group" style="color:#ffa657"></i> 1. OSI Model — 7 Layers</h2>
+      <p class="fade-in">Mnemonic: <strong>Please Do Not Throw Sausage Pizza Away</strong> (Physical → Data Link → Network → Transport → Session → Presentation → Application)</p>
+      <div class="osi-stack fade-in">
+        <!-- Header row -->
+        <div style="display:grid;grid-template-columns:60px 1fr 1fr 1fr;gap:0;margin-bottom:4px">
+          <div></div>
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);padding:0 .75rem">Layer Name</div>
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);padding:0 .75rem">Key Protocols</div>
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);padding:0 .75rem">PDU / Unit</div>
+        </div>
+        <div class="osi-layer l7">
+          <div class="ol-num">7</div>
+          <div class="ol-name" style="color:#3fb950">Application<span>User-facing services</span></div>
+          <div class="ol-proto">HTTP, HTTPS, FTP, SMTP, DNS, SSH, POP3, IMAP, SNMP</div>
+          <div class="ol-pdu">Data</div>
+        </div>
+        <div class="osi-layer l6">
+          <div class="ol-num">6</div>
+          <div class="ol-name" style="color:#79c0ff">Presentation<span>Data formatting &amp; encryption</span></div>
+          <div class="ol-proto">SSL/TLS, JPEG, MPEG, ASCII, Unicode, XDR</div>
+          <div class="ol-pdu">Data</div>
+        </div>
+        <div class="osi-layer l5">
+          <div class="ol-num">5</div>
+          <div class="ol-name" style="color:#a5d6ff">Session<span>Connection management</span></div>
+          <div class="ol-proto">NetBIOS, RPC, PPTP, SIP, NFS</div>
+          <div class="ol-pdu">Data</div>
+        </div>
+        <div class="osi-layer l4">
+          <div class="ol-num">4</div>
+          <div class="ol-name" style="color:#ffa657">Transport<span>End-to-end delivery</span></div>
+          <div class="ol-proto">TCP, UDP, SCTP</div>
+          <div class="ol-pdu">Segment (TCP) / Datagram (UDP)</div>
+        </div>
+        <div class="osi-layer l3">
+          <div class="ol-num">3</div>
+          <div class="ol-name" style="color:#d2a8ff">Network<span>Logical addressing &amp; routing</span></div>
+          <div class="ol-proto">IP (IPv4/IPv6), ICMP, ARP, OSPF, BGP, RIP</div>
+          <div class="ol-pdu">Packet</div>
+        </div>
+        <div class="osi-layer l2">
+          <div class="ol-num">2</div>
+          <div class="ol-name" style="color:#f85149">Data Link<span>MAC addressing &amp; framing</span></div>
+          <div class="ol-proto">Ethernet, Wi-Fi (802.11), PPP, ARP, VLAN (802.1Q)</div>
+          <div class="ol-pdu">Frame</div>
+        </div>
+        <div class="osi-layer l1">
+          <div class="ol-num">1</div>
+          <div class="ol-name" style="color:#8b949e">Physical<span>Bits over medium</span></div>
+          <div class="ol-proto">Ethernet (cable), Wi-Fi (radio), Fibre, USB, Bluetooth</div>
+          <div class="ol-pdu">Bit</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: TCP/IP Model ── -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-sitemap" style="color:#79c0ff"></i> 2. TCP/IP Model — 4 Layers</h2>
+      <p class="fade-in">The TCP/IP model is what the internet actually uses. It maps to OSI but is simpler with 4 layers.</p>
+      <div class="model-compare fade-in">
+        <div class="model-col">
+          <div class="mc-head">TCP/IP Layer</div>
+          <div class="mc-row"><strong style="color:#3fb950">Application</strong><br>HTTP, HTTPS, DNS, FTP, SSH, SMTP</div>
+          <div class="mc-row"><strong style="color:#ffa657">Transport</strong><br>TCP, UDP</div>
+          <div class="mc-row"><strong style="color:#d2a8ff">Internet</strong><br>IP, ICMP, ARP, BGP</div>
+          <div class="mc-row"><strong style="color:#f85149">Network Access</strong><br>Ethernet, Wi-Fi, ARP</div>
+        </div>
+        <div class="model-col">
+          <div class="mc-head">Maps to OSI Layers</div>
+          <div class="mc-row">Layers 5, 6, 7<br><span style="font-size:.75rem">Session + Presentation + Application</span></div>
+          <div class="mc-row">Layer 4<br><span style="font-size:.75rem">Transport</span></div>
+          <div class="mc-row">Layer 3<br><span style="font-size:.75rem">Network</span></div>
+          <div class="mc-row">Layers 1, 2<br><span style="font-size:.75rem">Physical + Data Link</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: TCP vs UDP ── -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-arrows-left-right" style="color:#3fb950"></i> 3. TCP vs UDP</h2>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th></tr></thead>
+        <tbody>
+          <tr><td>Connection</td><td>Connection-oriented (3-way handshake)</td><td>Connectionless</td></tr>
+          <tr><td>Reliability</td><td>Guaranteed delivery, retransmission</td><td>Best-effort, no guarantee</td></tr>
+          <tr><td>Speed</td><td>Slower due to overhead</td><td>Faster, lower overhead</td></tr>
+          <tr><td>Ordering</td><td>Packets delivered in order</td><td>No ordering guarantee</td></tr>
+          <tr><td>Error Checking</td><td>Yes — checksum + ACK</td><td>Checksum only</td></tr>
+          <tr><td>Flow Control</td><td>Yes (sliding window)</td><td>No</td></tr>
+          <tr><td>Use Cases</td><td>HTTP, SSH, FTP, email — anything requiring accuracy</td><td>DNS, DHCP, VoIP, streaming, gaming</td></tr>
+          <tr><td>Header Size</td><td>20–60 bytes</td><td>8 bytes fixed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Section 4: TCP 3-Way Handshake ── -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-handshake" style="color:#d2a8ff"></i> 4. TCP 3-Way Handshake</h2>
+      <p class="fade-in">Before TCP data transfer begins, both endpoints establish a connection using a three-step process.</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span style="color:#3fb950">Client</span>                    <span style="color:#79c0ff">Server</span>
+
+  ──── SYN (seq=x) ────────────►   Step 1: Client wants to connect
+  ◄─── SYN-ACK (seq=y,ack=x+1) ─  Step 2: Server acknowledges
+  ──── ACK (ack=y+1) ──────────►   Step 3: Client confirms
+
+  [Connection Established — Data Exchange Begins]
+
+  ──── FIN ────────────────────►   Step 4: Client requests close
+  ◄─── FIN-ACK ────────────────    Step 5: Server acknowledges
+  ◄─── FIN ────────────────────    Step 6: Server also closes
+  ──── ACK ────────────────────►   Step 7: Client confirms</pre>
+      </div>
+    </div>
+
+    <!-- ── Section 5: Protocol deep-dive ── -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-table" style="color:#ffa657"></i> 5. Protocol Summary by Layer</h2>
+      <table class="ref-table fade-in">
+        <thead><tr><th>OSI Layer</th><th>Protocol</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>7 — Application</td><td>HTTP/HTTPS</td><td>Web page transfer</td></tr>
+          <tr><td>7 — Application</td><td>DNS</td><td>Domain name resolution</td></tr>
+          <tr><td>7 — Application</td><td>SMTP/POP3/IMAP</td><td>Email transfer</td></tr>
+          <tr><td>7 — Application</td><td>SSH/Telnet</td><td>Remote administration</td></tr>
+          <tr><td>7 — Application</td><td>SNMP</td><td>Network device monitoring</td></tr>
+          <tr><td>6 — Presentation</td><td>SSL/TLS</td><td>Encryption / decryption</td></tr>
+          <tr><td>6 — Presentation</td><td>JPEG/PNG/MP4</td><td>Media formatting</td></tr>
+          <tr><td>5 — Session</td><td>NetBIOS, RPC</td><td>Session establishment</td></tr>
+          <tr><td>4 — Transport</td><td>TCP</td><td>Reliable ordered delivery</td></tr>
+          <tr><td>4 — Transport</td><td>UDP</td><td>Fast unreliable delivery</td></tr>
+          <tr><td>3 — Network</td><td>IP (v4/v6)</td><td>Logical addressing &amp; routing</td></tr>
+          <tr><td>3 — Network</td><td>ICMP</td><td>Error messages (ping)</td></tr>
+          <tr><td>3 — Network</td><td>OSPF / BGP</td><td>Routing protocols</td></tr>
+          <tr><td>2 — Data Link</td><td>Ethernet / 802.11</td><td>MAC addressing &amp; framing</td></tr>
+          <tr><td>2 — Data Link</td><td>ARP</td><td>IP-to-MAC resolution</td></tr>
+          <tr><td>1 — Physical</td><td>Ethernet cable / Wi-Fi</td><td>Raw bit transmission</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+    <h2 class="fade-in">📚 Further Reading</h2>
+    <div class="fade-in">
+      <a href="https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13769-5.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🔧</span><div><div class="rl-title">Cisco — TCP/IP Overview</div><div class="rl-sub">cisco.com — authoritative networking reference</div></div></a>
+      <a href="https://www.ietf.org/rfc/rfc793.txt" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📄</span><div><div class="rl-title">RFC 793 — Transmission Control Protocol</div><div class="rl-sub">ietf.org — the original TCP specification</div></div></a>
+      <a href="https://www.iana.org" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🌐</span><div><div class="rl-title">IANA — Internet Numbers</div><div class="rl-sub">iana.org — protocol number assignments and registries</div></div></a>
+    </div>
+
+  </div>
+
+  <aside class="project-sidebar fade-in fade-in-delay-1">
+    <div class="sidebar-card">
+      <h3>OSI Layers</h3>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#3fb950;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">7</span><span style="color:var(--text-secondary)">Application</span></li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#79c0ff;color:#0d1117;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">6</span><span style="color:var(--text-secondary)">Presentation</span></li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#a5d6ff;color:#0d1117;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">5</span><span style="color:var(--text-secondary)">Session</span></li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#ffa657;color:#0d1117;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">4</span><span style="color:var(--text-secondary)">Transport</span></li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#d2a8ff;color:#0d1117;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">3</span><span style="color:var(--text-secondary)">Network</span></li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#f85149;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">2</span><span style="color:var(--text-secondary)">Data Link</span></li>
+        <li style="padding:5px 0;font-size:.82rem;display:flex;align-items:center;gap:6px"><span style="background:#8b949e;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0">1</span><span style="color:var(--text-secondary)">Physical</span></li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h3>Quick Actions</h3>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button onclick="openSlideshow()" class="btn btn-primary" style="width:100%;justify-content:center;font-size:.82rem">▶ Play Layers</button>
+        <button onclick="startQuiz()" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.82rem">🧠 Start Quiz</button>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Mnemonic</h3>
+      <div style="font-size:.8rem;color:var(--text-secondary);line-height:2">
+        <div><strong style="color:var(--text-primary)">P</strong>lease (Physical)</div>
+        <div><strong style="color:var(--text-primary)">D</strong>o (Data Link)</div>
+        <div><strong style="color:var(--text-primary)">N</strong>ot (Network)</div>
+        <div><strong style="color:var(--text-primary)">T</strong>hrow (Transport)</div>
+        <div><strong style="color:var(--text-primary)">S</strong>ausage (Session)</div>
+        <div><strong style="color:var(--text-primary)">P</strong>izza (Presentation)</div>
+        <div><strong style="color:var(--text-primary)">A</strong>way (Application)</div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Related</h3>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+        <a href="cheatsheet-ports.html" style="color:var(--accent);text-decoration:none">🔌 Ports Cheatsheet</a>
+        <a href="cheatsheet-network-troubleshooting.html" style="color:var(--accent);text-decoration:none">🛠️ Network Troubleshooting</a>
+        <a href="cheatsheet-nmap.html" style="color:var(--accent);text-decoration:none">🔍 Nmap Cheatsheet</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+</div></main>
+
+<footer><div class="container"><div class="footer-inner">
+  <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+  <div class="footer-links"><a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a></div>
+</div></div></footer>
+
+<script src="js/script.js"></script>
+<script>
+function copyCode(btn){const p=btn.nextElementSibling;navigator.clipboard.writeText(p.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+
+const SLIDES=[
+  {cat:'OSI Layer 7',main:'Application',sub:'HTTP, HTTPS, DNS, FTP, SSH, SMTP',body:'The topmost layer — where user-facing services and applications live. It defines the protocols that applications use to communicate.'},
+  {cat:'OSI Layer 6',main:'Presentation',sub:'SSL/TLS, JPEG, MPEG, ASCII',body:'Translates, encrypts, and compresses data for the application layer. TLS encryption happens here.'},
+  {cat:'OSI Layer 5',main:'Session',sub:'NetBIOS, RPC, PPTP, SIP',body:'Manages sessions (connections) between applications — establishing, maintaining, and terminating them.'},
+  {cat:'OSI Layer 4',main:'Transport',sub:'TCP, UDP, SCTP',body:'Responsible for end-to-end communication. TCP provides reliable ordered delivery; UDP provides fast best-effort delivery.'},
+  {cat:'OSI Layer 3',main:'Network',sub:'IP, ICMP, ARP, OSPF, BGP',body:'Handles logical addressing (IP addresses) and routing packets between different networks across routers.'},
+  {cat:'OSI Layer 2',main:'Data Link',sub:'Ethernet, Wi-Fi, PPP, ARP',body:'Provides node-to-node data transfer using MAC addresses. Frames data for transmission and handles error detection.'},
+  {cat:'OSI Layer 1',main:'Physical',sub:'Cables, Radio waves, Fibre',body:'The physical transmission of raw bits over a physical medium — copper wire, fibre optic, or wireless radio waves.'},
+  {cat:'TCP/IP Application',main:'Application',sub:'HTTP, DNS, SMTP, SSH',body:'Combines OSI layers 5-7. Defines how applications communicate over the network.'},
+  {cat:'TCP/IP Transport',main:'Transport',sub:'TCP, UDP',body:'End-to-end communication. TCP for reliability, UDP for speed.'},
+  {cat:'TCP/IP Internet',main:'Internet',sub:'IP, ICMP, ARP',body:'Equivalent to OSI Network layer. Routes packets between networks using IP addresses.'},
+  {cat:'TCP/IP Link',main:'Network Access',sub:'Ethernet, Wi-Fi, ARP',body:'Combines OSI layers 1-2. Handles transmission on local networks.'},
+  {cat:'TCP Protocol',main:'3-Way Handshake',sub:'SYN → SYN-ACK → ACK',body:'TCP establishes connections with a three-step handshake before data transfer. This ensures both parties are ready.'},
+];
+
+const QUIZ_Q=[
+  {ql:'Which OSI layer handles…',q:'Routing packets between networks using IP addresses',correct:'Layer 3 — Network',opts:['Layer 3 — Network','Layer 2 — Data Link','Layer 4 — Transport','Layer 1 — Physical']},
+  {ql:'Which OSI layer handles…',q:'End-to-end delivery with TCP/UDP',correct:'Layer 4 — Transport',opts:['Layer 4 — Transport','Layer 3 — Network','Layer 5 — Session','Layer 6 — Presentation']},
+  {ql:'Which OSI layer handles…',q:'SSL/TLS encryption',correct:'Layer 6 — Presentation',opts:['Layer 6 — Presentation','Layer 7 — Application','Layer 4 — Transport','Layer 5 — Session']},
+  {ql:'Which OSI layer handles…',q:'MAC addresses and Ethernet frames',correct:'Layer 2 — Data Link',opts:['Layer 2 — Data Link','Layer 1 — Physical','Layer 3 — Network','Layer 4 — Transport']},
+  {ql:'Which OSI layer handles…',q:'HTTP, DNS, and SSH protocols',correct:'Layer 7 — Application',opts:['Layer 7 — Application','Layer 6 — Presentation','Layer 5 — Session','Layer 4 — Transport']},
+  {ql:'What is the PDU at Layer 4 (TCP)?',q:'Layer 4 (Transport) PDU for TCP',correct:'Segment',opts:['Segment','Packet','Frame','Bit']},
+  {ql:'What is the PDU at Layer 3?',q:'Layer 3 (Network) PDU',correct:'Packet',opts:['Packet','Frame','Segment','Datagram']},
+  {ql:'True or False:',q:'UDP guarantees delivery and ordering',correct:'False — UDP is connectionless',opts:['False — UDP is connectionless','True — UDP is reliable','True — UDP uses ACKs','False — TCP does that not UDP']},
+  {ql:'How many layers does TCP/IP have?',q:'TCP/IP model layer count',correct:'4',opts:['4','5','7','3']},
+  {ql:'Which protocol is at OSI Layer 3?',q:'Core Layer 3 protocol',correct:'IP',opts:['IP','TCP','Ethernet','HTTP']},
+];
+
+let sIdx=0,sPlaying=true,sTimer=null,sProg=null;const SDUR=5000;
+function openSlideshow(){sIdx=0;sPlaying=true;document.getElementById('slideshowOverlay').classList.add('active');document.body.style.overflow='hidden';showSlide(sIdx);startSTimer()}
+function closeSlideshow(){stopSTimer();document.getElementById('slideshowOverlay').classList.remove('active');document.body.style.overflow=''}
+function showSlide(i){const s=SLIDES[i];document.getElementById('slideCat').textContent=s.cat;document.getElementById('slideMain').textContent=s.main;document.getElementById('slideSub').textContent=s.sub;document.getElementById('slideBody').textContent=s.body;document.getElementById('slideProgress').textContent=(i+1)+' / '+SLIDES.length;document.getElementById('progFill').style.width='0%'}
+function startSTimer(){stopSTimer();let e=0;sProg=setInterval(()=>{e+=50;document.getElementById('progFill').style.width=Math.min(e/SDUR*100,100)+'%'},50);sTimer=setTimeout(slideNext,SDUR)}
+function stopSTimer(){clearTimeout(sTimer);clearInterval(sProg)}
+function slideNext(){sIdx=(sIdx+1)%SLIDES.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function slidePrev(){sIdx=(sIdx-1+SLIDES.length)%SLIDES.length;showSlide(sIdx);if(sPlaying)startSTimer()}
+function toggleSlide(){sPlaying=!sPlaying;document.getElementById('slideToggleBtn').textContent=sPlaying?'⏸ Pause':'▶ Resume';sPlaying?startSTimer():stopSTimer()}
+
+let qIdx=0,qScore=0,qAnswered=false;const QS=10;
+function startQuiz(){qIdx=0;qScore=0;document.getElementById('quizMain').style.display='block';document.getElementById('quizResultCard').style.display='none';document.getElementById('quizOverlay').classList.add('active');document.body.style.overflow='hidden';showQ()}
+function closeQuiz(){document.getElementById('quizOverlay').classList.remove('active');document.body.style.overflow=''}
+function showQ(){qAnswered=false;const q=QUIZ_Q[qIdx];document.getElementById('quizMeta').textContent='Question '+(qIdx+1)+' of '+QS+' · Score: '+qScore;document.getElementById('quizQLabel').textContent=q.ql;document.getElementById('quizQ').textContent=q.q;document.getElementById('quizFeedback').textContent='';document.getElementById('quizNextBtn').style.display='none';const sh=[...q.opts].sort(()=>Math.random()-.5);document.getElementById('quizOpts').innerHTML=sh.map(o=>`<button class="quiz-opt" onclick="answerQ(this,'${o.replace(/'/g,"\\'")}','${q.correct.replace(/'/g,"\\'")}')">${o}</button>`).join('')}
+function answerQ(btn,ans,correct){if(qAnswered)return;qAnswered=true;document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);if(ans===correct){qScore++;btn.classList.add('correct');document.getElementById('quizFeedback').innerHTML='<span style="color:#3fb950">✓ Correct!</span>'}else{btn.classList.add('wrong');document.querySelectorAll('.quiz-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct')});document.getElementById('quizFeedback').innerHTML=`<span style="color:#f85149">✗ Answer: ${correct}</span>`}document.getElementById('quizNextBtn').style.display='inline-flex'}
+function quizNext(){qIdx++;if(qIdx>=QS){const pct=Math.round(qScore/QS*100);document.getElementById('quizMain').style.display='none';document.getElementById('quizResultCard').style.display='block';document.getElementById('finalScore').textContent=qScore+'/'+QS;document.getElementById('finalMsg').textContent=pct>=80?'🏆 Excellent OSI/TCP-IP knowledge!':pct>=60?'👍 Good work! Review any missed layers.':'📚 Keep studying — use the slideshow to review!'}else showQ()}
+document.addEventListener('keydown',e=>{if(document.getElementById('slideshowOverlay').classList.contains('active')){if(e.key==='ArrowRight')slideNext();if(e.key==='ArrowLeft')slidePrev();if(e.key==='Escape')closeSlideshow();if(e.key===' '){e.preventDefault();toggleSlide();}}if(document.getElementById('quizOverlay').classList.contains('active')&&e.key==='Escape')closeQuiz()});
+</script>
+</body>
+</html>
