@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apache Web Server Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="Apache HTTP Server quick reference — config files, directives, virtual hosts, SSL, .htaccess, and management commands."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .cs-section{margin-bottom:2.5rem}
+    .code-block{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:1.2rem 1.5rem;overflow-x:auto;position:relative;margin:.6rem 0 1rem}
+    .code-block pre{margin:0;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.82rem;line-height:1.8;color:#e6edf3;white-space:pre}
+    .cm{color:#8b949e;font-style:italic}.kw{color:#ff7b72}.fn{color:#d2a8ff}.st{color:#a5d6ff}.nb{color:#79c0ff}.nm{color:#ffa657}
+    .copy-btn{position:absolute;top:10px;right:12px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:.7rem;padding:3px 10px;border-radius:5px;cursor:pointer;transition:all .2s;font-family:inherit}
+    .copy-btn:hover{background:#30363d;color:#e6edf3}.copy-btn.copied{color:#3fb950;border-color:#3fb950}
+    .ic{background:rgba(110,118,129,.15);border:1px solid rgba(110,118,129,.25);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.82em;color:#e6edf3}
+    [data-theme="light"] .ic{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#24292f}
+    [data-theme="light"] .code-block{background:#161b22}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.6rem 0}
+    .ref-table th{text-align:left;padding:8px 12px;background:rgba(110,118,129,.1);color:var(--text-secondary);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:#d2a8ff;white-space:nowrap;font-size:.8rem;font-weight:600}
+    .ref-table tr:last-child td{border-bottom:none}.ref-table tr:hover td{background:rgba(110,118,129,.05)}
+    .reading-link{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);text-decoration:none;color:var(--text-primary);font-size:.85rem;transition:border-color .2s,transform .2s;margin-bottom:.5rem}
+    .reading-link:hover{border-color:var(--accent);transform:translateX(4px)}
+    .reading-link .rl-icon{font-size:1.1rem;flex-shrink:0}.reading-link .rl-title{font-weight:600;color:var(--text-primary)}.reading-link .rl-sub{font-size:.75rem;color:var(--text-secondary)}
+    .overview-card{background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .overview-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem}
+    .overview-card p{margin:0 0 .6rem;font-size:.85rem;color:var(--text-secondary);line-height:1.75}
+    .ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-top:.75rem}
+    .ov-item{padding:.75rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);text-align:center}
+    .ov-item i{font-size:1.35rem;color:var(--accent);margin-bottom:.4rem;display:block}
+    .ov-item span{font-size:.76rem;color:var(--text-secondary);line-height:1.4}
+    .file-card{border:1px solid var(--border);border-radius:10px;background:var(--card-bg);padding:.9rem 1.1rem;margin-bottom:.6rem;transition:border-color .2s}
+    .file-card:hover{border-color:var(--accent)}
+    .file-card .fc-path{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:#d2a8ff;margin-bottom:.3rem}
+    .file-card .fc-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.5}
+    .code-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:700px){.code-grid{grid-template-columns:1fr}}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+    @media(max-width:600px){.stat-row{grid-template-columns:repeat(2,1fr)}}
+    .stat-card{padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);text-align:center}
+    .stat-card .sv{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1}
+    .stat-card .sl{font-size:.7rem;color:var(--text-secondary);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+  </style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li><li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li><li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="projects.html">Projects</a>
+  <a href="cheatsheets.html">Cheatsheets</a><a href="more.html">More</a>
+</div>
+
+<main><div class="container">
+
+  <div class="project-header fade-in">
+    <div class="breadcrumb"><a href="cheatsheets.html">← Cheatsheets</a><span>/</span><span>Apache</span></div>
+    <div class="card-tag" style="margin-bottom:.75rem;">Web Server · Apache · HTTP · SSL · Linux</div>
+    <h1 class="project-title"><i class="fa-solid fa-server" style="font-size:2rem;margin-right:.5rem"></i>Apache Web Server<br>Cheatsheet</h1>
+    <p style="color:var(--text-secondary);max-width:640px;font-size:1.05rem;line-height:1.8">A practical reference for <strong>Apache HTTP Server</strong> — covering configuration files, key directives, virtual hosts, SSL/TLS setup, <code class="ic">.htaccess</code>, and server management commands.</p>
+    <div class="project-meta">
+      <div class="meta-item"><span>Software:</span> Apache httpd</div>
+      <div class="meta-item"><span>Version:</span> 2.4.x</div>
+      <div class="meta-item"><span>Distro:</span> Ubuntu / Debian</div>
+      <div class="meta-item"><span>Sections:</span> 8</div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="https://httpd.apache.org/docs/" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-solid fa-book"></i> Official Apache Docs</a>
+      <a href="https://httpd.apache.org/docs/2.4/configuring.html" target="_blank" rel="noopener" class="btn btn-outline">📄 Configuration Guide</a>
+    </div>
+  </div>
+
+  <div class="project-layout" style="padding-bottom:80px">
+  <div class="project-content">
+
+    <!-- OVERVIEW -->
+    <div class="overview-card fade-in">
+      <h3><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i> What is Apache HTTP Server?</h3>
+      <p>The <strong>Apache HTTP Server</strong> (commonly called "Apache") is the world's most widely deployed open-source web server, maintained by the Apache Software Foundation. First released in 1995, it powers over 30% of all active websites globally.</p>
+      <p><strong>What it does:</strong> Apache receives HTTP/HTTPS requests from clients (browsers) and serves web content — static files (HTML, CSS, images) or dynamic content via modules like PHP, Python (mod_wsgi), or reverse proxy to application servers.</p>
+      <p><strong>Real-world use:</strong> Web hosting, LAMP stack (Linux + Apache + MySQL + PHP), reverse proxying to Node.js/Python apps, SSL termination, and serving APIs. It is a core skill for web developers, sysadmins, and DevOps engineers.</p>
+      <div class="ov-grid">
+        <div class="ov-item"><i class="fa-solid fa-globe"></i><span>Static &amp; dynamic website hosting</span></div>
+        <div class="ov-item"><i class="fa-solid fa-lock"></i><span>SSL/TLS certificate management</span></div>
+        <div class="ov-item"><i class="fa-solid fa-right-left"></i><span>Reverse proxy &amp; load balancing</span></div>
+        <div class="ov-item"><i class="fa-solid fa-shield-halved"></i><span>Access control &amp; URL rewriting</span></div>
+      </div>
+    </div>
+
+    <!-- STAT ROW -->
+    <div class="stat-row fade-in">
+      <div class="stat-card"><div class="sv">30%+</div><div class="sl">Web Market Share</div></div>
+      <div class="stat-card"><div class="sv">1995</div><div class="sl">First Release</div></div>
+      <div class="stat-card"><div class="sv">2.4.x</div><div class="sl">Current Branch</div></div>
+      <div class="stat-card"><div class="sv">Free</div><div class="sl">Apache License 2.0</div></div>
+    </div>
+
+    <!-- 1. Install & Manage -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-wrench" style="color:#3fb950"></i> 1. Install &amp; Service Management</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Install (Ubuntu / Debian)</span>
+sudo apt update && sudo apt install apache2
+
+<span class="cm"># Service management (systemd)</span>
+sudo systemctl start apache2        <span class="cm"># start</span>
+sudo systemctl stop apache2         <span class="cm"># stop</span>
+sudo systemctl restart apache2      <span class="cm"># restart (applies config changes)</span>
+sudo systemctl reload apache2       <span class="cm"># graceful reload (no downtime)</span>
+sudo systemctl enable apache2       <span class="cm"># start on boot</span>
+sudo systemctl disable apache2      <span class="cm"># don't start on boot</span>
+sudo systemctl status apache2       <span class="cm"># check status</span>
+
+<span class="cm"># Legacy service command</span>
+sudo service apache2 restart
+
+<span class="cm"># Test configuration before reloading</span>
+sudo apache2ctl configtest          <span class="cm"># check for syntax errors</span>
+sudo apache2ctl -t                  <span class="cm"># same as configtest</span>
+sudo apache2ctl -M                  <span class="cm"># list loaded modules</span>
+sudo apache2ctl -S                  <span class="cm"># show virtual host settings</span></pre>
+      </div>
+    </div>
+
+    <!-- 2. Key Config Files -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-folder-tree" style="color:#ffa657"></i> 2. Key Configuration Files &amp; Directories</h2>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/apache2.conf</div>
+        <div class="fc-desc">Main server configuration file. Sets global directives like ServerRoot, Timeout, KeepAlive, and includes other config files.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/sites-available/</div>
+        <div class="fc-desc">Directory for virtual host config files (one per site). Files here are NOT active until enabled with a2ensite.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/sites-enabled/</div>
+        <div class="fc-desc">Symlinks to active virtual host configs from sites-available. Apache reads configs from here at startup.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/mods-available/ &amp; mods-enabled/</div>
+        <div class="fc-desc">Available and enabled Apache modules. Use a2enmod / a2dismod to manage.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/conf-available/ &amp; conf-enabled/</div>
+        <div class="fc-desc">Additional configuration snippets. Use a2enconf / a2disconf to manage.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/etc/apache2/ports.conf</div>
+        <div class="fc-desc">Defines which ports Apache listens on (default: 80 for HTTP, 443 for HTTPS).</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/var/www/html/</div>
+        <div class="fc-desc">Default web root — place your website files here. Customise with DocumentRoot directive.</div>
+      </div>
+      <div class="file-card fade-in">
+        <div class="fc-path">/var/log/apache2/access.log &amp; error.log</div>
+        <div class="fc-desc">Access log (all requests) and error log. Essential for debugging and security analysis.</div>
+      </div>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Enable / disable sites and modules</span>
+sudo a2ensite mysite.conf           <span class="cm"># enable virtual host</span>
+sudo a2dissite mysite.conf          <span class="cm"># disable virtual host</span>
+sudo a2enmod rewrite                <span class="cm"># enable mod_rewrite</span>
+sudo a2dismod status                <span class="cm"># disable mod_status</span>
+sudo a2enmod ssl                    <span class="cm"># enable SSL module</span>
+sudo a2enmod headers                <span class="cm"># enable headers module</span>
+sudo systemctl reload apache2       <span class="cm"># apply changes</span></pre>
+      </div>
+    </div>
+
+    <!-- 3. Key Directives -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-sliders" style="color:#d2a8ff"></i> 3. Key Configuration Directives</h2>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Directive</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>ServerName</td><td>Domain name for this server/vhost</td><td><span class="ic">ServerName example.com</span></td></tr>
+          <tr><td>ServerAlias</td><td>Additional hostnames for this vhost</td><td><span class="ic">ServerAlias www.example.com</span></td></tr>
+          <tr><td>DocumentRoot</td><td>Root directory for web files</td><td><span class="ic">DocumentRoot /var/www/mysite</span></td></tr>
+          <tr><td>DirectoryIndex</td><td>Default file to serve for a directory</td><td><span class="ic">DirectoryIndex index.html index.php</span></td></tr>
+          <tr><td>Listen</td><td>IP/port to listen on</td><td><span class="ic">Listen 80</span></td></tr>
+          <tr><td>ErrorLog</td><td>Path to error log file</td><td><span class="ic">ErrorLog /var/log/apache2/error.log</span></td></tr>
+          <tr><td>CustomLog</td><td>Path to access log with format</td><td><span class="ic">CustomLog /var/log/apache2/access.log combined</span></td></tr>
+          <tr><td>LogLevel</td><td>Logging verbosity level</td><td><span class="ic">LogLevel warn</span></td></tr>
+          <tr><td>ErrorDocument</td><td>Custom error page</td><td><span class="ic">ErrorDocument 404 /404.html</span></td></tr>
+          <tr><td>ServerTokens</td><td>Amount of server info in headers</td><td><span class="ic">ServerTokens Prod</span></td></tr>
+          <tr><td>ServerSignature</td><td>Server info in error pages</td><td><span class="ic">ServerSignature Off</span></td></tr>
+          <tr><td>Timeout</td><td>Connection timeout in seconds</td><td><span class="ic">Timeout 300</span></td></tr>
+          <tr><td>KeepAlive</td><td>Allow persistent connections</td><td><span class="ic">KeepAlive On</span></td></tr>
+          <tr><td>MaxKeepAliveRequests</td><td>Max requests per connection</td><td><span class="ic">MaxKeepAliveRequests 100</span></td></tr>
+          <tr><td>Options</td><td>Controls directory features</td><td><span class="ic">Options -Indexes +FollowSymLinks</span></td></tr>
+          <tr><td>AllowOverride</td><td>What .htaccess can override</td><td><span class="ic">AllowOverride All</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. Virtual Hosts -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-network-wired" style="color:#79c0ff"></i> 4. Virtual Hosts</h2>
+      <p class="fade-in">Virtual hosts allow one Apache server to serve multiple websites on the same IP address.</p>
+      <div class="code-grid fade-in">
+        <div>
+          <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:4px">HTTP Virtual Host</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="cm"># /etc/apache2/sites-available/example.com.conf</span>
+&lt;VirtualHost *:80&gt;
+  ServerName example.com
+  ServerAlias www.example.com
+  DocumentRoot /var/www/example.com
+  ErrorLog ${APACHE_LOG_DIR}/example-error.log
+  CustomLog ${APACHE_LOG_DIR}/example-access.log combined
+
+  &lt;Directory /var/www/example.com&gt;
+    Options -Indexes +FollowSymLinks
+    AllowOverride All
+    Require all granted
+  &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:4px">HTTPS Virtual Host</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>&lt;VirtualHost *:443&gt;
+  ServerName example.com
+  DocumentRoot /var/www/example.com
+
+  SSLEngine on
+  SSLCertificateFile /etc/ssl/certs/cert.pem
+  SSLCertificateKeyFile /etc/ssl/private/key.pem
+  SSLCertificateChainFile /etc/ssl/certs/chain.pem
+
+  Header always set Strict-Transport-Security \
+    "max-age=63072000; includeSubDomains"
+&lt;/VirtualHost&gt;</pre>
+          </div>
+        </div>
+      </div>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># HTTP → HTTPS redirect (in port 80 vhost)</span>
+&lt;VirtualHost *:80&gt;
+  ServerName example.com
+  Redirect permanent / https://example.com/
+&lt;/VirtualHost&gt;
+
+<span class="cm"># OR with mod_rewrite (more flexible)</span>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]</pre>
+      </div>
+    </div>
+
+    <!-- 5. .htaccess -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-file-shield" style="color:#f85149"></i> 5. .htaccess Common Patterns</h2>
+      <p class="fade-in">The <code class="ic">.htaccess</code> file provides per-directory configuration. Requires <code class="ic">AllowOverride All</code> in server config.</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Enable mod_rewrite</span>
+Options +FollowSymLinks
+RewriteEngine On
+
+<span class="cm"># Remove .html extension from URLs</span>
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.+)$ $1.html [L,QSA]
+
+<span class="cm"># Redirect old URL to new URL</span>
+Redirect 301 /old-page.html /new-page.html
+
+<span class="cm"># Block access to specific files</span>
+&lt;Files "config.php"&gt;
+  Require all denied
+&lt;/Files&gt;
+
+<span class="cm"># Block access to .env files</span>
+&lt;FilesMatch "^\.env"&gt;
+  Require all denied
+&lt;/FilesMatch&gt;
+
+<span class="cm"># Protect directory with password</span>
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /etc/.htpasswd
+Require valid-user
+
+<span class="cm"># Custom error pages</span>
+ErrorDocument 404 /errors/404.html
+ErrorDocument 500 /errors/500.html
+
+<span class="cm"># Enable GZIP compression</span>
+&lt;IfModule mod_deflate.c&gt;
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
+&lt;/IfModule&gt;
+
+<span class="cm"># Set browser caching headers</span>
+&lt;FilesMatch "\.(jpg|png|css|js)$"&gt;
+  Header set Cache-Control "max-age=2592000, public"
+&lt;/FilesMatch&gt;</pre>
+      </div>
+    </div>
+
+    <!-- 6. SSL with Let's Encrypt -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-lock" style="color:#3fb950"></i> 6. SSL / Let's Encrypt (Certbot)</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Install certbot for Apache</span>
+sudo apt install certbot python3-certbot-apache
+
+<span class="cm"># Obtain and install certificate automatically</span>
+sudo certbot --apache -d example.com -d www.example.com
+
+<span class="cm"># Certificate only (no Apache config change)</span>
+sudo certbot certonly --apache -d example.com
+
+<span class="cm"># Renew all certificates</span>
+sudo certbot renew
+
+<span class="cm"># Test renewal (dry run)</span>
+sudo certbot renew --dry-run
+
+<span class="cm"># Cert locations (Let's Encrypt)</span>
+/etc/letsencrypt/live/example.com/fullchain.pem
+/etc/letsencrypt/live/example.com/privkey.pem
+/etc/letsencrypt/live/example.com/chain.pem
+
+<span class="cm"># Enable SSL module manually</span>
+sudo a2enmod ssl
+sudo a2enmod headers
+sudo systemctl restart apache2</pre>
+      </div>
+    </div>
+
+    <!-- 7. Reverse Proxy -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-right-left" style="color:#79c0ff"></i> 7. Reverse Proxy</h2>
+      <p class="fade-in">Forward incoming requests to a backend application server (Node.js, Python, Java, etc.).</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Enable required modules</span>
+sudo a2enmod proxy proxy_http proxy_wstunnel
+
+<span class="cm"># Basic reverse proxy in VirtualHost</span>
+&lt;VirtualHost *:443&gt;
+  ServerName api.example.com
+  SSLEngine on
+  ...
+
+  ProxyPreserveHost On
+  ProxyPass / http://localhost:3000/
+  ProxyPassReverse / http://localhost:3000/
+
+  <span class="cm"># WebSocket proxy</span>
+  RewriteEngine On
+  RewriteCond %{HTTP:Upgrade} websocket [NC]
+  RewriteRule /(.*) ws://localhost:3000/$1 [P,L]
+&lt;/VirtualHost&gt;</pre>
+      </div>
+    </div>
+
+    <!-- 8. Security Hardening -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-shield-halved" style="color:#f85149"></i> 8. Security Hardening</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># In apache2.conf — hide version info</span>
+ServerTokens Prod
+ServerSignature Off
+
+<span class="cm"># Disable directory listing globally</span>
+&lt;Directory /&gt;
+  Options -Indexes
+&lt;/Directory&gt;
+
+<span class="cm"># Security headers (mod_headers required)</span>
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Content-Security-Policy "default-src 'self'"
+Header always set Strict-Transport-Security "max-age=63072000"
+
+<span class="cm"># Restrict HTTP methods</span>
+&lt;LimitExcept GET POST HEAD&gt;
+  Require all denied
+&lt;/LimitExcept&gt;
+
+<span class="cm"># Block access to sensitive files</span>
+&lt;FilesMatch "\.(htaccess|htpasswd|env|git|bak)$"&gt;
+  Require all denied
+&lt;/FilesMatch&gt;
+
+<span class="cm"># Rate limiting (mod_ratelimit)</span>
+&lt;Location /&gt;
+  SetOutputFilter RATE_LIMIT
+  SetEnv rate-limit 400
+&lt;/Location&gt;</pre>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="fade-in">📚 Further Learning</h2>
+    <div class="fade-in">
+      <a href="https://httpd.apache.org/docs/" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📖</span><div><div class="rl-title">Apache HTTP Server Documentation</div><div class="rl-sub">httpd.apache.org — official, authoritative Apache reference</div></div></a>
+      <a href="https://httpd.apache.org/docs/2.4/configuring.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">⚙️</span><div><div class="rl-title">Apache 2.4 Configuration Files</div><div class="rl-sub">httpd.apache.org — configuration file structure guide</div></div></a>
+      <a href="https://certbot.eff.org/instructions" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🔒</span><div><div class="rl-title">Certbot — Let's Encrypt for Apache</div><div class="rl-sub">certbot.eff.org — free SSL certificate setup guide</div></div></a>
+    </div>
+
+  </div>
+
+  <aside class="project-sidebar fade-in fade-in-delay-1">
+    <div class="sidebar-card">
+      <h3>Sections</h3>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Install &amp; Service Management</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Config Files &amp; Directories</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Key Directives</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Virtual Hosts</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>.htaccess Patterns</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>SSL / Let's Encrypt</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Reverse Proxy</li>
+        <li style="padding:5px 0;font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Security Hardening</li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h3>Quick Commands</h3>
+      <div style="font-size:.78rem;color:var(--text-secondary);line-height:2.2">
+        <div><span style="color:#3fb950;font-family:monospace">sudo systemctl restart apache2</span></div>
+        <div><span style="color:#3fb950;font-family:monospace">sudo apache2ctl configtest</span></div>
+        <div><span style="color:#3fb950;font-family:monospace">sudo a2ensite site.conf</span></div>
+        <div><span style="color:#3fb950;font-family:monospace">sudo a2enmod rewrite</span></div>
+        <div><span style="color:#3fb950;font-family:monospace">sudo certbot --apache</span></div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Related</h3>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+        <a href="cheatsheet-linux-commands.html" style="color:var(--accent);text-decoration:none">🐧 Linux Commands</a>
+        <a href="cheatsheet-ufw.html" style="color:var(--accent);text-decoration:none">🛡️ UFW Firewall</a>
+        <a href="cheatsheet-iptables.html" style="color:var(--accent);text-decoration:none">🔗 iptables</a>
+        <a href="cheatsheet-bash.html" style="color:var(--accent);text-decoration:none">📜 Bash Scripting</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+</div></main>
+
+<footer><div class="container"><div class="footer-inner">
+  <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+  <div class="footer-links">
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+</div></div></footer>
+
+<script src="js/script.js"></script>
+<script>
+function copyCode(btn){const p=btn.nextElementSibling;navigator.clipboard.writeText(p.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UFW Firewall Cheatsheet — Kenneth Nweke</title>
+  <meta name="description" content="UFW (Uncomplicated Firewall) quick reference — enable/disable, allow/deny rules, port rules, application profiles, and logging."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .cs-section{margin-bottom:2.5rem}
+    .code-block{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:1.2rem 1.5rem;overflow-x:auto;position:relative;margin:.6rem 0 1rem}
+    .code-block pre{margin:0;font-family:'JetBrains Mono','Fira Code',monospace;font-size:.82rem;line-height:1.8;color:#e6edf3;white-space:pre}
+    .cm{color:#8b949e;font-style:italic}
+    .copy-btn{position:absolute;top:10px;right:12px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:.7rem;padding:3px 10px;border-radius:5px;cursor:pointer;transition:all .2s;font-family:inherit}
+    .copy-btn:hover{background:#30363d;color:#e6edf3}.copy-btn.copied{color:#3fb950;border-color:#3fb950}
+    .ic{background:rgba(110,118,129,.15);border:1px solid rgba(110,118,129,.25);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.82em;color:#e6edf3}
+    [data-theme="light"] .ic{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#24292f}
+    [data-theme="light"] .code-block{background:#161b22}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.6rem 0}
+    .ref-table th{text-align:left;padding:8px 12px;background:rgba(110,118,129,.1);color:var(--text-secondary);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:#d2a8ff;white-space:nowrap;font-size:.8rem;font-weight:600}
+    .ref-table tr:last-child td{border-bottom:none}.ref-table tr:hover td{background:rgba(110,118,129,.05)}
+    .reading-link{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);text-decoration:none;color:var(--text-primary);font-size:.85rem;transition:border-color .2s,transform .2s;margin-bottom:.5rem}
+    .reading-link:hover{border-color:var(--accent);transform:translateX(4px)}
+    .reading-link .rl-icon{font-size:1.1rem;flex-shrink:0}.reading-link .rl-title{font-weight:600;color:var(--text-primary)}.reading-link .rl-sub{font-size:.75rem;color:var(--text-secondary)}
+    .overview-card{background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .overview-card h3{margin:0 0 .75rem;font-size:1rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem}
+    .overview-card p{margin:0 0 .6rem;font-size:.85rem;color:var(--text-secondary);line-height:1.75}
+    .ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-top:.75rem}
+    .ov-item{padding:.75rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);text-align:center}
+    .ov-item i{font-size:1.35rem;color:var(--accent);margin-bottom:.4rem;display:block}
+    .ov-item span{font-size:.76rem;color:var(--text-secondary);line-height:1.4}
+    .toolbar{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.5rem}
+    .toolbar-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font-size:.82rem;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+    .toolbar-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .overlay-modal{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:9000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+    .overlay-modal.active{display:flex}
+    .modal-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:580px;width:100%;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+    .mc-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:.5rem}
+    .mc-main{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:900;color:#3fb950;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.6rem 1rem;margin-bottom:.6rem;word-break:break-all;text-align:left}
+    .mc-sub{font-size:.95rem;font-weight:700;color:var(--text-primary);margin-bottom:.4rem}
+    .mc-body{font-size:.84rem;color:var(--text-secondary);line-height:1.7;text-align:left}
+    .modal-progress{font-size:.78rem;color:var(--text-secondary);margin-top:.75rem}
+    .prog-wrap{width:100%;max-width:420px;height:4px;background:var(--border);border-radius:2px;margin-top:.4rem;overflow:hidden}
+    .prog-fill{height:100%;background:var(--accent);transition:width .08s linear;border-radius:2px}
+    .modal-controls{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap;justify-content:center}
+    .btn-sm{padding:.45rem 1rem;font-size:.82rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:600;transition:all .15s}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent)}.btn-sm.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn-sm.primary:hover{opacity:.9}.btn-sm.danger{background:#f85149;border-color:#f85149;color:#fff}
+    .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem}
+    @media(max-width:500px){.quiz-opts{grid-template-columns:1fr}}
+    .quiz-opt{padding:.6rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-secondary);cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'JetBrains Mono',monospace}
+    .quiz-opt:hover{border-color:var(--accent);color:var(--accent)}.quiz-opt.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}.quiz-opt.wrong{border-color:#f85149;background:rgba(248,81,73,.1);color:#f85149}.quiz-opt:disabled{pointer-events:none}
+    .result-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:440px;width:100%;text-align:center;animation:fadeUp .3s ease}
+    .result-card h2{color:var(--accent);margin:0 0 .5rem}.final-score{font-size:3rem;font-weight:900;color:var(--text-primary);margin:.5rem 0}
+    .warning-card{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:flex-start}
+    .warning-card i{color:#f85149;font-size:1.2rem;flex-shrink:0;margin-top:2px}
+    .warning-card p{margin:0;font-size:.84rem;color:var(--text-secondary);line-height:1.6}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+    @media(max-width:600px){.stat-row{grid-template-columns:repeat(2,1fr)}}
+    .stat-card{padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--card-bg);text-align:center}
+    .stat-card .sv{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1}
+    .stat-card .sl{font-size:.7rem;color:var(--text-secondary);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+  </style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">KN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li><li><a href="projects.html">Projects</a></li>
+    <li><a href="cheatsheets.html">Cheatsheets</a></li><li><a href="more.html">More</a></li>
+    <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button></li>
+  </ul>
+  <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="projects.html">Projects</a>
+  <a href="cheatsheets.html">Cheatsheets</a><a href="more.html">More</a>
+</div>
+
+<!-- SLIDESHOW -->
+<div class="overlay-modal" id="ssOverlay">
+  <div class="modal-card" style="text-align:left">
+    <div class="mc-label" id="ssCat"></div>
+    <div class="mc-main" id="ssCmd"></div>
+    <div class="mc-sub" id="ssSub"></div>
+    <div class="mc-body" id="ssBody"></div>
+  </div>
+  <div class="modal-progress" id="ssProgress"></div>
+  <div class="prog-wrap"><div class="prog-fill" id="ssProg"></div></div>
+  <div class="modal-controls">
+    <button class="btn-sm" onclick="ssPrev()">← Prev</button>
+    <button class="btn-sm primary" id="ssToggleBtn" onclick="ssToggle()">⏸ Pause</button>
+    <button class="btn-sm" onclick="ssNext()">Next →</button>
+    <button class="btn-sm danger" onclick="ssClose()">✕ Close</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="overlay-modal" id="qzOverlay">
+  <div id="qzMain" class="modal-card" style="text-align:left">
+    <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.75rem" id="qzMeta"></div>
+    <div style="font-size:.88rem;color:var(--text-secondary);margin-bottom:.3rem">What does this UFW command do?</div>
+    <div style="font-size:1.2rem;font-weight:800;color:var(--text-primary);margin-bottom:1.25rem;font-family:'JetBrains Mono',monospace;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:.6rem 1rem;line-height:1.5" id="qzQ"></div>
+    <div class="quiz-opts" id="qzOpts"></div>
+    <div id="qzFeedback" style="margin-top:.6rem;font-size:.83rem;min-height:1.1rem"></div>
+    <div class="modal-controls" style="justify-content:flex-start;margin-top:1rem">
+      <button class="btn-sm primary" id="qzNextBtn" onclick="qzNext()" style="display:none">Next →</button>
+      <button class="btn-sm danger" onclick="qzClose()">✕ End</button>
+    </div>
+  </div>
+  <div id="qzResult" class="result-card" style="display:none">
+    <h2>Quiz Complete 🎉</h2>
+    <div class="final-score" id="qzFinalScore"></div>
+    <p id="qzFinalMsg" style="color:var(--text-secondary);font-size:.88rem;margin:.4rem 0 1.5rem"></p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn-sm primary" onclick="qzStart()">🔄 Restart</button>
+      <button class="btn-sm danger" onclick="qzClose()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<main><div class="container">
+
+  <div class="project-header fade-in">
+    <div class="breadcrumb"><a href="cheatsheets.html">← Cheatsheets</a><span>/</span><span>UFW</span></div>
+    <div class="card-tag" style="margin-bottom:.75rem;">Linux · Firewall · Security · Networking</div>
+    <h1 class="project-title"><i class="fa-solid fa-shield-halved" style="font-size:2rem;margin-right:.5rem"></i>UFW Firewall<br>Cheatsheet</h1>
+    <p style="color:var(--text-secondary);max-width:640px;font-size:1.05rem;line-height:1.8">A complete reference for <strong>UFW (Uncomplicated Firewall)</strong> — the simplified iptables frontend for Ubuntu/Debian systems, covering enable/disable, allow/deny rules, port rules, application profiles, and logging.</p>
+    <div class="project-meta">
+      <div class="meta-item"><span>Tool:</span> UFW</div>
+      <div class="meta-item"><span>Backend:</span> iptables / nftables</div>
+      <div class="meta-item"><span>Distro:</span> Ubuntu / Debian</div>
+      <div class="meta-item"><span>Sections:</span> 7</div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="https://wiki.debian.org/Uncomplicated%20Firewall%20%28ufw%29" target="_blank" rel="noopener" class="btn btn-primary"><i class="fa-solid fa-book"></i> Debian UFW Wiki</a>
+      <button onclick="ssOpen()" class="btn btn-outline">▶ Play Slideshow</button>
+      <button onclick="qzStart()" class="btn btn-outline">🧠 Start Quiz</button>
+    </div>
+  </div>
+
+  <div class="project-layout" style="padding-bottom:80px">
+  <div class="project-content">
+
+    <!-- OVERVIEW -->
+    <div class="overview-card fade-in">
+      <h3><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i> What is UFW?</h3>
+      <p><strong>UFW (Uncomplicated Firewall)</strong> is a simplified frontend for managing <strong>iptables</strong> firewall rules on Ubuntu and Debian-based Linux systems. Introduced in Ubuntu 8.04, it was designed to make firewall management accessible without deep knowledge of iptables syntax.</p>
+      <p><strong>What it does:</strong> UFW controls incoming and outgoing network traffic by defining rules that allow or deny connections based on port, protocol, and IP address. It is the default firewall management tool on Ubuntu servers.</p>
+      <p><strong>Real-world use:</strong> Securing Linux servers — blocking unwanted ports, restricting SSH access to specific IPs, allowing only HTTP/HTTPS traffic, and protecting databases from external access. Essential for any internet-facing Linux server.</p>
+      <div class="ov-grid">
+        <div class="ov-item"><i class="fa-solid fa-server"></i><span>Protect Linux servers</span></div>
+        <div class="ov-item"><i class="fa-solid fa-door-closed"></i><span>Block unwanted ports</span></div>
+        <div class="ov-item"><i class="fa-solid fa-key"></i><span>Restrict SSH access</span></div>
+        <div class="ov-item"><i class="fa-solid fa-shield-virus"></i><span>Mitigate attack surface</span></div>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div class="warning-card fade-in">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <p><strong>⚠️ Important:</strong> Always allow SSH (port 22) before enabling UFW on a remote server — otherwise you will lock yourself out. Command: <code class="ic">sudo ufw allow ssh</code> then <code class="ic">sudo ufw enable</code>.</p>
+    </div>
+
+    <!-- STAT ROW -->
+    <div class="stat-row fade-in">
+      <div class="stat-card"><div class="sv">DEFAULT</div><div class="sl">Ubuntu Firewall</div></div>
+      <div class="stat-card"><div class="sv">iptables</div><div class="sl">Backend Engine</div></div>
+      <div class="stat-card"><div class="sv">IN/OUT</div><div class="sl">Traffic Control</div></div>
+      <div class="stat-card"><div class="sv">IPv4+6</div><div class="sl">Protocol Support</div></div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar fade-in">
+      <button class="toolbar-btn" onclick="ssOpen()"><i class="fa-solid fa-play"></i> Play Slideshow</button>
+      <button class="toolbar-btn" onclick="qzStart()"><i class="fa-solid fa-circle-question"></i> Start Quiz</button>
+    </div>
+
+    <!-- 1. Enable / Disable -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-power-off" style="color:#3fb950"></i> 1. Enable, Disable &amp; Status</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># ⚠️ Allow SSH FIRST before enabling on remote servers</span>
+sudo ufw allow ssh
+
+<span class="cm"># Enable / Disable UFW</span>
+sudo ufw enable                     <span class="cm"># activate firewall</span>
+sudo ufw disable                    <span class="cm"># deactivate firewall</span>
+sudo ufw reload                     <span class="cm"># reload rules without disabling</span>
+sudo ufw reset                      <span class="cm"># reset all rules to defaults</span>
+
+<span class="cm"># Check status</span>
+sudo ufw status                     <span class="cm"># basic status + rules</span>
+sudo ufw status verbose             <span class="cm"># detailed status</span>
+sudo ufw status numbered            <span class="cm"># show rules with numbers</span>
+
+<span class="cm"># Example status output:</span>
+<span class="cm"># Status: active</span>
+<span class="cm"># To         Action  From</span>
+<span class="cm"># 22/tcp     ALLOW   Anywhere</span>
+<span class="cm"># 80/tcp     ALLOW   Anywhere</span>
+<span class="cm"># 443/tcp    ALLOW   Anywhere</span></pre>
+      </div>
+    </div>
+
+    <!-- 2. Default Policies -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-sliders" style="color:#ffa657"></i> 2. Default Policies</h2>
+      <p class="fade-in">Default policies determine what happens to traffic that doesn't match any specific rule. Best practice: deny all incoming, allow all outgoing.</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Set default policies (recommended for servers)</span>
+sudo ufw default deny incoming      <span class="cm"># block all inbound by default</span>
+sudo ufw default allow outgoing     <span class="cm"># allow all outbound by default</span>
+sudo ufw default deny forward       <span class="cm"># block forwarded traffic (routing)</span>
+
+<span class="cm"># Permissive policy (not recommended for servers)</span>
+sudo ufw default allow incoming</pre>
+      </div>
+    </div>
+
+    <!-- 3. Allow Rules -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-circle-check" style="color:#3fb950"></i> 3. Allow Rules</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Allow by service name</span>
+sudo ufw allow ssh                  <span class="cm"># port 22</span>
+sudo ufw allow http                 <span class="cm"># port 80</span>
+sudo ufw allow https                <span class="cm"># port 443</span>
+sudo ufw allow ftp                  <span class="cm"># port 21</span>
+
+<span class="cm"># Allow by port number</span>
+sudo ufw allow 22                   <span class="cm"># any protocol</span>
+sudo ufw allow 22/tcp               <span class="cm"># TCP only</span>
+sudo ufw allow 53/udp               <span class="cm"># UDP only (DNS)</span>
+
+<span class="cm"># Allow port range</span>
+sudo ufw allow 6000:6007/tcp        <span class="cm"># TCP ports 6000–6007</span>
+sudo ufw allow 60000:61000/udp      <span class="cm"># UDP range (mosh)</span>
+
+<span class="cm"># Allow from specific IP</span>
+sudo ufw allow from 203.0.113.10    <span class="cm"># all traffic from this IP</span>
+sudo ufw allow from 203.0.113.10 to any port 22   <span class="cm"># SSH from specific IP</span>
+
+<span class="cm"># Allow from IP range (subnet)</span>
+sudo ufw allow from 192.168.1.0/24  <span class="cm"># entire /24 subnet</span>
+sudo ufw allow from 192.168.1.0/24 to any port 3306  <span class="cm"># MySQL from LAN only</span>
+
+<span class="cm"># Allow to specific interface</span>
+sudo ufw allow in on eth0 to any port 80</pre>
+      </div>
+    </div>
+
+    <!-- 4. Deny Rules -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-ban" style="color:#f85149"></i> 4. Deny &amp; Reject Rules</h2>
+      <p class="fade-in"><strong>Deny</strong> drops packets silently. <strong>Reject</strong> drops and sends an error response to the sender.</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Deny incoming</span>
+sudo ufw deny 23                    <span class="cm"># block Telnet</span>
+sudo ufw deny 23/tcp
+sudo ufw deny from 198.51.100.5     <span class="cm"># block specific IP</span>
+sudo ufw deny from 198.51.100.0/24  <span class="cm"># block entire subnet</span>
+
+<span class="cm"># Deny with destination</span>
+sudo ufw deny from 10.0.0.0/8 to any port 22
+
+<span class="cm"># Reject (sends RST/ICMP unreachable)</span>
+sudo ufw reject 23
+sudo ufw reject from 198.51.100.5 to any port 22
+
+<span class="cm"># Block outgoing</span>
+sudo ufw deny out 25                <span class="cm"># block outbound SMTP</span>
+sudo ufw deny out to 198.51.100.5  <span class="cm"># block traffic to IP</span></pre>
+      </div>
+    </div>
+
+    <!-- 5. Delete Rules -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-trash" style="color:#f85149"></i> 5. Delete Rules</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Delete by rule specification</span>
+sudo ufw delete allow 80
+sudo ufw delete allow ssh
+sudo ufw delete deny 23/tcp
+sudo ufw delete allow from 203.0.113.10
+
+<span class="cm"># Delete by rule number (from 'ufw status numbered')</span>
+sudo ufw status numbered            <span class="cm"># list rules with numbers</span>
+sudo ufw delete 3                   <span class="cm"># delete rule number 3</span>
+
+<span class="cm"># Reset all rules</span>
+sudo ufw reset                      <span class="cm"># removes all rules, disables UFW</span></pre>
+      </div>
+    </div>
+
+    <!-- 6. Application Profiles -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-layer-group" style="color:#79c0ff"></i> 6. Application Profiles</h2>
+      <p class="fade-in">UFW includes pre-defined application profiles for common services. Profiles are defined in <code class="ic">/etc/ufw/applications.d/</code>.</p>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># List available application profiles</span>
+sudo ufw app list
+
+<span class="cm"># View profile details</span>
+sudo ufw app info Apache
+sudo ufw app info "Apache Full"
+sudo ufw app info OpenSSH
+sudo ufw app info Nginx
+
+<span class="cm"># Allow application profiles</span>
+sudo ufw allow OpenSSH              <span class="cm"># SSH (port 22)</span>
+sudo ufw allow Apache               <span class="cm"># HTTP only (port 80)</span>
+sudo ufw allow "Apache Full"        <span class="cm"># HTTP + HTTPS (80 + 443)</span>
+sudo ufw allow "Apache Secure"      <span class="cm"># HTTPS only (port 443)</span>
+sudo ufw allow Nginx                <span class="cm"># Nginx HTTP</span>
+sudo ufw allow "Nginx Full"         <span class="cm"># Nginx HTTP + HTTPS</span>
+
+<span class="cm"># Create custom application profile</span>
+<span class="cm"># /etc/ufw/applications.d/myapp</span>
+<span class="cm"># [MyApp]</span>
+<span class="cm"># title=My Application</span>
+<span class="cm"># description=My custom app</span>
+<span class="cm"># ports=8080/tcp</span>
+sudo ufw app update MyApp</pre>
+      </div>
+    </div>
+
+    <!-- 7. Logging -->
+    <div class="cs-section">
+      <h2 class="fade-in"><i class="fa-solid fa-file-lines" style="color:#d2a8ff"></i> 7. Logging &amp; Advanced</h2>
+      <div class="code-block fade-in">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm"># Logging levels</span>
+sudo ufw logging off                <span class="cm"># disable logging</span>
+sudo ufw logging on                 <span class="cm"># enable (low level)</span>
+sudo ufw logging low                <span class="cm"># blocked packets only</span>
+sudo ufw logging medium             <span class="cm"># blocked + invalid packets</span>
+sudo ufw logging high               <span class="cm"># all packets (verbose)</span>
+sudo ufw logging full               <span class="cm"># maximum verbosity</span>
+
+<span class="cm"># View UFW logs</span>
+sudo tail -f /var/log/ufw.log
+sudo grep -i "BLOCK" /var/log/ufw.log  <span class="cm"># show blocked connections</span>
+sudo journalctl -f | grep UFW          <span class="cm"># systemd journal</span>
+
+<span class="cm"># Common secure server setup</span>
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh                  <span class="cm"># allow SSH first!</span>
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw deny 23                    <span class="cm"># block Telnet</span>
+sudo ufw deny 3389                  <span class="cm"># block RDP from internet</span>
+sudo ufw enable
+sudo ufw status verbose</pre>
+      </div>
+
+      <!-- Quick Reference Table -->
+      <h3 class="fade-in" style="font-size:.95rem;margin:1.5rem 0 .5rem">Quick Reference</h3>
+      <table class="ref-table fade-in">
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>ufw enable</td><td>Activate the firewall</td></tr>
+          <tr><td>ufw disable</td><td>Deactivate the firewall</td></tr>
+          <tr><td>ufw status verbose</td><td>Show all rules and status</td></tr>
+          <tr><td>ufw status numbered</td><td>Show rules with line numbers</td></tr>
+          <tr><td>ufw allow 22/tcp</td><td>Allow TCP port 22 (SSH)</td></tr>
+          <tr><td>ufw allow from IP</td><td>Allow all traffic from an IP</td></tr>
+          <tr><td>ufw deny 23</td><td>Block port 23 (Telnet)</td></tr>
+          <tr><td>ufw delete 3</td><td>Delete rule number 3</td></tr>
+          <tr><td>ufw app list</td><td>List application profiles</td></tr>
+          <tr><td>ufw reset</td><td>Remove all rules and disable</td></tr>
+          <tr><td>ufw logging on</td><td>Enable UFW logging</td></tr>
+          <tr><td>ufw reload</td><td>Reload rules gracefully</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="fade-in">📚 Further Learning</h2>
+    <div class="fade-in">
+      <a href="https://wiki.debian.org/Uncomplicated%20Firewall%20%28ufw%29" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📖</span><div><div class="rl-title">Debian Wiki — UFW</div><div class="rl-sub">wiki.debian.org — official UFW documentation and examples</div></div></a>
+      <a href="https://help.ubuntu.com/community/UFW" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">🟠</span><div><div class="rl-title">Ubuntu Community — UFW Guide</div><div class="rl-sub">help.ubuntu.com — Ubuntu's comprehensive UFW configuration guide</div></div></a>
+      <a href="https://manpages.ubuntu.com/manpages/focal/man8/ufw.8.html" target="_blank" rel="noopener" class="reading-link"><span class="rl-icon">📄</span><div><div class="rl-title">UFW Man Page</div><div class="rl-sub">manpages.ubuntu.com — full ufw command reference</div></div></a>
+    </div>
+
+  </div>
+
+  <aside class="project-sidebar fade-in fade-in-delay-1">
+    <div class="sidebar-card">
+      <h3>Sections</h3>
+      <ul style="list-style:none;padding:0">
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Enable, Disable &amp; Status</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Default Policies</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Allow Rules</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Deny &amp; Reject Rules</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Delete Rules</li>
+        <li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Application Profiles</li>
+        <li style="padding:5px 0;font-size:.82rem;color:var(--text-secondary)"><span style="color:var(--accent);margin-right:6px">✓</span>Logging &amp; Advanced</li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h3>Quick Actions</h3>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button onclick="ssOpen()" class="btn btn-primary" style="width:100%;justify-content:center;font-size:.82rem">▶ Play Slideshow</button>
+        <button onclick="qzStart()" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.82rem">🧠 Start Quiz</button>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Safe Server Setup</h3>
+      <div style="font-size:.76rem;color:var(--text-secondary);line-height:2;font-family:'JetBrains Mono',monospace">
+        <div style="color:#3fb950">ufw allow ssh</div>
+        <div style="color:#3fb950">ufw allow http</div>
+        <div style="color:#3fb950">ufw allow https</div>
+        <div style="color:#ffa657">ufw default deny incoming</div>
+        <div style="color:#3fb950">ufw default allow outgoing</div>
+        <div style="color:#79c0ff">ufw enable</div>
+      </div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Related</h3>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem">
+        <a href="cheatsheet-iptables.html" style="color:var(--accent);text-decoration:none">🔗 iptables</a>
+        <a href="cheatsheet-linux-commands.html" style="color:var(--accent);text-decoration:none">🐧 Linux Commands</a>
+        <a href="cheatsheet-apache.html" style="color:var(--accent);text-decoration:none">🌐 Apache Web Server</a>
+        <a href="cheatsheet-nmap.html" style="color:var(--accent);text-decoration:none">🔍 Nmap</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+</div></main>
+
+<footer><div class="container"><div class="footer-inner">
+  <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+  <div class="footer-links">
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+</div></div></footer>
+
+<script src="js/script.js"></script>
+<script>
+function copyCode(btn){const p=btn.nextElementSibling;navigator.clipboard.writeText(p.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+
+const SS=[
+  {cat:'Getting Started',cmd:'sudo ufw allow ssh',sub:'Always allow SSH before enabling',body:'CRITICAL: Run this before enabling UFW on a remote server — otherwise you will lock yourself out permanently.\nSSH = port 22. You can also write: sudo ufw allow 22/tcp'},
+  {cat:'Enable/Disable',cmd:'sudo ufw enable',sub:'Activate the firewall',body:'Enables UFW and persists rules across reboots. You will see: "Firewall is active and enabled on system startup".\nUse "sudo ufw disable" to turn off without losing rules.'},
+  {cat:'Status',cmd:'sudo ufw status verbose',sub:'Show full firewall status and rules',body:'Shows whether UFW is active, default policies, and all configured rules.\n"numbered" flag shows rule numbers for easy deletion.'},
+  {cat:'Default Policy',cmd:'sudo ufw default deny incoming',sub:'Block all incoming traffic by default',body:'Best practice for servers: deny all incoming, allow all outgoing.\nThen explicitly allow only the ports you need (SSH, HTTP, HTTPS).'},
+  {cat:'Allow',cmd:'sudo ufw allow 80/tcp',sub:'Allow HTTP traffic',body:'Allows TCP connections on port 80. Use /tcp or /udp to specify protocol.\nWithout protocol, both TCP and UDP are allowed.'},
+  {cat:'Allow',cmd:'sudo ufw allow from 192.168.1.0/24 to any port 22',sub:'Restrict SSH to local network only',body:'Only allows SSH from the 192.168.1.0/24 subnet — great for hardening remote access.\nReplace with your office/VPN IP range.'},
+  {cat:'Allow',cmd:'sudo ufw allow 6000:6007/tcp',sub:'Allow a range of ports',body:'Allows all TCP ports from 6000 to 6007 (inclusive).\nUseful for applications that need a range of ports.'},
+  {cat:'Deny',cmd:'sudo ufw deny 23',sub:'Block Telnet (insecure protocol)',body:'Blocks port 23 (Telnet) which transmits data in cleartext.\nAlways block Telnet and use SSH instead.'},
+  {cat:'Deny',cmd:'sudo ufw deny from 198.51.100.5',sub:'Block specific IP address',body:'Drops all traffic from a specific IP. Useful for blocking known attackers or suspicious IPs.\nCombine with fail2ban for automated blocking.'},
+  {cat:'Delete',cmd:'sudo ufw delete allow 80',sub:'Remove an allow rule',body:'Deletes the rule that allows port 80. The syntax mirrors the allow/deny command.\nAlternative: ufw status numbered → ufw delete <number>'},
+  {cat:'App Profiles',cmd:'sudo ufw allow "Apache Full"',sub:'Allow HTTP and HTTPS via app profile',body:'App profiles bundle related ports. "Apache Full" = ports 80 + 443.\nList available profiles: sudo ufw app list'},
+  {cat:'Logging',cmd:'sudo ufw logging on',sub:'Enable firewall logging',body:'Logs UFW events to /var/log/ufw.log and syslog.\nLevels: off, low, medium, high, full.\nMonitor blocked connections: grep BLOCK /var/log/ufw.log'},
+];
+
+let sIdx=0,sPlaying=true,sTimer=null,sProg=null;
+const SDUR=5500;
+function ssOpen(){sIdx=0;sPlaying=true;document.getElementById('ssOverlay').classList.add('active');document.body.style.overflow='hidden';showSS(sIdx);startSSTimer()}
+function ssClose(){stopSSTimer();document.getElementById('ssOverlay').classList.remove('active');document.body.style.overflow=''}
+function showSS(i){const s=SS[i];document.getElementById('ssCat').textContent=s.cat;document.getElementById('ssCmd').textContent=s.cmd;document.getElementById('ssSub').textContent=s.sub;document.getElementById('ssBody').textContent=s.body;document.getElementById('ssProgress').textContent=(i+1)+' / '+SS.length;document.getElementById('ssProg').style.width='0%'}
+function startSSTimer(){stopSSTimer();let e=0;sProg=setInterval(()=>{e+=50;document.getElementById('ssProg').style.width=Math.min(e/SDUR*100,100)+'%'},50);sTimer=setTimeout(ssNext,SDUR)}
+function stopSSTimer(){clearTimeout(sTimer);clearInterval(sProg)}
+function ssNext(){sIdx=(sIdx+1)%SS.length;showSS(sIdx);if(sPlaying)startSSTimer()}
+function ssPrev(){sIdx=(sIdx-1+SS.length)%SS.length;showSS(sIdx);if(sPlaying)startSSTimer()}
+function ssToggle(){sPlaying=!sPlaying;document.getElementById('ssToggleBtn').textContent=sPlaying?'⏸ Pause':'▶ Resume';sPlaying?startSSTimer():stopSSTimer()}
+
+const QZ=[
+  {q:'sudo ufw enable',correct:'Activate the UFW firewall',opts:['Activate the UFW firewall','Disable the firewall','Reset all rules','Enable logging']},
+  {q:'sudo ufw status numbered',correct:'Show firewall rules with line numbers',opts:['Show firewall rules with line numbers','Show number of active connections','Count blocked packets','Show interface numbers']},
+  {q:'sudo ufw default deny incoming',correct:'Block all inbound traffic not matching a rule',opts:['Block all inbound traffic not matching a rule','Block all outbound traffic','Allow all incoming by default','Deny specific ports']},
+  {q:'sudo ufw allow 22/tcp',correct:'Allow TCP connections on port 22 (SSH)',opts:['Allow TCP connections on port 22 (SSH)','Deny port 22 for TCP','Allow UDP port 22 only','Block all SSH traffic']},
+  {q:'sudo ufw deny from 198.51.100.5',correct:'Block all traffic from a specific IP',opts:['Block all traffic from a specific IP','Allow only this IP address','Rate limit this IP','Log traffic from this IP']},
+  {q:'sudo ufw delete 3',correct:'Delete the rule at line number 3',opts:['Delete the rule at line number 3','Delete 3 random rules','Deny port 3','Reset first 3 rules']},
+  {q:'sudo ufw allow from 192.168.1.0/24 to any port 22',correct:'Allow SSH only from the local subnet',opts:['Allow SSH only from the local subnet','Block all traffic from that subnet','Allow all ports from that subnet','Forward traffic to SSH']},
+  {q:'sudo ufw allow "Apache Full"',correct:'Allow HTTP (80) and HTTPS (443) via app profile',opts:['Allow HTTP (80) and HTTPS (443) via app profile','Allow only HTTPS','Allow Apache on port 8080','Install Apache']},
+  {q:'sudo ufw reject 23',correct:'Drop port 23 and send error to sender',opts:['Drop port 23 and send error to sender','Allow port 23','Silently drop port 23','Block port 23 permanently']},
+  {q:'sudo ufw logging medium',correct:'Log blocked and invalid packets',opts:['Log blocked and invalid packets','Log only connections','Disable all logging','Log only allowed traffic']},
+  {q:'sudo ufw reset',correct:'Remove all rules and disable UFW',opts:['Remove all rules and disable UFW','Reload rules only','Reset to last saved state','Restart UFW service']},
+  {q:'sudo ufw allow 6000:6007/tcp',correct:'Allow TCP ports 6000 through 6007',opts:['Allow TCP ports 6000 through 6007','Allow only port 6000','Allow 6007 connections','Block ports 6000–6007']},
+];
+
+let qIdx=0,qScore=0,qAnswered=false;
+const QS=12;
+function qzStart(){qIdx=0;qScore=0;document.getElementById('qzMain').style.display='block';document.getElementById('qzResult').style.display='none';document.getElementById('qzOverlay').classList.add('active');document.body.style.overflow='hidden';showQZ()}
+function qzClose(){document.getElementById('qzOverlay').classList.remove('active');document.body.style.overflow=''}
+function showQZ(){qAnswered=false;const q=QZ[qIdx];document.getElementById('qzMeta').textContent='Question '+(qIdx+1)+' of '+QS+' · Score: '+qScore;document.getElementById('qzQ').textContent=q.q;document.getElementById('qzFeedback').textContent='';document.getElementById('qzNextBtn').style.display='none';const sh=[...q.opts].sort(()=>Math.random()-.5);document.getElementById('qzOpts').innerHTML=sh.map(o=>`<button class="quiz-opt" onclick="answerQZ(this,'${o.replace(/'/g,"\\'")}','${q.correct.replace(/'/g,"\\'")}')">${o}</button>`).join('')}
+function answerQZ(btn,ans,correct){if(qAnswered)return;qAnswered=true;document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);if(ans===correct){qScore++;btn.classList.add('correct');document.getElementById('qzFeedback').innerHTML='<span style="color:#3fb950">✓ Correct!</span>'}else{btn.classList.add('wrong');document.querySelectorAll('.quiz-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct')});document.getElementById('qzFeedback').innerHTML=`<span style="color:#f85149">✗ Answer: ${correct}</span>`}document.getElementById('qzNextBtn').style.display='inline-flex'}
+function qzNext(){qIdx++;if(qIdx>=QS){const pct=Math.round(qScore/QS*100);document.getElementById('qzMain').style.display='none';document.getElementById('qzResult').style.display='block';document.getElementById('qzFinalScore').textContent=qScore+'/'+QS;document.getElementById('qzFinalMsg').textContent=pct>=80?'🏆 Excellent UFW knowledge!':pct>=60?'👍 Good work — keep practising!':'📚 Review the command sections above!'}else showQZ()}
+
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('ssOverlay').classList.contains('active')){if(e.key==='ArrowRight')ssNext();if(e.key==='ArrowLeft')ssPrev();if(e.key==='Escape')ssClose();if(e.key===' '){e.preventDefault();ssToggle();}}
+  if(document.getElementById('qzOverlay').classList.contains('active')&&e.key==='Escape')qzClose();
+});
+</script>
+</body>
+</html>
