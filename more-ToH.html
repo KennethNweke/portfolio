@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tower of Hanoi — Kenneth Nweke</title>
+  <meta name="description" content="Interactive Tower of Hanoi puzzle game — by Kenneth Nweke." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Game-specific styles ───────────────────── */
+    .game-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+      align-items: start;
+      padding-bottom: 80px;
+    }
+
+    /* Controls bar above the canvas */
+    .game-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .ctrl-group label { color: var(--text-muted); }
+
+    .ctrl-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .ctrl-select:focus { outline: none; border-color: var(--border-accent); }
+
+    /* Canvas container */
+    .canvas-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hanoi-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    /* Message overlay */
+    .game-message {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(10,13,20,0.88);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      border-radius: var(--radius-lg);
+      z-index: 10;
+      text-align: center;
+    }
+    .game-message.show { display: flex; }
+    .game-message h2 { font-size: 1.8rem; color: var(--accent); }
+    .game-message p  { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* Stats bar */
+    .game-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      flex: 1;
+      min-width: 100px;
+    }
+    .stat-pill .sp-label { color: var(--text-muted); font-size: 0.7rem; display: block; }
+    .stat-pill .sp-val   { color: var(--accent); font-size: 1.1rem; font-weight: 700; display: block; }
+
+    /* Instruction sidebar */
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.83rem;
+    }
+    .info-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.9rem;
+    }
+    .info-card ul { list-style: none; padding: 0; }
+    .info-card li {
+      display: flex;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .info-card li:last-child { border-bottom: none; }
+    .info-card li .icon { flex-shrink: 0; color: var(--accent); }
+
+    .formula-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 0.75rem;
+    }
+
+    .move-log {
+      max-height: 180px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .move-log .log-entry {
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+    }
+    .move-log .log-num { color: var(--text-muted); min-width: 28px; }
+    .move-log .log-move { color: var(--text-secondary); }
+    .log-accent { color: var(--accent); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .game-wrapper { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      .game-stats { gap: 0.5rem; }
+      .stat-pill { padding: 6px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">KN<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="cheatsheets.html">Cheatsheets</a></li>
+      <li><a href="more.html">More</a></li>
+      <li><a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a></li>
+      <li><a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a></li>
+      <li><a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/></svg>
+        </a></li>
+      <li><a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a></li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span>☀️</span> Light</button>
+      </li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html">More</a>
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">Youtube</a>
+  </div>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+    <div class="container">
+
+      <!-- Breadcrumb + Header -->
+      <div class="project-header fade-in">
+        <div class="breadcrumb">
+          <a href="more.html">← More</a>
+          <span>/</span>
+          <span>Tower of Hanoi</span>
+        </div>
+        <div class="card-tag" style="margin-bottom:0.75rem;">Mini Game · Logic · Recursion</div>
+        <h1 class="project-title" style="font-size:clamp(1.8rem,3.5vw,3rem);">Tower of Hanoi</h1>
+        <p style="color:var(--text-secondary);max-width:560px;font-size:1rem;line-height:1.8;">
+          Move all disks from peg A to peg C using the fewest moves possible.
+          A larger disk can never sit on top of a smaller one.
+        </p>
+      </div>
+
+      <!-- Game Layout -->
+      <div class="game-wrapper">
+
+        <!-- Left: Canvas + controls -->
+        <div>
+          <!-- Controls row -->
+          <div class="game-controls">
+            <div class="ctrl-group">
+              <label for="diskCount">Disks:</label>
+              <select id="diskCount" class="ctrl-select">
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+            </div>
+            <button id="btnNew" class="btn btn-primary" style="padding:7px 18px;font-size:0.82rem;">
+              New Game
+            </button>
+            <button id="btnUndo" class="btn btn-outline" style="padding:7px 18px;font-size:0.82rem;">
+              Undo
+            </button>
+            <button id="btnSolve" class="btn btn-ghost" style="padding:7px 18px;font-size:0.82rem;">
+              Auto-Solve
+            </button>
+          </div>
+
+          <!-- Canvas -->
+          <div class="canvas-wrap">
+            <canvas id="hanoi-canvas" width="720" height="360"></canvas>
+
+            <!-- Win overlay -->
+            <div class="game-message" id="winMsg">
+              <div style="font-size:3rem;">🎉</div>
+              <h2>Puzzle Solved!</h2>
+              <p id="winDetail">You did it in <strong>0</strong> moves.<br>Minimum possible: <strong>0</strong>.</p>
+              <button class="btn btn-primary" onclick="newGame()">Play Again</button>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="game-stats">
+            <div class="stat-pill">
+              <span class="sp-label">Moves</span>
+              <span class="sp-val" id="statMoves">0</span>
+            </div>
+            <div class="stat-pill">
+              <span class="sp-label">Minimum</span>
+              <span class="sp-val" id="statMin">7</span>
+            </div>
+            <div class="stat-pill">
+              <span class="sp-label">Disks</span>
+              <span class="sp-val" id="statDisks">3</span>
+            </div>
+            <div class="stat-pill">
+              <span class="sp-label">Time</span>
+              <span class="sp-val" id="statTime">0:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sidebar -->
+        <div>
+
+          <!-- How to play -->
+          <div class="info-card">
+            <h3>How to Play</h3>
+            <ul>
+              <li><span class="icon">🖱️</span> Click a peg to pick up the top disk, then click another peg to place it.</li>
+              <li><span class="icon">⛔</span> You cannot place a larger disk on a smaller one.</li>
+              <li><span class="icon">🏆</span> Move all disks from Peg A to Peg C to win.</li>
+              <li><span class="icon">↩️</span> Use <strong>Undo</strong> to take back your last move.</li>
+              <li><span class="icon">🤖</span> <strong>Auto-Solve</strong> watches the optimal solution play out.</li>
+            </ul>
+          </div>
+
+          <!-- Math info -->
+          <div class="info-card">
+            <h3>The Math</h3>
+            <p style="color:var(--text-secondary);font-size:0.82rem;line-height:1.7;margin-bottom:0.5rem;">
+              The minimum number of moves to solve n disks is:
+            </p>
+            <div class="formula-box">2ⁿ − 1</div>
+            <p style="color:var(--text-muted);font-size:0.78rem;margin-top:0.75rem;line-height:1.6;">
+              3 disks → 7 moves &nbsp;|&nbsp; 5 disks → 31 moves &nbsp;|&nbsp; 8 disks → 255 moves
+            </p>
+          </div>
+
+          <!-- Move log -->
+          <div class="info-card">
+            <h3>Move Log</h3>
+            <div class="move-log" id="moveLog">
+              <div style="color:var(--text-muted);font-size:0.78rem;padding:4px 0;">No moves yet…</div>
+            </div>
+          </div>
+
+          <!-- CS connection -->
+          <div class="info-card">
+            <h3>CS Connection</h3>
+            <p style="color:var(--text-secondary);font-size:0.82rem;line-height:1.7;">
+              Tower of Hanoi is a classic example of <span style="color:var(--accent);">recursion</span>
+              — the problem of moving n disks reduces to moving n−1 disks twice with one base move.
+              It demonstrates <span style="color:var(--accent);">O(2ⁿ)</span> exponential time complexity.
+            </p>
+          </div>
+
+        </div>
+      </div><!-- /.game-wrapper -->
+
+    </div><!-- /.container -->
+  </main>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+        <div class="footer-links">
+          <a href="more.html">← Back to More</a>
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:osinachiken@gmail.com">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+  /* ═══════════════════════════════════════════════════
+     Tower of Hanoi — Game Engine
+  ═══════════════════════════════════════════════════ */
+  (function() {
+
+    // ── State ──────────────────────────────────────
+    const canvas  = document.getElementById('hanoi-canvas');
+    const ctx     = canvas.getContext('2d');
+    const W = 720, H = 360;
+
+    let pegs        = [[], [], []];   // peg[0]=A, peg[1]=B, peg[2]=C
+    let numDisks    = 3;
+    let selected    = -1;             // index of currently selected peg (-1 = none)
+    let moves       = 0;
+    let history     = [];             // for undo
+    let solving     = false;
+    let solveQueue  = [];
+    let solveTimer  = null;
+    let timerInterval = null;
+    let seconds     = 0;
+    let started     = false;
+    let log         = [];
+
+    // Disk colour palette (accent-toned)
+    const DISK_COLORS = [
+      '#00c8ff','#33d4ff','#7c4dff','#b39ddb',
+      '#00e5ff','#40c4ff','#448aff','#82b1ff'
+    ];
+
+    // ── Layout helpers ─────────────────────────────
+    const PEG_X     = [W*0.2, W*0.5, W*0.8];
+    const BASE_Y    = H - 50;
+    const PEG_H     = 220;
+    const PEG_W     = 6;
+    const BASE_H    = 14;
+    const BASE_W    = 180;
+    const DISK_H    = 22;
+    const MIN_W     = 40;
+    const MAX_W     = 140;
+
+    function diskWidth(size) {
+      return MIN_W + (MAX_W - MIN_W) * (size - 1) / (numDisks - 1 || 1);
+    }
+
+    // ── Draw ───────────────────────────────────────
+    function getColors() {
+      const light = document.body.classList.contains('light');
+      return {
+        bg:       light ? '#f0f4fc'  : '#0f1320',
+        base:     light ? '#c8d2e8'  : '#1a2236',
+        peg:      light ? '#8a94a8'  : '#4a5568',
+        pegSel:   '#00c8ff',
+        pegHov:   'rgba(0,200,255,0.4)',
+        text:     light ? '#3d4a63'  : '#8a94a8',
+        selected: 'rgba(0,200,255,0.18)',
+        diskStroke: light ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.35)',
+      };
+    }
+
+    function draw() {
+      const C = getColors();
+      ctx.clearRect(0, 0, W, H);
+
+      // Background
+      ctx.fillStyle = C.bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Peg labels
+      ctx.font = 'bold 13px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ['A','B','C'].forEach((lbl, i) => {
+        ctx.fillStyle = (selected === i) ? '#00c8ff' : C.text;
+        ctx.fillText(lbl, PEG_X[i], H - 18);
+      });
+
+      // Draw each peg + disks
+      pegs.forEach((peg, i) => {
+        const cx = PEG_X[i];
+        const isSel = selected === i;
+
+        // Selection highlight
+        if (isSel) {
+          ctx.fillStyle = C.selected;
+          roundRect(ctx, cx - BASE_W/2 - 6, BASE_Y - PEG_H - 10, BASE_W + 12, PEG_H + BASE_H + 20, 8);
+          ctx.fill();
+        }
+
+        // Base platform
+        ctx.fillStyle = isSel ? '#00c8ff' : C.base;
+        roundRect(ctx, cx - BASE_W/2, BASE_Y, BASE_W, BASE_H, 4);
+        ctx.fill();
+
+        // Peg pole
+        ctx.fillStyle = isSel ? '#33d4ff' : C.peg;
+        roundRect(ctx, cx - PEG_W/2, BASE_Y - PEG_H, PEG_W, PEG_H, PEG_W/2);
+        ctx.fill();
+
+        // Disks (bottom → top)
+        peg.forEach((size, j) => {
+          const dw = diskWidth(size);
+          const dx = cx - dw / 2;
+          const dy = BASE_Y - (j + 1) * DISK_H - 2;
+          const color = DISK_COLORS[(size - 1) % DISK_COLORS.length];
+
+          // Disk body
+          ctx.fillStyle = color;
+          roundRect(ctx, dx, dy, dw, DISK_H - 3, (DISK_H - 3) / 2);
+          ctx.fill();
+
+          // Disk border
+          ctx.strokeStyle = C.diskStroke;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Size label
+          ctx.fillStyle = 'rgba(0,0,0,0.45)';
+          ctx.font = `bold ${Math.max(9, 11 - numDisks)}px JetBrains Mono, monospace`;
+          ctx.textAlign = 'center';
+          ctx.fillText(size, cx, dy + DISK_H - 7);
+        });
+      });
+
+      // "Click to select" hint when nothing selected
+      if (selected === -1 && !solving) {
+        ctx.font = '11px DM Sans, sans-serif';
+        ctx.fillStyle = C.text;
+        ctx.textAlign = 'center';
+        ctx.fillText('Click a peg to pick up its top disk', W/2, 24);
+      }
+
+      // Solving indicator
+      if (solving) {
+        ctx.font = '11px JetBrains Mono, monospace';
+        ctx.fillStyle = '#00c8ff';
+        ctx.textAlign = 'center';
+        ctx.fillText('⏵ Auto-solving…  (click Auto-Solve again to stop)', W/2, 24);
+      }
+
+      // If peg A selected — show "top disk" floating above peg
+      if (selected !== -1 && pegs[selected].length > 0) {
+        const topSize = pegs[selected][pegs[selected].length - 1];
+        const dw = diskWidth(topSize);
+        const cx = PEG_X[selected];
+        const dy = BASE_Y - PEG_H - 30;
+        const color = DISK_COLORS[(topSize - 1) % DISK_COLORS.length];
+        ctx.fillStyle = color;
+        roundRect(ctx, cx - dw/2, dy, dw, DISK_H - 3, (DISK_H-3)/2);
+        ctx.fill();
+        ctx.strokeStyle = '#00c8ff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+      ctx.lineTo(x+w, y+h-r);
+      ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      ctx.lineTo(x+r, y+h);
+      ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+      ctx.lineTo(x, y+r);
+      ctx.quadraticCurveTo(x, y, x+r, y);
+      ctx.closePath();
+    }
+
+    // ── Peg hit-testing ────────────────────────────
+    function pegFromClick(x) {
+      for (let i = 0; i < 3; i++) {
+        if (Math.abs(x - PEG_X[i]) < BASE_W / 2 + 10) return i;
+      }
+      return -1;
+    }
+
+    function clientToCanvas(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = W / rect.width;
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      return (cx - rect.left) * scaleX;
+    }
+
+    canvas.addEventListener('click', handleInput);
+    canvas.addEventListener('touchend', e => { e.preventDefault(); handleInput(e); });
+
+    function handleInput(e) {
+      if (solving) return;
+      const x = clientToCanvas(e);
+      const peg = pegFromClick(x);
+      if (peg === -1) return;
+
+      if (selected === -1) {
+        // Select peg (only if it has disks)
+        if (pegs[peg].length > 0) {
+          selected = peg;
+          if (!started) startTimer();
+        }
+      } else {
+        // Try to place
+        if (peg === selected) {
+          selected = -1; // deselect
+        } else {
+          doMove(selected, peg);
+          selected = -1;
+        }
+      }
+      draw();
+    }
+
+    function doMove(from, to, animate) {
+      const fromPeg = pegs[from];
+      const toPeg   = pegs[to];
+      if (fromPeg.length === 0) return false;
+      const top = fromPeg[fromPeg.length - 1];
+      if (toPeg.length > 0 && toPeg[toPeg.length - 1] < top) return false;
+
+      history.push({ from, to });
+      fromPeg.pop();
+      toPeg.push(top);
+      moves++;
+      updateStats();
+      addLog(from, to);
+      draw();
+      checkWin();
+      return true;
+    }
+
+    function undoMove() {
+      if (solving || history.length === 0) return;
+      const last = history.pop();
+      const disk = pegs[last.to].pop();
+      pegs[last.from].push(disk);
+      moves--;
+      log.pop();
+      renderLog();
+      updateStats();
+      draw();
+    }
+
+    // ── Win check ──────────────────────────────────
+    function checkWin() {
+      if (pegs[2].length === numDisks) {
+        stopTimer();
+        const minMoves = Math.pow(2, numDisks) - 1;
+        document.getElementById('winDetail').innerHTML =
+          `You did it in <strong>${moves}</strong> move${moves!==1?'s':''}.<br>
+           Minimum possible: <strong>${minMoves}</strong>.`;
+        document.getElementById('winMsg').classList.add('show');
+      }
+    }
+
+    // ── Auto-solve ─────────────────────────────────
+    function autoSolve() {
+      if (solving) { stopSolve(); return; }
+      if (pegs[2].length === numDisks) { newGame(); return; }
+      solving = true;
+      solveQueue = [];
+      generateMoves(numDisks, 0, 2, 1, solveQueue);
+      // Filter out moves already implied by current state
+      runSolveQueue();
+      document.getElementById('btnSolve').textContent = 'Stop';
+      if (!started) startTimer();
+    }
+
+    function generateMoves(n, from, to, aux, queue) {
+      if (n === 1) { queue.push([from, to]); return; }
+      generateMoves(n-1, from, aux, to, queue);
+      queue.push([from, to]);
+      generateMoves(n-1, aux, to, from, queue);
+    }
+
+    function runSolveQueue() {
+      if (solveQueue.length === 0) { solving = false; document.getElementById('btnSolve').textContent = 'Auto-Solve'; return; }
+      solveTimer = setTimeout(() => {
+        const [f, t] = solveQueue.shift();
+        doMove(f, t);
+        if (!document.getElementById('winMsg').classList.contains('show')) runSolveQueue();
+        else { solving = false; document.getElementById('btnSolve').textContent = 'Auto-Solve'; }
+      }, 500 + Math.max(0, (3 - numDisks) * 60)); // faster for more disks
+    }
+
+    function stopSolve() {
+      solving = false;
+      clearTimeout(solveTimer);
+      solveQueue = [];
+      document.getElementById('btnSolve').textContent = 'Auto-Solve';
+      draw();
+    }
+
+    // ── Timer ──────────────────────────────────────
+    function startTimer() {
+      started = true;
+      seconds = 0;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => { seconds++; updateStats(); }, 1000);
+    }
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+    function fmtTime(s) {
+      return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+    }
+
+    // ── Stats ──────────────────────────────────────
+    function updateStats() {
+      document.getElementById('statMoves').textContent = moves;
+      document.getElementById('statMin').textContent   = Math.pow(2, numDisks) - 1;
+      document.getElementById('statDisks').textContent = numDisks;
+      document.getElementById('statTime').textContent  = fmtTime(seconds);
+    }
+
+    // ── Move log ───────────────────────────────────
+    const PNAME = ['A','B','C'];
+    function addLog(from, to) {
+      log.push({ n: moves, from: PNAME[from], to: PNAME[to] });
+      renderLog();
+    }
+    function renderLog() {
+      const el = document.getElementById('moveLog');
+      if (log.length === 0) {
+        el.innerHTML = '<div style="color:var(--text-muted);font-size:0.78rem;padding:4px 0;">No moves yet…</div>';
+        return;
+      }
+      el.innerHTML = log.slice().reverse().map(e =>
+        `<div class="log-entry">
+          <span class="log-num">#${e.n}</span>
+          <span class="log-move"><span class="log-accent">${e.from}</span> → <span class="log-accent">${e.to}</span></span>
+         </div>`
+      ).join('');
+    }
+
+    // ── New Game ───────────────────────────────────
+    function newGame() {
+      stopSolve();
+      stopTimer();
+      numDisks = parseInt(document.getElementById('diskCount').value);
+      pegs     = [[], [], []];
+      for (let i = numDisks; i >= 1; i--) pegs[0].push(i);
+      selected = -1;
+      moves    = 0;
+      seconds  = 0;
+      started  = false;
+      history  = [];
+      log      = [];
+      renderLog();
+      updateStats();
+      document.getElementById('winMsg').classList.remove('show');
+      draw();
+    }
+
+    // ── Button wiring ──────────────────────────────
+    document.getElementById('btnNew').addEventListener('click', newGame);
+    document.getElementById('btnUndo').addEventListener('click', undoMove);
+    document.getElementById('btnSolve').addEventListener('click', autoSolve);
+    document.getElementById('diskCount').addEventListener('change', newGame);
+
+    // ── Expose newGame for win overlay button ──────
+    window.newGame = newGame;
+
+    // ── Init ───────────────────────────────────────
+    newGame();
+
+  })();
+  </script>
+</body>
+</html>
