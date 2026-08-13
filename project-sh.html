@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMS Spam Detection — Kenneth Nweke</title>
+  <meta name="description" content="SMS Spam Detection using Machine Learning — NLP pipeline with TF-IDF, SVC, Naive Bayes, Logistic Regression and Random Forest — by Kenneth Nweke." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">KN<span>.</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="cheatsheets.html">Cheatsheets</a></li>
+      <li><a href="more.html">More</a></li>
+      <li>
+        <a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545a6.545 6.545 0 1 1 0-13.09 6.48 6.48 0 0 1 4.545 1.868l-2.022 2.023a3.633 3.633 0 1 0-.012 5.308l2.034 2.034a6.478 6.478 0 0 1-4.545 1.857z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener" class="ext-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span>☀️</span> Light
+        </button>
+      </li>
+    </ul>
+
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle mobile menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="nav-mobile" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="cheatsheets.html">Cheatsheets</a>
+    <a href="more.html">More</a>
+    <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly ↗</a>
+    <a href="https://www.youtube.com/@osi_techie" target="_blank" rel="noopener">YouTube ↗</a>
+  </div>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+    <div class="container">
+
+      <!-- Project Header -->
+      <div class="project-header fade-in">
+        <div class="breadcrumb">
+          <a href="projects.html">← Projects</a>
+          <span>/</span>
+          <span>Data Analysis</span>
+          <span>/</span>
+          <span>SMS Spam Detection</span>
+        </div>
+
+        <div class="card-tag" style="margin-bottom: 0.75rem;">
+          Machine Learning · NLP · Data Science · Python
+        </div>
+
+        <h1 class="project-title">
+          SMS Spam Detection<br>with Machine Learning
+        </h1>
+
+        <p style="color: var(--text-secondary); max-width: 640px; font-size: 1.05rem; line-height: 1.8;">
+          A complete end-to-end NLP pipeline that classifies SMS messages as spam or legitimate
+          using TF-IDF feature extraction and four machine learning classifiers — achieving
+          98.55% accuracy with a linear Support Vector Classifier.
+        </p>
+
+        <div class="project-meta">
+          <div class="meta-item"><span>Dataset:</span> UCI SMS Spam Collection</div>
+          <div class="meta-item"><span>Messages:</span> 5,169 (after deduplication)</div>
+          <div class="meta-item"><span>Best Model:</span> SVC (linear kernel)</div>
+          <div class="meta-item"><span>Best F1-Score:</span> 0.9402</div>
+        </div>
+
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <!-- GitHub placeholder — update URL when repository is live -->
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            View Project on GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Project Layout: Content + Sidebar -->
+      <div class="project-layout" style="padding-bottom: 80px;">
+
+        <!-- ── Main Content ── -->
+        <div class="project-content">
+
+          <!-- Overview -->
+          <h2 class="fade-in">🎯 Project Overview</h2>
+          <p class="fade-in">
+            This project builds and evaluates a complete machine learning pipeline for
+            <strong>SMS spam detection</strong> using the UCI SMS Spam Collection dataset.
+            The pipeline covers the full data science workflow: data loading and cleaning,
+            exploratory data analysis, NLP text preprocessing, TF-IDF feature engineering,
+            training and comparing four classifiers, hyperparameter tuning with GridSearchCV,
+            and a live inference function for predicting new messages.
+          </p>
+          <p class="fade-in">
+            The project was designed to demonstrate proficiency in <strong>Natural Language Processing</strong>,
+            <strong>supervised machine learning</strong>, <strong>data analysis</strong>, and the
+            end-to-end modelling workflow using Python's scientific stack — core skills for data
+            science and AI roles.
+          </p>
+
+          <!-- Dataset -->
+          <h2 class="fade-in">📦 Dataset</h2>
+          <p class="fade-in">
+            The <strong>UCI SMS Spam Collection</strong> contains 5,572 SMS messages labelled as
+            either <em>ham</em> (legitimate) or <em>spam</em>. After removing 403 duplicate entries,
+            the working dataset contains <strong>5,169 messages</strong>.
+          </p>
+
+          <table class="vuln-table fade-in">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Count</th>
+                <th>Proportion</th>
+                <th>Avg. Characters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="severity sev-low" style="background:rgba(80,200,120,0.15);color:#50c878;border-color:rgba(80,200,120,0.3);">HAM</span></td>
+                <td>4,516</td>
+                <td>87.4%</td>
+                <td>~70.5</td>
+              </tr>
+              <tr>
+                <td><span class="severity sev-high">SPAM</span></td>
+                <td>653</td>
+                <td>12.6%</td>
+                <td>~137.9</td>
+              </tr>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>5,169</strong></td>
+                <td><strong>100%</strong></td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="fade-in">
+            The dataset is <strong>imbalanced</strong> (87% ham / 13% spam), which means raw accuracy
+            alone is a misleading metric. Precision, recall, and F1-Score are the primary evaluation
+            measures throughout this project.
+          </p>
+
+          <!-- EDA -->
+          <h2 class="fade-in">📊 Exploratory Data Analysis</h2>
+          <p class="fade-in">
+            Several engineered features reveal clear statistical separations between spam and ham even
+            before any NLP is applied:
+          </p>
+          <ul class="fade-in">
+            <li><strong>Character count:</strong> Spam messages average ~138 characters — nearly double the ~71 characters in ham messages.</li>
+            <li><strong>Punctuation/symbol count:</strong> Spam contains significantly more exclamation marks, pound signs, dollar signs, and asterisks.</li>
+            <li><strong>Digit count:</strong> Phone numbers, prize amounts, and short codes make spam messages digit-heavy.</li>
+            <li><strong>Uppercase ratio:</strong> Spam frequently uses ALL CAPS for urgency signals like "WINNER", "FREE", "CLAIM".</li>
+            <li><strong>Unique words:</strong> Spam has a narrower vocabulary — it repeats promotional trigger words.</li>
+          </ul>
+          <p class="fade-in">
+            These observations confirm that text length and character composition are strong discriminating
+            features that complement the TF-IDF representation.
+          </p>
+
+          <!-- NLP Preprocessing -->
+          <h2 class="fade-in">🔤 NLP Text Preprocessing</h2>
+          <p class="fade-in">The following preprocessing pipeline is applied to every message:</p>
+          <ol class="fade-in" style="margin-left: 1.2rem; color: var(--text-secondary); line-height: 2;">
+            <li><strong>Character filtering:</strong> Remove all non-alphabetic characters (digits, punctuation, symbols).</li>
+            <li><strong>Lowercasing:</strong> Normalise all tokens to lowercase.</li>
+            <li><strong>Stopword removal:</strong> Strip common English stopwords using NLTK's corpus (e.g. "the", "is", "at").</li>
+            <li><strong>Porter stemming:</strong> Reduce words to their root form — "calling" → "call", "winning" → "win".</li>
+          </ol>
+
+          <pre class="fade-in"><code>def preprocess_text(text: str) -> str:
+    text   = re.sub(r'[^a-zA-Z]', ' ', text).lower()
+    tokens = [
+        ps.stem(word)
+        for word in text.split()
+        if word not in stop_words and len(word) > 1
+    ]
+    return ' '.join(tokens)</code></pre>
+
+          <!-- Feature Engineering -->
+          <h2 class="fade-in">⚙️ Feature Engineering — TF-IDF</h2>
+          <p class="fade-in">
+            <strong>Term Frequency-Inverse Document Frequency (TF-IDF)</strong> converts the cleaned
+            text into a numerical feature matrix. Key configuration choices:
+          </p>
+          <ul class="fade-in">
+            <li><strong>max_features=3,000:</strong> Retain the 3,000 most informative terms.</li>
+            <li><strong>ngram_range=(1,2):</strong> Include both unigrams and bigrams to capture phrase-level patterns such as "free entry", "cash prize", "call now".</li>
+            <li><strong>min_df=2:</strong> Ignore terms appearing in fewer than 2 documents (reduces noise).</li>
+            <li><strong>sublinear_tf=True:</strong> Apply log-normalisation to term frequencies, preventing high-frequency terms from dominating.</li>
+            <li><strong>Data leakage prevention:</strong> The vectoriser is fitted only on the training set and applied (transform-only) to the test set.</li>
+          </ul>
+
+          <!-- Models -->
+          <h2 class="fade-in">🤖 Models Trained</h2>
+          <p class="fade-in">Four classifiers were trained and compared. All were subsequently tuned using <strong>GridSearchCV</strong> with 5-fold cross-validation:</p>
+
+          <table class="vuln-table fade-in">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Tuned Parameter</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1-Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Multinomial Naive Bayes</td>
+                <td>alpha=0.1</td>
+                <td>0.9720</td>
+                <td>0.9811</td>
+                <td>0.7939</td>
+                <td>0.8776</td>
+              </tr>
+              <tr>
+                <td>Logistic Regression</td>
+                <td>C=1.0</td>
+                <td>0.9662</td>
+                <td>1.0000</td>
+                <td>0.7328</td>
+                <td>0.8458</td>
+              </tr>
+              <tr>
+                <td style="color: var(--accent); font-weight: 700;">Support Vector Classifier ★</td>
+                <td>C=1.0</td>
+                <td style="color: var(--accent); font-weight: 700;">0.9855</td>
+                <td style="color: var(--accent); font-weight: 700;">0.9833</td>
+                <td style="color: var(--accent); font-weight: 700;">0.9008</td>
+                <td style="color: var(--accent); font-weight: 700;">0.9402</td>
+              </tr>
+              <tr>
+                <td>Random Forest</td>
+                <td>n_estimators=100</td>
+                <td>0.9778</td>
+                <td>0.9909</td>
+                <td>0.8321</td>
+                <td>0.9046</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Key Results -->
+          <h2 class="fade-in">📈 Key Results</h2>
+          <ul class="fade-in">
+            <li>
+              <strong>Best overall model: Support Vector Classifier (linear kernel)</strong> — achieved the
+              highest F1-Score of <strong>0.9402</strong> and accuracy of <strong>98.55%</strong>,
+              correctly identifying 90% of spam messages while maintaining 98.3% precision.
+            </li>
+            <li>
+              <strong>Logistic Regression</strong> achieved perfect precision (1.0000) — it never
+              misclassified a legitimate message as spam — but at the cost of lower recall (0.7328),
+              meaning it missed ~27% of spam.
+            </li>
+            <li>
+              <strong>Random Forest</strong> delivered the second-best F1-Score (0.9046) with extremely
+              high precision (0.9909), making it suitable for applications where false positives are
+              especially costly.
+            </li>
+            <li>
+              <strong>TF-IDF bigrams</strong> significantly improved spam detection by capturing
+              multi-word trigger phrases that individual word tokens would miss.
+            </li>
+          </ul>
+
+          <!-- Workflow -->
+          <h2 class="fade-in">🔁 Pipeline Workflow</h2>
+          <ol class="fade-in" style="margin-left: 1.2rem; color: var(--text-secondary); line-height: 2;">
+            <li><strong>Data Loading:</strong> Read CSV with latin-1 encoding; drop unnamed metadata columns.</li>
+            <li><strong>Cleaning:</strong> Rename columns, remove duplicates, encode labels (ham=0, spam=1).</li>
+            <li><strong>Feature Engineering:</strong> Derive character count, word count, punctuation count, digit count, uppercase ratio.</li>
+            <li><strong>EDA:</strong> Class distribution analysis, feature distribution histograms, boxplots, correlation heatmap, top-word frequency charts.</li>
+            <li><strong>Text Preprocessing:</strong> Regex cleaning → lowercase → stopword removal → Porter stemming.</li>
+            <li><strong>Vectorisation:</strong> Stratified 80/20 train-test split; TF-IDF (3,000 features, bigrams).</li>
+            <li><strong>Training:</strong> Fit all four classifiers on training vectors.</li>
+            <li><strong>Hyperparameter Tuning:</strong> GridSearchCV with 5-fold CV to optimise each model.</li>
+            <li><strong>Evaluation:</strong> Accuracy, Precision, Recall, F1, ROC-AUC, confusion matrices, feature importance.</li>
+            <li><strong>Inference:</strong> Live prediction pipeline for new unseen messages.</li>
+          </ol>
+
+          <!-- Inference pipeline example -->
+          <h2 class="fade-in">🔍 Inference Pipeline</h2>
+          <p class="fade-in">The prediction function applies the same preprocessing and vectorisation used in training, then classifies the message:</p>
+
+          <pre class="fade-in"><code>def predict_sms(message, model, vectorizer):
+    cleaned    = preprocess_text(message)
+    vectorised = vectorizer.transform([cleaned]).toarray()
+    prediction = model.predict(vectorised)[0]
+    return "SPAM" if prediction == 1 else "HAM (Legitimate)"
+
+# Example
+msg = "WINNER! You have won $1000 cash. Reply CLAIM to receive."
+predict_sms(msg, svc_model, tfidf)
+# Output: 🚨 SPAM  (Confidence: Spam=94.2%)</code></pre>
+
+          <!-- Screenshots -->
+          <h2 class="fade-in">📸 Notebook Sections</h2>
+          <p class="fade-in" style="margin-bottom: 1rem;">
+            The full Jupyter notebook contains the following visualisations and outputs. Screenshots
+            and rendered outputs are available in the GitHub repository.
+          </p>
+
+          <div class="screenshots-grid fade-in">
+            <div class="screenshot-placeholder">
+              📊<br>Class Distribution<br>Pie &amp; Bar Charts
+            </div>
+            <div class="screenshot-placeholder">
+              📉<br>Feature Distribution<br>Histograms (6 features)
+            </div>
+            <div class="screenshot-placeholder">
+              🔥<br>Correlation Heatmap<br>Engineered Features
+            </div>
+            <div class="screenshot-placeholder">
+              📝<br>Top 20 Words<br>Ham vs Spam
+            </div>
+            <div class="screenshot-placeholder">
+              📈<br>Model Performance<br>Grouped Bar Chart
+            </div>
+            <div class="screenshot-placeholder">
+              🕸️<br>Radar Chart<br>All 4 Models
+            </div>
+            <div class="screenshot-placeholder">
+              🟦<br>Confusion Matrices<br>All 4 Models
+            </div>
+            <div class="screenshot-placeholder">
+              📐<br>ROC Curves<br>with AUC Scores
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- CTA -->
+          <div style="text-align: center; padding: 1rem 0 2rem;">
+            <a href="https://github.com/KennethNweke" target="_blank" rel="noopener"
+               class="btn btn-primary" style="font-size: 1rem; padding: 14px 36px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              View Full Project on GitHub
+            </a>
+          </div>
+
+        </div><!-- /.project-content -->
+
+        <!-- ── Sidebar ── -->
+        <aside class="project-sidebar fade-in fade-in-delay-1">
+
+          <!-- Technologies -->
+          <div class="sidebar-card">
+            <h3>Technologies Used</h3>
+            <div class="tech-list">
+              <span class="tech-badge">Python 3</span>
+              <span class="tech-badge">Pandas</span>
+              <span class="tech-badge">NumPy</span>
+              <span class="tech-badge">Scikit-learn</span>
+              <span class="tech-badge">NLTK</span>
+              <span class="tech-badge">Matplotlib</span>
+              <span class="tech-badge">Seaborn</span>
+              <span class="tech-badge">TF-IDF</span>
+              <span class="tech-badge">SVC</span>
+              <span class="tech-badge">Naive Bayes</span>
+              <span class="tech-badge">Logistic Regression</span>
+              <span class="tech-badge">Random Forest</span>
+              <span class="tech-badge">GridSearchCV</span>
+              <span class="tech-badge">Jupyter Notebook</span>
+            </div>
+          </div>
+
+          <!-- Model results summary -->
+          <div class="sidebar-card">
+            <h3>Model Results at a Glance</h3>
+            <ul style="list-style: none; padding: 0;">
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0; font-weight: 700;">★</span>
+                <span><strong>SVC</strong> — F1: 0.9402 | Acc: 98.55%</span>
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--text-muted); flex-shrink: 0;">2.</span>
+                <span><strong>Random Forest</strong> — F1: 0.9046 | Acc: 97.78%</span>
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--text-muted); flex-shrink: 0;">3.</span>
+                <span><strong>Naive Bayes</strong> — F1: 0.8776 | Acc: 97.20%</span>
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--text-muted); flex-shrink: 0;">4.</span>
+                <span><strong>Logistic Regression</strong> — F1: 0.8458 | Precision: 1.000</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Skills demonstrated -->
+          <div class="sidebar-card">
+            <h3>Skills Demonstrated</h3>
+            <ul style="list-style: none; padding: 0;">
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> NLP Text Preprocessing
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> TF-IDF Feature Engineering
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Exploratory Data Analysis
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Multi-Model Comparison
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Hyperparameter Tuning (GridSearchCV)
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Cross-Validation
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> ROC-AUC Analysis
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Imbalanced Dataset Handling
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✓</span> Inference Pipeline Design
+              </li>
+            </ul>
+          </div>
+
+          <!-- Dataset info -->
+          <div class="sidebar-card">
+            <h3>Dataset</h3>
+            <ul style="list-style: none; padding: 0;">
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">📁</span> UCI SMS Spam Collection
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">📊</span> 5,169 messages (deduplicated)
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">✅</span> 4,516 ham (87.4%)
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 0.82rem; color: var(--text-secondary);">
+                <span style="color: var(--accent); flex-shrink: 0;">🚨</span> 653 spam (12.6%)
+              </li>
+            </ul>
+          </div>
+
+          <!-- Links -->
+          <div class="sidebar-card">
+            <h3>Links</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="https://github.com/KennethNweke" target="_blank" rel="noopener"
+                 class="btn btn-outline" style="justify-content: center; font-size: 0.82rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div><!-- /.project-layout -->
+
+    </div><!-- /.container -->
+  </main>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Kenneth Nweke. Built with HTML, CSS &amp; JS.</span>
+        <div class="footer-links">
+          <a href="projects.html">← Back to Projects</a>
+          <a href="https://github.com/KennethNweke" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/kenneth-nweke-4a9456185/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.credly.com/users/kenneth-nweke" target="_blank" rel="noopener">Credly</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
